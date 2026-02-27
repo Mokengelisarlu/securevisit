@@ -1,0 +1,1 @@
+ALTER TABLE "visitors" ADD COLUMN "visitor_type_id" uuid;

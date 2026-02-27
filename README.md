@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SecureVisit - Visitor Management System (SaaS)
 
-## Getting Started
+SecureVisit is a high-performance, multi-tenant Visitor Management System (VMS) designed for modern workplaces.
 
-First, run the development server:
+## 🚀 Quick Links
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **[Feature Guide](./FEATURE_GUIDE.md)**: Explore all application functionalities.
+- **[Architecture Overview](./ARCHITECTURE.md)**: Technical deep dive into the system design.
+- **[Implementation Summary](./IMPLEMENTATION_SUMMARY.md)**: Deployment and implementation details.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: Next.js 15 (App Router)
+- **Authentication**: Clerk
+- **Database**: Neon (PostgreSQL) with Drizzle ORM
+- **UI & Styling**: Tailwind CSS, Shadcn/UI, Lucide Icons
+- **State Management**: React Query (TanStack Query)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏗️ Multi-Tenant Architecture
 
-## Learn More
+SecureVisit uses a subdomain-based architecture for maximum isolation:
 
-To learn more about Next.js, take a look at the following resources:
+- `app.localhost:3000`: Public landing and onboarding.
+- `[subdomain].localhost:3000`: Tenant workspaces.
+- `admin.localhost:3000`: System-wide administration.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚦 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+2. **Configure environment**:
+   Copy `.env.local.example` to `.env.local` and add your Clerk and Neon DB credentials.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Run development server**:
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Hosts File**:
+   Ensure your local hosts file has entries for `app.localhost`, `admin.localhost`, and your test tenant subdomains.
+
+---
+
+*Powered by Mokengeli Sarlu*

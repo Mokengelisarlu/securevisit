@@ -1,0 +1,132 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1766590703717,
+      "tag": "0000_superb_joshua_kane",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766748532458,
+      "tag": "0001_blushing_husk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766749026822,
+      "tag": "0002_parched_unicorn",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1771850865431,
+      "tag": "0003_add_root_role",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1771852057194,
+      "tag": "0004_use_text_id_for_users",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1771926522909,
+      "tag": "0005_low_grandmaster",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1771928615087,
+      "tag": "0006_curious_master_mold",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1771933067675,
+      "tag": "0007_aromatic_iceman",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1771934829358,
+      "tag": "0008_marvelous_chimera",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1772011717833,
+      "tag": "0009_workable_swarm",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1772018000568,
+      "tag": "0010_glamorous_crusher_hogan",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1772023313584,
+      "tag": "0011_add_scheduled_status",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1772028694938,
+      "tag": "0012_add_legal_and_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1772092525928,
+      "tag": "0013_add_legal_and_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1772102029961,
+      "tag": "0014_glossy_annihilus",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1772182932950,
+      "tag": "0015_add_host_tripartite_names",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1772189903849,
+      "tag": "0016_add_host_tripartite_names",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1772194828273,
+      "tag": "0017_business_info",
+      "breakpoints": true
+    }
+  ]
+}
