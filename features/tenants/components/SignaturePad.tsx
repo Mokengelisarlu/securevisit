@@ -113,7 +113,8 @@ export function SignaturePad({ onSave, onClear }: SignaturePadProps) {
     const save = () => {
         const canvas = canvasRef.current;
         if (!canvas || isEmpty) return;
-        onSave(canvas.toDataURL('image/png'));
+        const dataUrl = canvas.toDataURL('image/png');
+        onSave(dataUrl);
         setIsValidated(true);
     };
 
@@ -157,15 +158,15 @@ export function SignaturePad({ onSave, onClear }: SignaturePadProps) {
                 )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-2">
                 <Button
                     type="button"
                     variant="outline"
                     onClick={clear}
-                    className="h-14 rounded-2xl font-black text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-900 transition-all active:scale-[0.98]"
+                    className="h-16 rounded-2xl font-black text-blue-300 border-white/20 bg-white/5 hover:bg-white/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 backdrop-blur-sm"
                 >
-                    <Eraser className="w-5 h-5 mr-3" />
-                    Effacer et recommencer
+                    <Eraser className="w-6 h-6" />
+                    Effacer
                 </Button>
 
                 <Button
@@ -173,21 +174,21 @@ export function SignaturePad({ onSave, onClear }: SignaturePadProps) {
                     onClick={save}
                     disabled={isEmpty || isValidated}
                     className={cn(
-                        "h-14 rounded-2xl font-black transition-all shadow-lg active:scale-[0.98]",
+                        "h-16 rounded-2xl font-black transition-all shadow-2xl active:scale-[0.98] flex items-center justify-center gap-3",
                         isValidated
-                            ? "bg-green-500 hover:bg-green-500 text-white shadow-green-100 cursor-default"
-                            : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-100"
+                            ? "bg-green-600 hover:bg-green-600 text-white shadow-green-500/20 cursor-default"
+                            : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-amber-500/30 animate-pulse ring-4 ring-amber-500/20"
                     )}
                 >
                     {isValidated ? (
                         <>
-                            <Check className="w-6 h-6 mr-3" />
-                            Validé avec succès
+                            <Check className="w-7 h-7" />
+                            Signature Validée
                         </>
                     ) : (
                         <>
-                            <Check className="w-6 h-6 mr-3" />
-                            Valider la signature
+                            <Check className="w-7 h-7" />
+                            Valider ma Signature
                         </>
                     )}
                 </Button>

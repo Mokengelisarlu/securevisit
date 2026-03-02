@@ -1,0 +1,75 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="securityBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="800" fill="url(#securityBg)"/>
+  
+  <!-- Shield outline -->
+  <path d="M600,100 L900,250 L900,500 Q600,700 600,700 Q300,700 300,500 L300,250 Z" fill="none" stroke="#10b981" stroke-width="3" opacity="0.3"/>
+  
+  <!-- Shield filled -->
+  <path d="M600,150 L850,280 L850,480 Q600,640 600,640 Q350,640 350,480 L350,280 Z" fill="#10b981" opacity="0.1"/>
+  
+  <!-- Lock icon inside shield -->
+  <rect x="540" y="320" width="120" height="100" fill="none" stroke="#10b981" stroke-width="3" rx="8"/>
+  <path d="M560,320 L560,280 Q560,250 590,250 Q620,250 620,280 L620,320" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="600" cy="370" r="8" fill="#10b981" opacity="0.6"/>
+  
+  <!-- Checkmarks around shield -->
+  <g fill="#10b981">
+    <!-- Top left -->
+    <circle cx="200" cy="200" r="40" fill="none" stroke="#10b981" stroke-width="2" opacity="0.3"/>
+    <path d="M185,200 L195,210 L215,190" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Top right -->
+    <circle cx="1000" cy="200" r="40" fill="none" stroke="#10b981" stroke-width="2" opacity="0.3"/>
+    <path d="M985,200 L995,210 L1015,190" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Bottom left -->
+    <circle cx="220" cy="580" r="40" fill="none" stroke="#10b981" stroke-width="2" opacity="0.3"/>
+    <path d="M205,580 L215,590 L235,570" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Bottom right -->
+    <circle cx="980" cy="580" r="40" fill="none" stroke="#10b981" stroke-width="2" opacity="0.3"/>
+    <path d="M965,580 L975,590 L995,570" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Security features text -->
+  <text x="200" y="720" font-size="14" text-anchor="middle" fill="#cbd5e1" font-weight="500">
+    Isolation BD
+  </text>
+  
+  <text x="1000" y="720" font-size="14" text-anchor="middle" fill="#cbd5e1" font-weight="500">
+    Authentification
+  </text>
+  
+  <text x="600" y="750" font-size="14" text-anchor="middle" fill="#cbd5e1" font-weight="500">
+    Protection des Données
+  </text>
+  
+  <!-- Center label -->
+  <text x="600" y="420" font-size="18" text-anchor="middle" fill="#10b981" font-weight="bold">
+    Sécurité
+  </text>
+  <text x="600" y="445" font-size="14" text-anchor="middle" fill="#10b981" opacity="0.8">
+    Multi-Tenant
+  </text>
+  
+  <!-- Encrypted data visualization -->
+  <g opacity="0.2">
+    <line x1="350" y1="450" x2="450" y2="420" stroke="#10b981" stroke-width="2"/>
+    <line x1="350" y1="500" x2="450" y2="480" stroke="#10b981" stroke-width="2"/>
+    <line x1="750" y1="420" x2="850" y2="450" stroke="#10b981" stroke-width="2"/>
+    <line x1="750" y1="480" x2="850" y2="500" stroke="#10b981" stroke-width="2"/>
+    
+    <circle cx="350" cy="450" r="4" fill="#10b981"/>
+    <circle cx="350" cy="500" r="4" fill="#10b981"/>
+    <circle cx="850" cy="450" r="4" fill="#10b981"/>
+    <circle cx="850" cy="500" r="4" fill="#10b981"/>
+  </g>
+</svg>

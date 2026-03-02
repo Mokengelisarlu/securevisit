@@ -1,0 +1,68 @@
+<svg viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Animated gradient -->
+    <linearGradient id="heroBgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Blur filter for office background -->
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+    </filter>
+    
+    <!-- Animated particles -->
+    <circle id="particle" r="2" fill="#3b82f6" opacity="0.4" />
+  </defs>
+  
+  <!-- Base gradient background -->
+  <rect width="1200" height="1000" fill="url(#heroBgGradient)"/>
+  
+  <!-- Blurred office building elements in background -->
+  <g filter="url(#blur)" opacity="0.15">
+    <!-- Building structure -->
+    <rect x="50" y="200" width="400" height="600" fill="#64748b"/>
+    <rect x="750" y="150" width="350" height="700" fill="#64748b"/>
+    
+    <!-- Windows pattern -->
+    <rect x="80" y="250" width="40" height="40" fill="#93c5fd"/>
+    <rect x="140" y="250" width="40" height="40" fill="#93c5fd"/>
+    <rect x="200" y="250" width="40" height="40" fill="#93c5fd"/>
+    <rect x="260" y="250" width="40" height="40" fill="#93c5fd"/>
+    
+    <rect x="80" y="320" width="40" height="40" fill="#3b82f6"/>
+    <rect x="140" y="320" width="40" height="40" fill="#3b82f6"/>
+    <rect x="200" y="320" width="40" height="40" fill="#3b82f6"/>
+    <rect x="260" y="320" width="40" height="40" fill="#3b82f6"/>
+    
+    <rect x="780" y="220" width="50" height="50" fill="#93c5fd"/>
+    <rect x="860" y="220" width="50" height="50" fill="#93c5fd"/>
+    <rect x="940" y="220" width="50" height="50" fill="#93c5fd"/>
+    
+    <!-- Reception desk area -->
+    <rect x="150" y="700" width="200" height="80" fill="#475569" rx="10"/>
+  </g>
+  
+  <!-- Security/Protection elements -->
+  <g opacity="0.1">
+    <!-- Shield outlines -->
+    <path d="M300,150 L400,200 L400,400 Q300,500 300,500 Q200,400 200,400 L200,200 Z" fill="none" stroke="#10b981" stroke-width="3"/>
+    <path d="M900,180 L1000,240 L1000,450 Q900,560 900,560 Q800,450 800,450 L800,240 Z" fill="none" stroke="#10b981" stroke-width="3"/>
+  </g>
+  
+  <!-- Floating accent circles for visual interest -->
+  <circle cx="150" cy="150" r="80" fill="#3b82f6" opacity="0.05"/>
+  <circle cx="1100" cy="900" r="120" fill="#3b82f6" opacity="0.05"/>
+  <circle cx="600" cy="500" r="150" fill="#3b82f6" opacity="0.03"/>
+  
+  <!-- Animated particles (will be animated with CSS) -->
+  <g class="particles">
+    <circle cx="200" cy="200" r="2" fill="#3b82f6" opacity="0.6"/>
+    <circle cx="400" cy="350" r="1.5" fill="#3b82f6" opacity="0.4"/>
+    <circle cx="800" cy="250" r="2" fill="#3b82f6" opacity="0.5"/>
+    <circle cx="1000" cy="600" r="1" fill="#3b82f6" opacity="0.3"/>
+    <circle cx="300" cy="750" r="1.5" fill="#3b82f6" opacity="0.4"/>
+    <circle cx="950" cy="150" r="2" fill="#3b82f6" opacity="0.5"/>
+  </g>
+</svg>

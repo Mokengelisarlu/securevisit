@@ -1,0 +1,78 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc"/>
+  
+  <!-- Dashboard header -->
+  <rect x="50" y="40" width="1100" height="100" fill="#1e3a8a" rx="12"/>
+  
+  <!-- Dashboard title -->
+  <text x="70" y="90" font-size="32" font-weight="bold" fill="#fff">
+    Tableau de Bord Live
+  </text>
+  <text x="70" y="120" font-size="16" fill="#cbd5e1">
+    Statistiques en temps réel
+  </text>
+  
+  <!-- Stats cards -->
+  <rect x="70" y="180" width="250" height="120" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="90" y="210" font-size="14" fill="#64748b">Arrivées Aujourd'hui</text>
+  <text x="90" y="250" font-size="48" font-weight="bold" fill="#0066cc">24</text>
+  
+  <rect x="360" y="180" width="250" height="120" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="380" y="210" font-size="14" fill="#64748b">Visiteurs Présents</text>
+  <text x="380" y="250" font-size="48" font-weight="bold" fill="#10b981">12</text>
+  
+  <rect x="650" y="180" width="250" height="120" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="670" y="210" font-size="14" fill="#64748b">Sorties Aujourd'hui</text>
+  <text x="670" y="250" font-size="48" font-weight="bold" fill="#f59e0b">15</text>
+  
+  <!-- Chart area -->
+  <rect x="70" y="340" width="1100" height="380" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  
+  <!-- Chart grid lines -->
+  <line x1="90" y1="360" x2="1130" y2="360" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="430" x2="1130" y2="430" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="500" x2="1130" y2="500" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="570" x2="1130" y2="570" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="640" x2="1130" y2="640" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Chart title -->
+  <text x="90" y="360" font-size="16" font-weight="bold" fill="#1e293b">
+    Activité sur 7 jours
+  </text>
+  
+  <!-- Bar chart -->
+  <rect x="120" y="500" width="40" height="100" fill="#3b82f6" rx="4"/>
+  <rect x="200" y="420" width="40" height="180" fill="#3b82f6" rx="4"/>
+  <rect x="280" y="380" width="40" height="220" fill="#0066cc" rx="4"/>
+  <rect x="360" y="450" width="40" height="150" fill="#3b82f6" rx="4"/>
+  <rect x="440" y="350" width="40" height="250" fill="#3b82f6" rx="4"/>
+  <rect x="520" y="430" width="40" height="170" fill="#3b82f6" rx="4"/>
+  <rect x="600" y="480" width="40" height="120" fill="#0066cc" rx="4"/>
+  
+  <!-- Day labels -->
+  <text x="128" y="650" font-size="12" text-anchor="middle" fill="#64748b">Lun</text>
+  <text x="208" y="650" font-size="12" text-anchor="middle" fill="#64748b">Mar</text>
+  <text x="288" y="650" font-size="12" text-anchor="middle" fill="#64748b">Mer</text>
+  <text x="368" y="650" font-size="12" text-anchor="middle" fill="#64748b">Jeu</text>
+  <text x="448" y="650" font-size="12" text-anchor="middle" fill="#64748b">Ven</text>
+  <text x="528" y="650" font-size="12" text-anchor="middle" fill="#64748b">Sam</text>
+  <text x="608" y="650" font-size="12" text-anchor="middle" fill="#64748b">Dim</text>
+  
+  <!-- Activity feed -->
+  <text x="750" y="380" font-size="16" font-weight="bold" fill="#1e293b">
+    Dernière Activité
+  </text>
+  
+  <circle cx="770" cy="430" r="6" fill="#10b981"/>
+  <text x="800" y="435" font-size="14" fill="#1e293b">Jean Dupont arrivé</text>
+  <text x="800" y="455" font-size="12" fill="#64748b">Il y a 2 minutes</text>
+  
+  <circle cx="770" cy="510" r="6" fill="#f59e0b"/>
+  <text x="800" y="515" font-size="14" fill="#1e293b">Marie Leclerc parti</text>
+  <text x="800" y="535" font-size="12" fill="#64748b">Il y a 15 minutes</text>
+  
+  <circle cx="770" cy="590" r="6" fill="#10b981"/>
+  <text x="800" y="595" font-size="14" fill="#1e293b">Paul Martin arrivé</text>
+  <text x="800" y="615" font-size="12" fill="#64748b">Il y a 1 heure</text>
+</svg>

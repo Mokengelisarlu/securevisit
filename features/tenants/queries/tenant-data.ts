@@ -32,7 +32,7 @@ export async function getCurrentUser(tenantSlug: string) {
 /**
  * Verify if a device token is valid and paired for this tenant
  */
-async function verifyDeviceToken(tenantSlug: string, deviceToken: string) {
+export async function verifyDeviceToken(tenantSlug: string, deviceToken: string) {
   const db = await getTenantDbBySlug(tenantSlug);
   const device = await db.query.devices.findFirst({
     where: and(eq(devices.deviceToken, deviceToken), eq(devices.isPaired, 1)),
@@ -1153,8 +1153,13 @@ export async function getDashboardStats(tenantSlug: string) {
   const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
+  // Stats for Weekly Trend & Average
+  const sevenDaysAgo = new Date(now);
+  sevenDaysAgo.setDate(now.getDate() - 7);
+  sevenDaysAgo.setHours(0, 0, 0, 0);
+
   const arrivedToday = await db.query.visits.findMany({
-    where: and(gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
+    where: and(isNotNull(visits.checkInAt), gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
   });
 
   const onSite = await db.query.visits.findMany({
@@ -1162,15 +1167,34 @@ export async function getDashboardStats(tenantSlug: string) {
   });
 
   const departedToday = await db.query.visits.findMany({
-    where: and(eq(visits.status, "OUT"), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
+    where: and(eq(visits.status, "OUT"), isNotNull(visits.checkOutAt), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
   });
 
   const monthlyVisitsTotal = await db.query.visits.findMany({
     where: and(gte(visits.visitDate, startMonth), lte(visits.visitDate, endMonth)),
   });
 
+  // Calculate Weekly Average & Trend
+  const lastSevenDaysVisits = await db.query.visits.findMany({
+    where: and(gte(visits.visitDate, sevenDaysAgo), lte(visits.visitDate, now)),
+  });
+
+  const weeklyTrend = [];
+  const days = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const dayLabel = days[d.getDay()];
+    const count = lastSevenDaysVisits.filter((v: any) =>
+      v.visitDate && new Date(v.visitDate).toDateString() === d.toDateString()
+    ).length;
+    weeklyTrend.push({ day: dayLabel, count });
+  }
+
+  const weeklyAverage = Math.round(lastSevenDaysVisits.length / 7);
+
   const recentActivities = await db.query.visits.findMany({
-    limit: 10,
+    limit: 5,
     orderBy: [desc(visits.checkInAt)],
     with: {
       visitor: true,
@@ -1187,12 +1211,13 @@ export async function getDashboardStats(tenantSlug: string) {
     onSite: onSite.length,
     departedToday: departedToday.length,
     monthlyVisits: monthlyVisitsTotal.length,
-    smsSent: 0,
+    weeklyAverage: weeklyAverage,
+    weeklyTrend: weeklyTrend,
     vehiclesOnSite: vehiclesOnSite.length,
     recentActivities: recentActivities.map((v: any) => ({
       id: v.id,
       visitorName: `${v.visitor.firstName} ${v.visitor.lastName}`,
-      hostName: v.host?.fullName || "N/A",
+      hostName: v.host?.firstName ? `${v.host.firstName} ${v.host.lastName}` : "N/A",
       type: v.status === "IN" ? "CHECK_IN" : "CHECK_OUT",
       time: v.status === "IN" ? v.checkInAt : v.checkOutAt,
     }))

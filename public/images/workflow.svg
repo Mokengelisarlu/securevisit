@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="600" fill="#f8fafc"/>
+  
+  <!-- Step 1: Create Account -->
+  <circle cx="150" cy="300" r="50" fill="#3b82f6"/>
+  <text x="150" y="320" font-size="36" font-weight="bold" text-anchor="middle" fill="#fff">1</text>
+  
+  <rect x="80" y="380" width="140" height="60" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="150" y="405" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">Créez votre</text>
+  <text x="150" y="425" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">compte</text>
+  
+  <!-- Step 1 icon -->
+  <path d="M120 250 Q150 220 180 250 Q180 270 150 280 Q120 270 120 250" fill="#3b82f6" opacity="0.2"/>
+  <rect x="130" y="240" width="40" height="25" fill="none" stroke="#3b82f6" stroke-width="2" rx="3"/>
+  
+  <!-- Arrow 1 to 2 -->
+  <line x1="200" y1="300" x2="340" y2="300" stroke="#cbd5e1" stroke-width="3"/>
+  <polygon points="340,300 320,290 325,300 320,310" fill="#cbd5e1"/>
+  
+  <!-- Step 2: Setup Team -->
+  <circle cx="450" cy="300" r="50" fill="#3b82f6"/>
+  <text x="450" y="320" font-size="36" font-weight="bold" text-anchor="middle" fill="#fff">2</text>
+  
+  <rect x="380" y="380" width="140" height="60" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="450" y="405" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">Paramétrez</text>
+  <text x="450" y="425" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">votre équipe</text>
+  
+  <!-- Step 2 icons -->
+  <g opacity="0.2">
+    <circle cx="420" cy="240" r="8" fill="#3b82f6"/>
+    <circle cx="450" cy="230" r="8" fill="#3b82f6"/>
+    <circle cx="480" cy="240" r="8" fill="#3b82f6"/>
+    <line x1="420" y1="248" x2="420" y2="260" stroke="#3b82f6" stroke-width="2"/>
+    <line x1="450" y1="238" x2="450" y2="260" stroke="#3b82f6" stroke-width="2"/>
+    <line x1="480" y1="248" x2="480" y2="260" stroke="#3b82f6" stroke-width="2"/>
+  </g>
+  
+  <!-- Arrow 2 to 3 -->
+  <line x1="500" y1="300" x2="640" y2="300" stroke="#cbd5e1" stroke-width="3"/>
+  <polygon points="640,300 620,290 625,300 620,310" fill="#cbd5e1"/>
+  
+  <!-- Step 3: Welcome Visitors -->
+  <circle cx="750" cy="300" r="50" fill="#10b981"/>
+  <text x="750" y="320" font-size="36" font-weight="bold" text-anchor="middle" fill="#fff">3</text>
+  
+  <rect x="680" y="380" width="140" height="60" fill="#fff" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="750" y="405" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">Commencez</text>
+  <text x="750" y="425" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">à accueillir</text>
+  
+  <!-- Step 3 icon -->
+  <g opacity="0.2">
+    <rect x="720" y="235" width="60" height="50" fill="none" stroke="#10b981" stroke-width="2" rx="4"/>
+    <line x1="730" y1="245" x2="770" y2="245" stroke="#10b981" stroke-width="2"/>
+    <line x1="730" y1="260" x2="770" y2="260" stroke="#10b981" stroke-width="2"/>
+    <line x1="730" y1="275" x2="760" y2="275" stroke="#10b981" stroke-width="2"/>
+  </g>
+  
+  <!-- Timeline description -->
+  <text x="150" y="480" font-size="12" text-anchor="middle" fill="#64748b">
+    Quelques minutes
+  </text>
+  <text x="450" y="480" font-size="12" text-anchor="middle" fill="#64748b">
+    10-15 minutes
+  </text>
+  <text x="750" y="480" font-size="12" text-anchor="middle" fill="#64748b">
+    Immédiat
+  </text>
+  
+  <!-- Bottom description -->
+  <text x="600" y="560" font-size="16" text-anchor="middle" fill="#1e293b" font-weight="500">
+    Démarrez en trois étapes simples et commencez à gérer vos visiteurs en temps réel
+  </text>
+</svg>

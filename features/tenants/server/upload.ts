@@ -2,6 +2,7 @@
 
 import { put } from "@vercel/blob";
 import { verifyTenantOwnership } from "./authorization";
+import { verifyDeviceToken } from "../queries/tenant-data";
 
 /**
  * Upload a file to Vercel Blob.
@@ -10,10 +11,17 @@ import { verifyTenantOwnership } from "./authorization";
 export async function uploadToBlob(
     tenantSlug: string,
     fileName: string,
-    fileData: string | Buffer
+    fileData: string | Buffer,
+    deviceToken?: string
 ) {
     // Ensure the user has access to this tenant before uploading
-    await verifyTenantOwnership(tenantSlug);
+    // We allow access if either the user is authenticated (admin)
+    // or if a valid kiosk device token is provided.
+    if (deviceToken) {
+        await verifyDeviceToken(tenantSlug, deviceToken);
+    } else {
+        await verifyTenantOwnership(tenantSlug);
+    }
 
     // Convert base64 to Buffer if needed
     let content: Buffer | string = fileData;

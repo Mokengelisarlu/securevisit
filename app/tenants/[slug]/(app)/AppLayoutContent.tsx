@@ -28,9 +28,9 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden font-sans">
-            {/* Top Header - Premium Blue */}
-            <header className="h-20 bg-[#0055cc] flex items-center justify-between px-6 shrink-0 text-white shadow-md z-20">
+        <div className="flex flex-col h-screen overflow-hidden font-sans bg-[#f8fafc]">
+            {/* Top Header - Modern White */}
+            <header className="h-16 bg-white flex items-center justify-between px-6 shrink-0 border-b border-gray-100 z-20 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -39,12 +39,12 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                         <Menu className="w-6 h-6" />
                     </button>
 
-                    <Link href="/dashboard" className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:bg-white/30 transition-colors">
-                            <ShieldCheck className="text-white w-6 h-6" />
+                    <Link href="/dashboard" className="flex items-center gap-2.5 group">
+                        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                            <ShieldCheck className="text-white w-5 h-5" />
                         </div>
-                        <span className="text-2xl font-black tracking-tighter">
-                            SecureVisit
+                        <span className="text-xl font-black tracking-tight text-[#0f172a]">
+                            Secure<span className="text-blue-600">Visit</span>
                         </span>
                     </Link>
                 </div>
@@ -57,18 +57,19 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                     </HeaderAction>
 
                     {/* Tenant Name Display */}
-                    <div className="flex items-center gap-2 bg-white/10 rounded-lg px-4 py-2 border border-white/20 backdrop-blur-sm">
-                        <span className="text-sm font-semibold text-white">
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-1.5 border border-gray-200">
+                        <Building2 className="w-4 h-4 text-gray-400" />
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-tight">
                             {tenantName || "Chargement..."}
                         </span>
                     </div>
 
-                    <div className="w-px h-8 bg-white/20 mx-2" />
+                    <div className="w-px h-6 bg-gray-200 mx-2" />
 
                     <UserButton
                         appearance={{
                             elements: {
-                                userButtonAvatarBox: "w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-all"
+                                userButtonAvatarBox: "w-9 h-9 border border-gray-200 hover:border-blue-400 transition-all shadow-sm"
                             }
                         }}
                     />
@@ -117,7 +118,7 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-y-auto bg-[#f8fafc] p-8">
+                <main className="flex-1 overflow-y-auto p-8">
                     {children}
                 </main>
             </div>
@@ -139,12 +140,12 @@ function SidebarLink({ href, icon, label, active, collapsed }: { href: string; i
         <Link
             href={href}
             title={collapsed ? label : ""}
-            className={`flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all border-l-4 ${active
-                ? 'bg-blue-50 text-[#0055cc] border-[#0055cc]'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-transparent'
+            className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all border-l-[3px] ${active
+                ? 'bg-blue-50/50 text-blue-600 border-blue-600'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 border-transparent'
                 } ${collapsed ? 'justify-center px-0' : ''}`}
         >
-            <span className={`${active ? "text-[#0055cc]" : "text-gray-400"} ${collapsed ? "w-6 h-6 flex items-center justify-center ms-1" : ""}`}>
+            <span className={`${active ? "text-blue-600" : "text-gray-400"} ${collapsed ? "w-6 h-6 flex items-center justify-center ms-1" : ""}`}>
                 {icon}
             </span>
             {!collapsed && <span className="truncate">{label}</span>}
@@ -158,7 +159,7 @@ function HeaderAction({ children, href, target, active }: { children: React.Reac
             href={href}
             target={target}
             rel={target === "_blank" ? "noopener noreferrer" : undefined}
-            className={`px-4 py-1.5 rounded text-sm font-medium transition-colors flex items-center ${active ? 'bg-white text-blue-600' : 'bg-black/20 text-white hover:bg-black/30'}`}
+            className={`px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all flex items-center shadow-sm ${active ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'}`}
         >
             {children}
         </Link>

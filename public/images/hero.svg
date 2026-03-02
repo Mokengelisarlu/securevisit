@@ -1,0 +1,60 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="heroBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="800" fill="url(#heroBg)"/>
+  
+  <!-- Modern office building silhouette -->
+  <rect x="150" y="250" width="900" height="450" fill="#1e40af" opacity="0.3" rx="20"/>
+  
+  <!-- Windows -->
+  <rect x="200" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="290" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="380" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="470" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="560" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="650" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="740" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="830" y="300" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  
+  <rect x="200" y="400" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="290" y="400" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="380" y="400" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="470" y="400" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="560" y="400" width="60" height="60" fill="#3b82f6" opacity="0.6" rx="4"/>
+  <rect x="650" y="400" width="60" height="60" fill="#3b82f6" opacity="0.6" rx="4"/>
+  <rect x="740" y="400" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="830" y="400" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  
+  <rect x="200" y="500" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="290" y="500" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="380" y="500" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="470" y="500" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="560" y="500" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="650" y="500" width="60" height="60" fill="#60a5fa" opacity="0.6" rx="4"/>
+  <rect x="740" y="500" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  <rect x="830" y="500" width="60" height="60" fill="#93c5fd" opacity="0.5" rx="4"/>
+  
+  <!-- Reception desk -->
+  <rect x="400" y="600" width="400" height="80" fill="#3b82f6" opacity="0.4" rx="10"/>
+  <circle cx="500" cy="640" r="15" fill="#60a5fa" opacity="0.8"/>
+  <circle cx="600" cy="640" r="15" fill="#60a5fa" opacity="0.8"/>
+  <circle cx="700" cy="640" r="15" fill="#60a5fa" opacity="0.8"/>
+  
+  <!-- Security badge -->
+  <circle cx="950" cy="150" r="80" fill="#10b981" opacity="0.2"/>
+  <path d="M920,140 L950,160 L980,140 L980,180 Q950,200 920,180 Z" fill="#10b981" opacity="0.6"/>
+  
+  <!-- Text -->
+  <text x="600" y="100" font-size="48" font-weight="bold" text-anchor="middle" fill="#f0f9ff">
+    SecureVisit
+  </text>
+  <text x="600" y="140" font-size="24" text-anchor="middle" fill="#cbd5e1">
+    Visitor Management System
+  </text>
+</svg>
