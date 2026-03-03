@@ -7,38 +7,27 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
  * @returns The subdomain string, or empty string for main domain
  */
 function extractSubdomain(hostname: string): string {
-  // Handle localhost cases
-  if (hostname.includes('localhost')) {
-    // Remove port number if present (e.g., "admin.localhost:3000" -> "admin.localhost")
-    const hostWithoutPort = hostname.split(':')[0];
+  const host = hostname.split(':')[0]; // remove port
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
 
-    // If it's just "localhost", return 'localhost' (represents main domain)
-    if (hostWithoutPort === 'localhost') {
-      return 'localhost';
-    }
-
-    // Otherwise, extract subdomain (e.g., "admin.localhost" -> "admin")
-    const parts = hostWithoutPort.split('.');
-    return parts[0];
+  // Localhost handling
+  if (host.includes('localhost')) {
+    const parts = host.split('.');
+    return parts.length > 1 ? parts[0] : '';
   }
 
-  // Handle domain cases (e.g., example.com, admin.example.com)
-  const parts = hostname.split('.');
-
-  // If only one part (just domain), return empty string
-  if (parts.length <= 1) {
+  // If host equals root domain → no tenant
+  if (host === rootDomain) {
     return '';
   }
 
-  // Get the first part (potential subdomain)
-  const subdomain = parts[0];
-
-  // If subdomain is 'www', treat as main domain (return empty)
-  if (subdomain === 'www') {
-    return '';
+  // If host ends with root domain → extract tenant
+  if (host.endsWith(`.${rootDomain}`)) {
+    return host.replace(`.${rootDomain}`, '');
   }
 
-  return subdomain;
+  // Otherwise → custom domain tenant (optional advanced feature)
+  return '';
 }
 
 // Define public routes that don't require authentication
