@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Sentinel SaaS',
-  description: 'Mokengeli Sarlu',
+  title: 'SecureVisit',
+  description: 'Powered by Mokengeli Sarlu',
 }
 
 export default function RootLayout({

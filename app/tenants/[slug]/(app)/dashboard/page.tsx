@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { useTenant } from "@/lib/tenant-provider";
 import { useDashboardStats } from "@/features/tenants/hooks/useGetTenantData";
+import { DigitalClock } from "@/components/DigitalClock";
 
 export default function TenantDashboard() {
     const { slug } = useTenant();
@@ -33,6 +34,7 @@ export default function TenantDashboard() {
 
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-black text-slate-800 tracking-tight">Tableau de bord</h1>
+                <DigitalClock />
             </div>
 
             {/* Row 1: 3-Card Gradient Grid */}
