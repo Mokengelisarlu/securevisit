@@ -37,9 +37,8 @@ export function PublicHeader() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "shadow-lg" : ""
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "shadow-lg" : ""
+          }`}
         style={{ backgroundColor: bgColor }}
       >
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -57,11 +56,10 @@ export function PublicHeader() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled
+                className={`text-sm font-medium transition-colors ${isScrolled
                     ? "text-slate-300 hover:text-white"
                     : "text-slate-200 hover:text-white"
-                }`}
+                  }`}
               >
                 {link.label}
               </Link>
@@ -70,30 +68,18 @@ export function PublicHeader() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button
-              variant="ghost"
-              asChild
-              className={`text-sm transition-colors ${
-                isScrolled
-                  ? "text-slate-300 hover:text-white hover:bg-slate-700"
-                  : "text-slate-200 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              <Link href="/sign-in">Se connecter</Link>
-            </Button>
             <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Link href="/setup-tenant">Créer un compte</Link>
+              <Link href="/sign-up">Créer un compte</Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-lg transition-colors ${
-              isScrolled
+            className={`lg:hidden p-2 rounded-lg transition-colors ${isScrolled
                 ? "text-slate-300 hover:bg-slate-700"
                 : "text-slate-200 hover:bg-white/10"
-            }`}
+              }`}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -114,15 +100,8 @@ export function PublicHeader() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-slate-700 space-y-3 flex flex-col">
-                <Button
-                  variant="ghost"
-                  asChild
-                  className="w-full text-slate-300 hover:text-white hover:bg-slate-700"
-                >
-                  <Link href="/sign-in">Se connecter</Link>
-                </Button>
                 <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                  <Link href="/setup-tenant">Créer un compte</Link>
+                  <Link href="/sign-up">Créer un compte</Link>
                 </Button>
               </div>
             </nav>

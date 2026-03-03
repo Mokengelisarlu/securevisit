@@ -3,7 +3,6 @@
 import { ClerkProvider } from '@clerk/nextjs'
 import QueryProvider from '@/components/ReactQueryProvider'
 import { Toaster } from "sonner"
-import { PublicHeader } from '@/components/PublicHeader'
 
 export default function PublicLayout({
   children,
@@ -13,7 +12,6 @@ export default function PublicLayout({
   return (
     <ClerkProvider>
       <QueryProvider>
-        <PublicHeader />
         {children}
         <Toaster />
       </QueryProvider>

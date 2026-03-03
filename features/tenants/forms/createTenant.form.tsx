@@ -22,13 +22,13 @@ import { useCreateTenant } from "../hooks/createTenant.hook";
    Schema
 --------------------------------------- */
 const formSchema = z.object({
-  name: z.string().min(2, "Company name is required"),
+  name: z.string().min(2, "Le nom de l'entreprise est requis"),
 
   slug: z
     .string()
-    .min(2, "Acronyme is required")
-    .max(20, "Acronyme must be short")
-    .regex(/^[a-z0-9-]+$/, "Only lowercase letters, numbers and hyphens"),
+    .min(2, "L'URL est requise")
+    .max(20, "L'URL doit être courte")
+    .regex(/^[a-z0-9-]+$/, "Uniquement des lettres minuscules, chiffres et tirets"),
 });
 
 /* ---------------------------------------
@@ -63,7 +63,7 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
         slug: values.slug,
       });
 
-      toast.success("Tenant created successfully!");
+      toast.success("Portail créé avec succès !");
       form.reset();
 
       // 🔁 Use result slug for redirect to ensure consistency
@@ -77,16 +77,16 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
       if (error?.status === 409) {
         form.setError("slug", {
           type: "manual",
-          message: "This acronyme is already used",
+          message: "Cette URL est déjà utilisée",
         });
 
-        toast.error("Acronyme already in use");
+        toast.error("URL déjà utilisée");
         return;
       }
 
       // 🟠 Generic error fallback
       toast.error(
-        error?.message || "Something went wrong. Please try again."
+        error?.message || "Une erreur est survenue. Veuillez réessayer."
       );
     }
   }
@@ -101,15 +101,16 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company name</FormLabel>
+              <FormLabel className="text-white">Nom de l'entreprise</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Acme Corporation"
+                  className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
                   value={field.value ?? ""}
                   onChange={field.onChange}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-yellow-500" />
             </FormItem>
           )}
         />
@@ -121,15 +122,26 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
           name="slug"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Acronyme (short name)</FormLabel>
+              <div className="space-y-1">
+                <FormLabel className="text-white">Votre Url</FormLabel>
+                <p className="text-xs text-slate-400">
+                  Ceci est l'URL que vous utiliserez pour accéder à votre application.
+                </p>
+              </div>
               <FormControl>
-                <Input
-                  placeholder="acme"
-                  value={field.value ?? ""}
-                  onChange={field.onChange}
-                />
+                <div className="relative flex items-center">
+                  <Input
+                    placeholder="mon-entreprise"
+                    className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500 pr-36"
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                  />
+                  <div className="absolute right-3 px-2 py-1 bg-slate-700/50 rounded border border-slate-600 pointer-events-none">
+                    <span className="text-sm font-medium text-slate-300">.securevisit.com</span>
+                  </div>
+                </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-yellow-500" />
             </FormItem>
           )}
         />
@@ -138,13 +150,13 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
         <Button
           type="submit"
           disabled={createTenant.isPending}
-          className="w-full"
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-6 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
         >
-          {createTenant.isPending ? "Creating..." : "Create tenant"}
+          {createTenant.isPending ? "Création en cours..." : "Créer mon portail"}
         </Button>
 
         {createTenant.isError && (
-          <p className="text-sm text-red-500">
+          <p className="text-sm text-yellow-500">
             {(createTenant.error as Error).message}
           </p>
         )}
