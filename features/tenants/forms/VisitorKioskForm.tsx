@@ -558,41 +558,63 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
                             </div>
                         ) : filteredCheckout.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[45vh] overflow-y-auto p-2">
+                            <div className="flex flex-col gap-4 max-h-[60vh] overflow-y-auto p-2 w-full mx-auto">
                                 {filteredCheckout.map((v: any) => (
                                     <button
                                         key={v.id}
                                         onClick={() => handleCheckout(v.id)}
                                         disabled={checkoutVisit.isPending}
-                                        className="flex items-center justify-between p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl hover:border-orange-500/50 hover:bg-orange-500/10 transition-all text-left group shadow-sm hover:shadow-md active:scale-95"
+                                        className="flex flex-col md:flex-row items-center justify-between p-6 md:p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl hover:border-orange-500/50 hover:bg-orange-500/10 transition-all text-left group shadow-lg hover:shadow-xl active:scale-95 w-full gap-4 md:gap-6"
                                     >
-                                        <div className="space-y-1">
-                                            <h4 className="text-2xl font-black text-white">
-                                                {v.visitor.firstName} {v.visitor.lastName}
-                                            </h4>
-                                            <div className="flex items-center gap-2 text-blue-200/70 font-bold uppercase tracking-tight text-sm">
-                                                <Clock className="w-4 h-4" />
-                                                Arrivé à {new Date(v.checkInAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                            </div>
-                                            {v.visitor.company && (
-                                                <p className="text-orange-400 font-bold text-sm tracking-widest uppercase">
-                                                    {v.visitor.company}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <div className="bg-orange-500/20 p-4 rounded-2xl group-hover:bg-orange-600 transition-colors">
-                                            {checkoutVisit.isPending ? (
-                                                <Loader2 className="w-6 h-6 text-orange-400 group-hover:text-white animate-spin" />
+                                        <div className="flex items-center gap-4 w-full md:w-auto overflow-hidden">
+                                            {/* Photo or Avatar */}
+                                            {v.visitor.photoUrl ? (
+                                                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shrink-0">
+                                                    <img src={v.visitor.photoUrl} alt="Visitor" className="w-full h-full object-cover" />
+                                                </div>
                                             ) : (
-                                                <ChevronRight className="w-6 h-6 text-orange-400 group-hover:text-white" />
+                                                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-blue-600/20 flex items-center justify-center border-2 border-white/10 shrink-0">
+                                                    <UserCircle className="w-8 h-8 md:w-10 md:h-10 text-blue-400" />
+                                                </div>
                                             )}
+
+                                            <div className="space-y-1 md:space-y-2 overflow-hidden flex-1">
+                                                <h4 className="text-xl md:text-3xl font-black text-white truncate">
+                                                    {v.visitor.firstName} {v.visitor.lastName}
+                                                </h4>
+                                                {v.visitor.company && (
+                                                    <p className="text-orange-400 font-bold text-sm md:text-base tracking-widest uppercase truncate">
+                                                        {v.visitor.company}
+                                                    </p>
+                                                )}
+                                                <div className="flex items-center gap-2 text-blue-200/70 font-bold uppercase tracking-tight text-xs md:text-sm">
+                                                    <Clock className="w-4 h-4" />
+                                                    Arrivé à {new Date(v.checkInAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="w-full md:w-auto shrink-0 md:ml-auto">
+                                            <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-black uppercase text-sm md:text-base shadow-md group-hover:from-orange-600 group-hover:to-orange-700 transition-all w-full md:w-auto">
+                                                {checkoutVisit.isPending ? (
+                                                    <>
+                                                        <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" />
+                                                        Traiment...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Check-out
+                                                        <LogOut className="w-5 h-5 md:w-6 md:h-6 ml-1 md:ml-2" />
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     </button>
                                 ))}
                             </div>
                         ) : noResults ? (
                             /* Not found → refer to security */
-                            <div className="flex flex-col items-center gap-6 p-10 bg-amber-500/10 border border-amber-500/30 rounded-3xl text-center backdrop-blur-sm">
+                            <div className="flex flex-col items-center gap-6 p-10 bg-amber-500/10 border border-amber-500/30 rounded-3xl text-center backdrop-blur-sm mx-auto max-w-2xl">
                                 <div className="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center">
                                     <AlertCircle className="w-12 h-12 text-amber-400" />
                                 </div>
@@ -708,8 +730,8 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 <p className="text-sm font-bold text-blue-300/60 uppercase tracking-widest text-center">
                                     Sélectionnez votre profil
                                 </p>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    {(searchResults as MaskedVisitor[]).map((v) => {
+                                <div className="flex flex-col gap-4 max-h-[60vh] overflow-y-auto w-full mx-auto p-2">
+                                    {(searchResults as MaskedVisitor[]).map((v: any) => {
                                         const isActive = onSiteVisitors?.some((visit: any) => visit.visitorId === v.id);
 
                                         return (
@@ -732,45 +754,72 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                     setStep(2);
                                                 }}
                                                 className={cn(
-                                                    "flex items-center justify-between p-7 bg-white/5 backdrop-blur-sm border rounded-3xl transition-all text-left group shadow-sm hover:shadow-md active:scale-95",
+                                                    "flex flex-col md:flex-row items-center justify-between p-6 md:p-8 bg-white/5 backdrop-blur-sm border rounded-3xl transition-all text-left group shadow-lg hover:shadow-xl active:scale-95 w-full gap-4 md:gap-6",
                                                     isActive
                                                         ? "border-amber-500/30 bg-amber-500/10 opacity-80 cursor-not-allowed"
                                                         : "border-white/10 hover:border-blue-500/50 hover:bg-blue-500/10"
                                                 )}
                                             >
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <h4 className="text-2xl font-black text-white">
-                                                            {v.firstName} {v.lastNameMasked}
-                                                        </h4>
-                                                        {isActive && (
-                                                            <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] font-black uppercase px-2 py-0.5">
-                                                                Déjà sur place
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                    {v.phoneMasked && (
-                                                        <div className="flex items-center gap-2 text-blue-200/60 font-medium text-base">
-                                                            <Phone className="w-4 h-4" />
-                                                            {v.phoneMasked}
+                                                <div className="flex items-center gap-4 w-full md:w-auto overflow-hidden">
+                                                    {/* Photo or Avatar */}
+                                                    {v.visitorPhotoUrl ? (
+                                                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shrink-0">
+                                                            <img src={v.visitorPhotoUrl} alt="Visitor" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-blue-600/20 flex items-center justify-center border-2 border-white/10 shrink-0">
+                                                            <UserCircle className="w-8 h-8 md:w-10 md:h-10 text-blue-400" />
                                                         </div>
                                                     )}
-                                                    {v.company && (
-                                                        <p className="text-blue-400 font-bold text-sm tracking-widest uppercase">
-                                                            {v.company}
-                                                        </p>
-                                                    )}
-                                                    {v.visitorTypeName && (
-                                                        <p className="text-blue-300/50 text-sm font-medium">{v.visitorTypeName}</p>
-                                                    )}
+
+                                                    <div className="space-y-1 md:space-y-2 overflow-hidden flex-1">
+                                                        <div className="flex items-center gap-2">
+                                                            <h4 className="text-xl md:text-3xl font-black text-white truncate">
+                                                                {v.firstName} {v.lastNameMasked}
+                                                            </h4>
+                                                            {isActive && (
+                                                                <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] md:text-xs font-black uppercase px-2 py-0.5 shrink-0">
+                                                                    Sur place
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+
+                                                        {v.company ? (
+                                                            <p className="text-blue-400 font-bold text-sm md:text-base tracking-widest uppercase truncate">
+                                                                {v.company}
+                                                            </p>
+                                                        ) : v.visitorTypeName ? (
+                                                            <p className="text-blue-300/50 text-sm md:text-base font-medium truncate">{v.visitorTypeName}</p>
+                                                        ) : null}
+
+                                                        {v.phoneMasked && (
+                                                            <div className="flex items-center gap-2 text-blue-200/60 font-medium text-xs md:text-sm">
+                                                                <Phone className="w-4 h-4 md:w-5 md:h-5" />
+                                                                {v.phoneMasked}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className={cn(
-                                                    "p-4 rounded-2xl ml-4 shrink-0 transition-colors",
-                                                    isActive
-                                                        ? "bg-amber-500/20 text-amber-400"
-                                                        : "bg-blue-600/20 text-blue-400 group-hover:bg-blue-600 group-hover:text-white"
-                                                )}>
-                                                    {isActive ? <AlertCircle className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
+
+                                                <div className="w-full md:w-auto shrink-0 md:ml-auto">
+                                                    <div className={cn(
+                                                        "flex items-center justify-center gap-2 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-black uppercase text-sm md:text-base shadow-md transition-all w-full md:w-auto",
+                                                        isActive
+                                                            ? "bg-amber-500/50 cursor-not-allowed"
+                                                            : "bg-gradient-to-r from-blue-500 to-blue-600 group-hover:from-blue-600 group-hover:to-blue-700"
+                                                    )}>
+                                                        {isActive ? (
+                                                            <>
+                                                                Déjà enregistré
+                                                                <AlertCircle className="w-5 h-5 md:w-6 md:h-6 ml-1 md:ml-2" />
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                Check-in
+                                                                <LogIn className="w-5 h-5 md:w-6 md:h-6 ml-1 md:ml-2" />
+                                                            </>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </button>
                                         );

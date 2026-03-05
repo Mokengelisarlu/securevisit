@@ -1139,6 +1139,7 @@ export async function searchPublicVisitors(
     company: v.company,
     visitorTypeId: v.visitorTypeId,
     visitorTypeName: (v as any).type?.name ?? null,
+    visitorPhotoUrl: v.photoUrl,
   }));
 }
 
