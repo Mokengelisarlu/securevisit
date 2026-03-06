@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { type OAuthStrategy } from "@clerk/types";
 
 export default function SignInPage() {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -38,6 +38,14 @@ export default function SignInPage() {
       </div>
     );
   }
+
+  const signInWith = (strategy: OAuthStrategy) => {
+    return signIn.authenticateWithRedirect({
+      strategy,
+      redirectUrl: "/sso-callback",
+      redirectUrlComplete: "/tenants",
+    });
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -127,11 +135,11 @@ export default function SignInPage() {
       </div>
 
       {/* RIGHT COLUMN: CUSTOM SIGN IN FORM */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-20 relative z-10">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative z-10">
         <div className="w-full max-w-md animate-in fade-in zoom-in duration-500 delay-200">
 
           {/* Mobile Logo Only */}
-          <div className="lg:hidden flex flex-col items-center mb-10">
+          <div className="lg:hidden flex flex-col items-center mb-8">
             <Link href="/" className="text-3xl font-black flex items-center gap-4 group">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
                 <span className="text-white font-black text-2xl">V</span>
@@ -140,94 +148,134 @@ export default function SignInPage() {
             </Link>
           </div>
 
-          <div className="text-center lg:text-left mb-10">
-            <h2 className="text-3xl lg:text-4xl font-black text-white mb-3">Bon retour !</h2>
-            <p className="text-slate-400 font-medium text-lg">Connectez-vous à votre espace administrateur</p>
+          <div className="text-center lg:text-left mb-8">
+            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2 leading-tight">Bon retour !</h2>
+            <p className="text-slate-400 font-medium text-lg">Choisissez votre méthode de connexion</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-3xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden">
             {/* Subtle light effect inside card */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full -mr-16 -mt-16" />
 
-            <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
-                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm font-medium text-red-200">{error}</p>
-                </div>
-              )}
-
-              <div className="space-y-2.5">
-                <Label htmlFor="email" className="text-slate-300 font-bold ml-1 text-sm">Adresse Email</Label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="nom@entreprise.com"
-                    value={emailAddress}
-                    onChange={(e) => setEmailAddress(e.target.value)}
-                    required
-                    className="h-14 pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-600 rounded-2xl focus:bg-white/10 focus:ring-2 focus:ring-blue-500/50 border-white/10 transition-all text-lg"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between ml-1">
-                  <Label htmlFor="password" className="text-slate-300 font-bold text-sm">Mot de passe</Label>
-                  <Link href="/forgot-password" title="Fonctionnalité bientôt disponible" className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors">
-                    Oublié ?
-                  </Link>
-                </div>
-                <div className="relative group">
-                  <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="h-14 pl-12 pr-12 bg-white/5 border-white/10 text-white placeholder:text-slate-600 rounded-2xl focus:bg-white/10 focus:ring-2 focus:ring-blue-500/50 border-white/10 transition-all text-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors p-1"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2">
+            <div className="space-y-6 relative z-10">
+              {/* Social Logins */}
+              <div className="grid grid-cols-2 gap-4">
                 <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white font-black text-xl rounded-2xl transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-3 group"
+                  type="button"
+                  variant="outline"
+                  onClick={() => signInWith("oauth_google")}
+                  className="h-14 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
                 >
-                  {loading ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                  ) : (
-                    <>
-                      Se connecter
-                      <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <svg className="w-5 h-5 relative z-10" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                  </svg>
+                  <span className="font-bold relative z-10">Google</span>
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => signInWith("oauth_facebook")}
+                  className="h-14 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <svg className="w-5 h-5 text-[#1877F2] relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                  <span className="font-bold relative z-10">Facebook</span>
                 </Button>
               </div>
 
+              <div className="relative flex items-center py-2">
+                <div className="flex-grow border-t border-white/10"></div>
+                <span className="flex-shrink mx-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ou continuer avec</span>
+                <div className="flex-grow border-t border-white/10"></div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
+                    <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm font-medium text-red-200">{error}</p>
+                  </div>
+                )}
+
+                <div className="space-y-2.5">
+                  <Label htmlFor="email" className="text-slate-300 font-bold ml-1 text-sm">Adresse Email</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="nom@entreprise.com"
+                      value={emailAddress}
+                      onChange={(e) => setEmailAddress(e.target.value)}
+                      required
+                      className="h-14 pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-600 rounded-2xl focus:bg-white/10 focus:ring-2 focus:ring-blue-500/50 border-white/10 transition-all text-lg"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between ml-1">
+                    <Label htmlFor="password" className="text-slate-300 font-bold text-sm">Mot de passe</Label>
+                    <Link href="/forgot-password" title="Fonctionnalité bientôt disponible" className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors">
+                      Oublié ?
+                    </Link>
+                  </div>
+                  <div className="relative group">
+                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="h-14 pl-12 pr-12 bg-white/5 border-white/10 text-white placeholder:text-slate-600 rounded-2xl focus:bg-white/10 focus:ring-2 focus:ring-blue-500/50 border-white/10 transition-all text-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors p-1"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white font-black text-xl rounded-2xl transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-3 group"
+                  >
+                    {loading ? (
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                    ) : (
+                      <>
+                        Se connecter
+                        <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+
               <div className="text-center pt-2">
                 <p className="text-slate-400 text-sm font-medium">
-                  Nouveau utilisateur ? <Link href="/setup-tenant" className="text-blue-400 hover:text-blue-300 font-black decoration-2 underline-offset-4 hover:underline transition-all">Créer un compte</Link>
+                  Pas encore de compte ? <Link href="/sign-up" className="text-blue-400 hover:text-blue-300 font-black decoration-2 underline-offset-4 hover:underline transition-all">S'inscrire</Link>
                 </p>
               </div>
-            </form>
+            </div>
           </div>
 
-          <div className="mt-12 text-center text-slate-700 text-sm font-bold tracking-tight">
-            © {new Date().getFullYear()} SECUREVISIT. VISITOR MANAGEMENT SYSTEM.
+          <div className="mt-12 text-center text-slate-700 text-sm font-bold tracking-tight uppercase">
+            © {new Date().getFullYear()} SECUREVISIT • VISITOR MANAGEMENT SYSTEM
           </div>
         </div>
       </div>

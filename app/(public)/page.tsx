@@ -43,7 +43,7 @@ export default function HomePage() {
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
-                    <Link href="/setup-tenant">Créer un compte</Link>
+                    <Link href="/sign-up">Créer un compte</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="border-slate-400 text-slate-200 hover:bg-slate-800">
                     <Link href="#features">En savoir plus</Link>
@@ -252,7 +252,7 @@ export default function HomePage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                   <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold" asChild>
-                    <Link href="/setup-tenant">Créer un compte gratuit</Link>
+                    <Link href="/sign-up">Créer un compte gratuit</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-blue-600/20">
                     Planifier une démo
