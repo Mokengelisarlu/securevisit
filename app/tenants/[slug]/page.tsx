@@ -57,198 +57,82 @@ export default async function TenantLandingPage({
 
 function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null }) {
   return (
-    <div className="min-h-screen w-full overflow-hidden">
-      {/* Hero Section with Background */}
-      <div
-        className="relative min-h-screen w-full flex items-center justify-center"
-        style={{
-          backgroundImage: 'url(/images/tenant-hero-bg.svg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-        }}
-      >
-        {/* Animated gradient overlay */}
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/50 to-slate-900/70"
-          style={{
-            animation: 'gradientShift 8s ease infinite',
-          }}
-        />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F6F8] node-pattern px-6 overflow-hidden">
+      {/* Grain overlay */}
+      <div className="grain-overlay" />
 
-        {/* Animated particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-blue-500"
-              style={{
-                width: `${Math.random() * 4 + 2}px`,
-                height: `${Math.random() * 4 + 2}px`,
-                opacity: Math.random() * 0.4 + 0.1,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animation: `float ${Math.random() * 10 + 8}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
-            />
-          ))}
+      {/* Centered Content Stack */}
+      <div className="relative z-10 w-full max-w-[600px] flex flex-col items-center text-center">
+        {/* Brand Header / Logo */}
+        <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="w-24 h-24 bg-gradient-to-br from-[#1E6EE6] to-[#1a5fcc] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#1E6EE6]/30">
+            <ShieldCheck className="w-12 h-12 text-white" />
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-6 space-y-8 text-center animate-in fade-in duration-1000">
-          {/* Logo */}
-          <div className="animate-in slide-in-from-top duration-700 delay-100">
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-700 rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-blue-500/50 group hover:shadow-blue-500/70 transition-shadow duration-300">
-              <ShieldCheck className="w-16 h-16 text-white" />
-            </div>
-          </div>
+        {/* Company Title */}
+        <div className="mb-10 animate-in fade-in slide-in-from-top-2 duration-700 delay-100">
+          <h1
+            className="text-4xl lg:text-6xl font-bold text-[#0E1116] tracking-tight mb-4"
+            style={{ fontFamily: 'Sora, sans-serif' }}
+          >
+            {tenant.name}
+          </h1>
+          <p className="text-[#6B7280] text-xl font-medium max-w-md mx-auto">
+            Bienvenue sur votre portail professionnel de gestion des visiteurs.
+          </p>
+        </div>
 
-          {/* Company Name */}
-          <div className="animate-in slide-in-from-top duration-700 delay-200 space-y-2">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter">
-              {tenant.name}
-            </h1>
-            <p className="text-blue-200 text-lg font-medium">
-              Visitor Management System
-            </p>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="animate-in slide-in-from-bottom duration-700 delay-300 w-full max-w-sm space-y-4 pt-8">
-            {userId ? (
-              <button
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold text-lg rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group"
-              >
-                <LayoutDashboard className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                <Link href="/dashboard">Tableau de Bord</Link>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            ) : (
-              <button
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold text-lg rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group"
-              >
-                <LogIn className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
-                <Link href="/sign-in">Se connecter</Link>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            )}
-
-            <button
-              className="w-full py-4 px-6 border-2 border-blue-400/50 hover:border-blue-300 text-blue-300 hover:text-blue-100 font-bold text-lg rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:bg-blue-500/10 flex items-center justify-center gap-3 group backdrop-blur-sm"
+        {/* CTA Buttons */}
+        <div className="w-full max-w-[380px] space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+          {userId ? (
+            <Link
+              href="/dashboard"
+              className="w-full flex items-center justify-center gap-2 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Monitor className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-              <Link href="/kiosk">Émulateur de tablette</Link>
-            </button>
-          </div>
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Accéder au Tableau de Bord</span>
+            </Link>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="w-full flex items-center justify-center gap-3 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <LogIn className="w-5 h-5" />
+              <span>Se connecter</span>
+            </Link>
+          )}
+
+          <Link
+            href="/kiosk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 bg-white/50 backdrop-blur-md border border-[#E5E7EB] hover:border-[#1E6EE6] text-[#0E1116] font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <Monitor className="w-5 h-5" />
+            <span>Émulateur de tablette</span>
+          </Link>
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="absolute bottom-0 left-0 right-0 z-20 py-6">
-        <div className="flex items-center justify-center gap-2 opacity-60 hover:opacity-90 transition-opacity duration-300">
+      {/* Branding Footer */}
+      <footer className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-20">
+        <div className="flex items-center gap-2 mb-2">
           <Image
-            src="/images/logoBlanc.png"
+            src="/images/logo.png"
             alt="MOKENGELI Logo"
-            width={20}
-            height={20}
+            width={24}
+            height={24}
             className="object-contain"
           />
-          <span className="text-blue-200/80 text-xs font-medium tracking-wide">
-            Powered by <span className="text-white/90 font-semibold">MOKENGELI Sarlu</span>
+          <span className="text-[#1E6EE6] text-xs font-bold tracking-widest uppercase" style={{ fontFamily: 'Sora, sans-serif' }}>
+            Powered by MOKENGELI Sarlu
           </span>
         </div>
+        <p className="text-[10px] text-[#1E6EE6]/60 font-medium tracking-tight">
+          &copy; {new Date().getFullYear()} SecureVisit. Tous droits réservés.
+        </p>
       </footer>
-
-      {/* CSS Animations */}
-      <style>{`
-        @keyframes gradientShift {
-          0%, 100% {
-            opacity: 0.7;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px) translateX(0px);
-            opacity: 0.2;
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px);
-            opacity: 0.4;
-          }
-          50% {
-            transform: translateY(-40px) translateX(-10px);
-            opacity: 0.6;
-          }
-          75% {
-            transform: translateY(-20px) translateX(15px);
-            opacity: 0.3;
-          }
-        }
-
-        @keyframes slide-in-from-top {
-          from {
-            opacity: 0;
-            transform: translateY(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slide-in-from-bottom {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-in {
-          animation: fade-in 0.5s ease-out;
-        }
-
-        .fade-in {
-          @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-        }
-
-        .slide-in-from-top {
-          @keyframes slide-in-from-top {
-            from {
-              opacity: 0;
-              transform: translateY(-30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        }
-
-        .slide-in-from-bottom {
-          @keyframes slide-in-from-bottom {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        }
-      `}</style>
     </div>
   );
 }

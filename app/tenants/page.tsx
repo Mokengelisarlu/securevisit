@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { getTenantUrl } from "@/lib/subdomain-utils";
 
 interface Tenant {
   id: string;
@@ -63,7 +64,9 @@ export default function TenantsPage() {
   }, [isLoaded, router]);
 
   const handleTenantSelect = (tenant: Tenant) => {
-    router.push(`/tenants/${tenant.slug}`);
+    // We must use window.location.href for a full page load to the subdomain
+    const tenantUrl = getTenantUrl(tenant.slug);
+    window.location.href = tenantUrl;
   };
 
   if (!isLoaded || isLoading) {
