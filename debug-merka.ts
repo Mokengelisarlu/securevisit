@@ -45,7 +45,7 @@ async function debug() {
         const members = await tenantDb.select().from(tenantSchema.users);
         console.log(`✅ Tenant DB reachable. Members found: ${members.length}`);
         members.forEach(m => {
-            console.log(`   - ID: ${m.id}, Name: ${m.name}, Role: ${m.role}`);
+            console.log(`   - ID: ${m.id}, Name: ${m.firstName} ${m.lastName}, Role: ${m.role}`);
         });
 
         const isOwnerMember = members.some(m => m.id === tenant.ownerId);
