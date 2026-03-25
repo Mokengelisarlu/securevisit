@@ -28,9 +28,7 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden font-sans bg-[#f8fafc] relative">
-            {/* Texture Layers */}
-            <div className="grain-overlay" />
+        <div className="flex flex-col h-screen overflow-hidden font-sans bg-slate-100 relative">
 
             {/* Top Header - Modern Glassmorphism */}
             <header className="h-16 bg-white/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 border-b border-slate-200/50 z-20 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
@@ -120,8 +118,8 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                     </div>
                 </aside>
 
-                {/* Main Content Area with Node Pattern */}
-                <main className="flex-1 overflow-y-auto p-8 relative node-pattern bg-slate-50/30">
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-y-auto p-8 relative bg-slate-100">
                     <div className="relative z-10 w-full h-full">
                         {children}
                     </div>

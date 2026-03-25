@@ -57,9 +57,44 @@ export default async function TenantLandingPage({
 
 function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null }) {
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F6F8] node-pattern px-6 overflow-hidden">
-      {/* Grain overlay */}
-      <div className="grain-overlay" />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      {/* Background matching kiosk */}
+      <div
+          className="absolute inset-0"
+          style={{
+              backgroundImage: 'url(/images/tenant-hero-bg.svg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundAttachment: 'fixed',
+          }}
+      />
+
+      {/* Animated gradient overlay */}
+      <div
+          className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/50 to-slate-900/70"
+          style={{
+              animation: 'gradientShift 8s ease infinite',
+          }}
+      />
+
+      {/* Animated particles */}
+      <div className="absolute inset-0 overflow-hidden">
+          {[...Array(12)].map((_, i) => (
+              <div
+                  key={i}
+                  className="absolute rounded-full bg-blue-500"
+                  style={{
+                      width: `${Math.random() * 4 + 2}px`,
+                      height: `${Math.random() * 4 + 2}px`,
+                      opacity: Math.random() * 0.4 + 0.1,
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                      animation: `float ${Math.random() * 10 + 8}s ease-in-out infinite`,
+                      animationDelay: `${Math.random() * 5}s`,
+                  }}
+              />
+          ))}
+      </div>
 
       {/* Centered Content Stack */}
       <div className="relative z-10 w-full max-w-[600px] flex flex-col items-center text-center">
@@ -73,12 +108,12 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
         {/* Company Title */}
         <div className="mb-10 animate-in fade-in slide-in-from-top-2 duration-700 delay-100">
           <h1
-            className="text-4xl lg:text-6xl font-bold text-[#0E1116] tracking-tight mb-4"
+            className="text-4xl lg:text-6xl font-bold text-white tracking-tight mb-4"
             style={{ fontFamily: 'Sora, sans-serif' }}
           >
             {tenant.name}
           </h1>
-          <p className="text-[#6B7280] text-xl font-medium max-w-md mx-auto">
+          <p className="text-blue-100/80 text-xl font-medium max-w-md mx-auto">
             Bienvenue sur votre portail professionnel de gestion des visiteurs.
           </p>
         </div>
@@ -107,7 +142,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
             href="/kiosk"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 bg-white/50 backdrop-blur-md border border-[#E5E7EB] hover:border-[#1E6EE6] text-[#0E1116] font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:border-blue-400 text-white font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <Monitor className="w-5 h-5" />
             <span>Émulateur de tablette</span>
@@ -119,20 +154,34 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
       <footer className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-20">
         <div className="flex items-center gap-2 mb-2">
           <Image
-            src="/images/logo.png"
+            src="/images/logoBlanc.png"
             alt="MOKENGELI Logo"
             width={24}
             height={24}
             className="object-contain"
           />
-          <span className="text-[#1E6EE6] text-xs font-bold tracking-widest uppercase" style={{ fontFamily: 'Sora, sans-serif' }}>
+          <span className="text-white text-xs font-bold tracking-widest uppercase" style={{ fontFamily: 'Sora, sans-serif' }}>
             Powered by MOKENGELI Sarlu
           </span>
         </div>
-        <p className="text-[10px] text-[#1E6EE6]/60 font-medium tracking-tight">
+        <p className="text-[10px] text-blue-200/60 font-medium tracking-tight">
           &copy; {new Date().getFullYear()} SecureVisit. Tous droits réservés.
         </p>
       </footer>
+
+      {/* CSS Animations */}
+      <style>{`
+          @keyframes gradientShift {
+              0%, 100% { opacity: 0.7; }
+              50% { opacity: 0.5; }
+          }
+          @keyframes float {
+              0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
+              25% { transform: translateY(-20px) translateX(10px); opacity: 0.4; }
+              50% { transform: translateY(-40px) translateX(-10px); opacity: 0.6; }
+              75% { transform: translateY(-20px) translateX(15px); opacity: 0.3; }
+          }
+      `}</style>
     </div>
   );
 }
