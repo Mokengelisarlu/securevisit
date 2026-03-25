@@ -43,7 +43,7 @@ export function TenantAuthGuard({ tenantSlug, children }: TenantAuthGuardProps) 
           setIsAuthorized(true);
         } else {
           toast.error(data.error || "Access denied");
-          router.push(`/tenants/${tenantSlug}`); // Go back to landing page
+          router.push(`/`); // Go back to tenant landing page (root of subdomain)
           setIsAuthorized(false);
         }
       } catch (err: any) {

@@ -7,7 +7,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Sora, Inter } from 'next/font/google'
 import './globals.css'
 import { SyncWrapper } from '@/components/SyncWrapper'
 import QueryProvider from '@/components/ReactQueryProvider'
@@ -23,6 +23,18 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const sora = Sora({
+  variable: '--font-sora',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+})
+
+const inter = Inter({
+  variable: '--font-inter',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+})
+
 export const metadata: Metadata = {
   title: 'SecureVisit',
   description: 'Powered by Mokengeli Sarlu',
@@ -36,7 +48,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={`${geistSans.variable} ${geistMono.variable} ${sora.variable} ${inter.variable} antialiased`}>
           <QueryProvider>
             {children}
             <Toaster />

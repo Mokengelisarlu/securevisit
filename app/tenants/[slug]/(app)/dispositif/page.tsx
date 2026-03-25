@@ -193,7 +193,7 @@ export default function DispositifPage() {
 
             {/* Pairing form (for new device) */}
             {isAdding && (
-                <Card className="border-blue-200 bg-blue-50/30 animate-in slide-in-from-top-4 duration-300">
+                <Card className="border-blue-200 bg-white animate-in slide-in-from-top-4 duration-300 shadow-sm">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <ShieldCheck className="w-5 h-5 text-blue-600" />
@@ -279,7 +279,7 @@ export default function DispositifPage() {
                     (devices as Device[]).map((device) => {
                         const online = isOnline(device.lastActiveAt);
                         return (
-                            <Card key={device.id} className="hover:shadow-md transition-shadow border-gray-100">
+                            <Card key={device.id} className="bg-white hover:shadow-md transition-shadow border-gray-100">
                                 <CardHeader className="pb-2">
                                     <div className="flex items-start justify-between">
                                         <div className={`p-2 rounded-lg ${online ? "bg-green-50" : "bg-gray-100"}`}>

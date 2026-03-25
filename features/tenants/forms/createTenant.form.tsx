@@ -101,16 +101,16 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">Nom de l'entreprise</FormLabel>
+              <FormLabel className="text-[#374151] font-medium mb-1.5">Nom de l'entreprise</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Acme Corporation"
-                  className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-[#F9FAFB] border-[#E5E7EB] focus:border-[#1E6EE6] focus:ring-[#1E6EE6]/20 rounded-xl py-3 text-[#0E1116] placeholder:text-[#9CA3AF]"
                   value={field.value ?? ""}
                   onChange={field.onChange}
                 />
               </FormControl>
-              <FormMessage className="text-yellow-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -123,25 +123,25 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
           render={({ field }) => (
             <FormItem>
               <div className="space-y-1">
-                <FormLabel className="text-white">Votre Url</FormLabel>
-                <p className="text-xs text-slate-400">
-                  Ceci est l'URL que vous utiliserez pour accéder à votre application.
+                <FormLabel className="text-[#374151] font-medium mb-1.5">Votre URL de portail</FormLabel>
+                <p className="text-xs text-[#6B7280]">
+                  Ceci est l'adresse unique que vous utiliserez pour accéder à votre système.
                 </p>
               </div>
               <FormControl>
                 <div className="relative flex items-center">
                   <Input
                     placeholder="mon-entreprise"
-                    className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500 pr-36"
+                    className="bg-[#F9FAFB] border-[#E5E7EB] focus:border-[#1E6EE6] focus:ring-[#1E6EE6]/20 rounded-xl py-3 text-[#0E1116] placeholder:text-[#9CA3AF] pr-40"
                     value={field.value ?? ""}
                     onChange={field.onChange}
                   />
-                  <div className="absolute right-3 px-2 py-1 bg-slate-700/50 rounded border border-slate-600 pointer-events-none">
-                    <span className="text-sm font-medium text-slate-300">.securevisit.com</span>
+                  <div className="absolute right-3 px-3 py-1 bg-[#F3F4F6] rounded-lg border border-[#E5E7EB] pointer-events-none">
+                    <span className="text-sm font-semibold text-[#6B7280]">.securevisit.com</span>
                   </div>
                 </div>
               </FormControl>
-              <FormMessage className="text-yellow-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -150,9 +150,16 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
         <Button
           type="submit"
           disabled={createTenant.isPending}
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold py-6 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
+          className="w-full bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-medium py-7 rounded-xl shadow-lg shadow-[#1E6EE6]/20 transition-all active:scale-[0.98] mt-4"
         >
-          {createTenant.isPending ? "Création en cours..." : "Créer mon portail"}
+          {createTenant.isPending ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Création en cours...</span>
+            </div>
+          ) : (
+            "Créer mon portail professionnel"
+          )}
         </Button>
 
         {createTenant.isError && (
