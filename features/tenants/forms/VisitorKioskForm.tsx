@@ -968,11 +968,11 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                                 <SelectValue placeholder="Choisir..." />
                                                             </SelectTrigger>
                                                         </FormControl>
-                                                        <SelectContent>
-                                                            <SelectItem value="CAR" className="py-2.5 flex items-center gap-2 font-medium">Voiture</SelectItem>
-                                                            <SelectItem value="TRUCK" className="py-2.5 flex items-center gap-2 font-medium">Camion</SelectItem>
-                                                            <SelectItem value="MOTORCYCLE" className="py-2.5 flex items-center gap-2 font-medium">Moto</SelectItem>
-                                                            <SelectItem value="OTHER" className="py-2.5 font-medium">Autre</SelectItem>
+                                                        <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                                            <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600 focus:text-white transition-colors">Voiture</SelectItem>
+                                                            <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600 focus:text-white transition-colors">Camion</SelectItem>
+                                                            <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600 focus:text-white transition-colors">Moto</SelectItem>
+                                                            <SelectItem value="OTHER" className="py-3 font-medium focus:bg-blue-600 focus:text-white transition-colors">Autre</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </FormItem>
@@ -1053,15 +1053,19 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 flex items-center gap-2">
                                                 <Building className="w-4 h-4" /> Département
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                                            <Select 
+                                                onValueChange={field.onChange} 
+                                                value={field.value || ""}
+                                                disabled={!departments || departments.length === 0}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
-                                                        <SelectValue placeholder="Choisir..." />
+                                                        <SelectValue placeholder={!departments ? "Chargement..." : "Choisir..."} />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent>
+                                                <SelectContent className="bg-slate-900 border-white/20 text-white">
                                                     {departments?.map((d: any) => (
-                                                        <SelectItem key={d.id} value={d.id} className="text-base py-2.5">
+                                                        <SelectItem key={d.id} value={d.id} className="text-base py-3 focus:bg-blue-600 focus:text-white transition-colors">
                                                             {d.name} {d.abbreviation ? `(${d.abbreviation})` : ""}
                                                         </SelectItem>
                                                     ))}
@@ -1079,15 +1083,19 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 flex items-center gap-2">
                                                 <ClipboardList className="w-4 h-4" /> Service
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                                            <Select 
+                                                onValueChange={field.onChange} 
+                                                value={field.value || ""}
+                                                disabled={!services || services.length === 0}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
-                                                        <SelectValue placeholder="Choisir..." />
+                                                        <SelectValue placeholder={!services ? "Chargement..." : "Choisir..."} />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent>
+                                                <SelectContent className="bg-slate-900 border-white/20 text-white">
                                                     {services?.map((s: any) => (
-                                                        <SelectItem key={s.id} value={s.id} className="text-base py-2.5">
+                                                        <SelectItem key={s.id} value={s.id} className="text-base py-3 focus:bg-blue-600 focus:text-white transition-colors">
                                                             {s.name}
                                                         </SelectItem>
                                                     ))}
@@ -1107,15 +1115,19 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 flex items-center gap-2">
                                                 <UserCircle className="w-4 h-4" /> Hôte
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                                            <Select 
+                                                onValueChange={field.onChange} 
+                                                value={field.value || ""}
+                                                disabled={!hosts || hosts.length === 0}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
-                                                        <SelectValue placeholder="Choisir..." />
+                                                        <SelectValue placeholder={!hosts ? "Chargement..." : "Choisir..."} />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent>
+                                                <SelectContent className="bg-slate-900 border-white/20 text-white">
                                                     {hosts?.map((h: any) => (
-                                                        <SelectItem key={h.id} value={h.id} className="text-base py-2.5">
+                                                        <SelectItem key={h.id} value={h.id} className="text-base py-3 focus:bg-blue-600 focus:text-white transition-colors">
                                                             {h.firstName} {h.lastName}
                                                         </SelectItem>
                                                     ))}
@@ -1273,6 +1285,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 <CameraCapture
                                     title="Photo du Véhicule"
                                     description="Veuillez capturer la plaque d'immatriculation."
+                                    defaultFacingMode="environment"
                                     onCapture={(img) => {
                                         setVehiclePhoto(img);
                                         if (requireVisitorPhoto && !visitorPhoto) {
@@ -1479,15 +1492,19 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 flex items-center gap-2">
                                             <Building className="w-4 h-4" /> Département
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                                        <Select 
+                                            onValueChange={field.onChange} 
+                                            value={field.value || ""}
+                                            disabled={!departments || departments.length === 0}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
-                                                    <SelectValue placeholder="Choisir..." />
+                                                    <SelectValue placeholder={!departments ? "Chargement..." : "Choisir..."} />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className="bg-slate-900 border-white/20 text-white">
                                                 {departments?.map((d: any) => (
-                                                    <SelectItem key={d.id} value={d.id} className="text-base py-2.5">
+                                                    <SelectItem key={d.id} value={d.id} className="text-base py-3 focus:bg-blue-600 focus:text-white transition-colors">
                                                         {d.name} {d.abbreviation ? `(${d.abbreviation})` : ""}
                                                     </SelectItem>
                                                 ))}
@@ -1505,10 +1522,14 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 flex items-center gap-2">
                                             <ClipboardList className="w-4 h-4" /> Service
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                                        <Select 
+                                            onValueChange={field.onChange} 
+                                            value={field.value || ""}
+                                            disabled={!services || services.length === 0}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
-                                                    <SelectValue placeholder="Choisir..." />
+                                                    <SelectValue placeholder={!services ? "Chargement..." : "Choisir..."} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent className="bg-slate-900 border-white/20 text-white">
@@ -1539,10 +1560,14 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 flex items-center gap-2">
                                             <UserCircle className="w-4 h-4" /> Hôte
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                                        <Select 
+                                            onValueChange={field.onChange} 
+                                            value={field.value || ""}
+                                            disabled={!hosts || hosts.length === 0}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
-                                                    <SelectValue placeholder="Choisir..." />
+                                                    <SelectValue placeholder={!hosts ? "Chargement..." : "Choisir..."} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent className="bg-slate-900 border-white/20 text-white">
@@ -1645,17 +1670,20 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-sm font-bold text-blue-200 mb-1.5 block">Type de véhicule</FormLabel>
-                                                <Select onValueChange={field.onChange} value={field.value || ""}>
+                                                <Select 
+                                                    onValueChange={field.onChange} 
+                                                    value={field.value || ""}
+                                                >
                                                     <FormControl>
                                                         <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
                                                             <SelectValue placeholder="Choisir..." />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent className="bg-slate-900 border-white/20 text-white">
-                                                        <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600">Voiture</SelectItem>
-                                                        <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600">Camion</SelectItem>
-                                                        <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600">Moto</SelectItem>
-                                                        <SelectItem value="OTHER" className="py-3 font-medium focus:bg-blue-600">Autre</SelectItem>
+                                                        <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600 focus:text-white transition-colors">Voiture</SelectItem>
+                                                        <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600 focus:text-white transition-colors">Camion</SelectItem>
+                                                        <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-blue-600 focus:text-white transition-colors">Moto</SelectItem>
+                                                        <SelectItem value="OTHER" className="py-3 font-medium focus:bg-blue-600 focus:text-white transition-colors">Autre</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </FormItem>
@@ -1847,6 +1875,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                             <CameraCapture
                                 title="Photo du Véhicule"
                                 description="Veuillez capturer la plaque d'immatriculation."
+                                defaultFacingMode="environment"
                                 onCapture={(img) => {
                                     setVehiclePhoto(img);
                                     if (requireVisitorPhoto && !visitorPhoto) {
