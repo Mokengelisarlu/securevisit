@@ -9,12 +9,19 @@ interface CameraCaptureProps {
     onCapture: (dataUrl: string) => void;
     title?: string;
     description?: string;
+    defaultFacingMode?: "user" | "environment";
 }
 
-export function CameraCapture({ onCapture, title, description }: CameraCaptureProps) {
+export function CameraCapture({ 
+    onCapture, 
+    title, 
+    description,
+    defaultFacingMode = "user"
+}: CameraCaptureProps) {
     const webcamRef = useRef<Webcam>(null);
     const [imgSrc, setImgSrc] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [facingMode, setFacingMode] = useState<"user" | "environment">(defaultFacingMode);
 
     const capture = useCallback(() => {
         const imageSrc = webcamRef.current?.getScreenshot();
@@ -22,6 +29,10 @@ export function CameraCapture({ onCapture, title, description }: CameraCapturePr
             setImgSrc(imageSrc);
         }
     }, [webcamRef]);
+
+    const toggleCamera = () => {
+        setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
+    };
 
     const retake = () => {
         setImgSrc(null);
@@ -37,7 +48,7 @@ export function CameraCapture({ onCapture, title, description }: CameraCapturePr
     const videoConstraints = {
         width: 1280,
         height: 720,
-        facingMode: "user",
+        facingMode: facingMode,
     };
 
     return (
@@ -71,16 +82,27 @@ export function CameraCapture({ onCapture, title, description }: CameraCapturePr
                 )}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-4">
                 {!imgSrc ? (
-                    <Button
-                        onClick={capture}
-                        disabled={!!error}
-                        className="h-16 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl flex items-center gap-3 transition-all active:scale-95"
-                    >
-                        <Camera className="w-6 h-6" />
-                        Prendre la photo
-                    </Button>
+                    <>
+                        <Button
+                            onClick={capture}
+                            disabled={!!error}
+                            className="h-16 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl flex items-center gap-3 transition-all active:scale-95"
+                        >
+                            <Camera className="w-6 h-6" />
+                            Prendre la photo
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={toggleCamera}
+                            disabled={!!error}
+                            className="h-16 px-6 border-2 border-gray-200 text-gray-700 font-bold rounded-2xl hover:bg-gray-50 flex items-center gap-3"
+                        >
+                            <RefreshCw className="w-6 h-6" />
+                            <span className="hidden md:inline">Changer de caméra</span>
+                        </Button>
+                    </>
                 ) : (
                     <>
                         <Button

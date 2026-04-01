@@ -72,10 +72,10 @@ export default function TenantDashboard() {
 
   const filteredActivities = stats?.recentActivities?.filter((activity: any) => {
     const matchesSearch = activity.visitorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          activity.hostName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = selectedStatus === "all" || 
-                          (selectedStatus === "current" && activity.type === "CHECK_IN") ||
-                          (selectedStatus === "departed" && activity.type === "CHECK_OUT");
+      activity.hostName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = selectedStatus === "all" ||
+      (selectedStatus === "current" && activity.type === "CHECK_IN") ||
+      (selectedStatus === "departed" && activity.type === "CHECK_OUT");
     return matchesSearch && matchesStatus;
   });
 
@@ -151,40 +151,40 @@ export default function TenantDashboard() {
                 Visites
               </div>
             </div>
-            
+
             <div className="h-72 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1} />
+                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis 
-                    dataKey="day" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 600}}
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 600 }}
                     dy={10}
                   />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 600}}
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 600 }}
                   />
-                  <Tooltip 
-                    contentStyle={{borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                  <Tooltip
+                    contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="count" 
+                  <Area
+                    type="monotone"
+                    dataKey="count"
                     name="Visites"
-                    stroke="#2563eb" 
+                    stroke="#2563eb"
                     strokeWidth={2}
-                    fillOpacity={1} 
-                    fill="url(#colorCount)" 
+                    fillOpacity={1}
+                    fill="url(#colorCount)"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -199,7 +199,7 @@ export default function TenantDashboard() {
               <SummaryRow label="Durée Moyenne" value="2.5 heures" />
               <SummaryRow label="Lieu le plus Visité" value="Accueil Principal" />
               <SummaryRow label="Nouveaux Visiteurs" value={stats?.arrivedToday || 0} />
-              
+
               <div className="pt-6 mt-6 border-t border-slate-100">
                 <div className="bg-slate-50 border border-slate-100 rounded-xl p-6 relative overflow-hidden">
                   <TrendingUp className="w-5 h-5 text-blue-500 mb-3" />
@@ -241,7 +241,7 @@ export default function TenantDashboard() {
               </div>
             </div>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-slate-50/50">
@@ -268,11 +268,10 @@ export default function TenantDashboard() {
                         <span className="text-sm text-gray-600">{activity.hostName}</span>
                       </td>
                       <td className="px-8 py-4">
-                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
-                          activity.type === "CHECK_IN" 
-                          ? "bg-emerald-100 text-emerald-800" 
-                          : "bg-gray-100 text-gray-800"
-                        }`}>
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${activity.type === "CHECK_IN"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-gray-100 text-gray-800"
+                          }`}>
                           {activity.type === "CHECK_IN" ? "Présent" : "Parti"}
                         </span>
                       </td>
