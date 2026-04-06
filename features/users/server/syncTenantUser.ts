@@ -6,7 +6,7 @@ import { tenants } from "@/db/master/schema";
 import { getTenantDbBySlug } from "@/db/tenants";
 import { users, authorizedUsers } from "@/db/tenants/schema";
 import { eq } from "drizzle-orm";
-import { runTenantMigrations } from "@/db/tenants/migrate";
+
 
 import { withRetry } from "@/lib/db-retry";
 
@@ -21,14 +21,6 @@ export async function syncTenantUser(tenantSlug: string) {
         return await withRetry(async () => {
             const db = await getTenantDbBySlug(tenantSlug);
 
-            // 🚀 Ensure schema is up to date
-            const tenant = await master_db.query.tenants.findFirst({
-                where: eq(tenants.slug, tenantSlug)
-            });
-
-            if (tenant?.dbUrl) {
-                await runTenantMigrations(tenant.dbUrl);
-            }
 
             // Check if user already exists in THIS tenant DB by Clerk ID
             const existing = await db.query.users.findFirst({

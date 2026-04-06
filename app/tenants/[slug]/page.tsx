@@ -10,7 +10,7 @@ import { users } from "@/db/tenants/schema";
 import { eq } from "drizzle-orm";
 import { master_db } from "@/db/master";
 import { tenants } from "@/db/master/schema";
-import { runTenantMigrations } from "@/db/tenants/migrate";
+
 
 export default async function TenantLandingPage({
   params,
@@ -24,14 +24,6 @@ export default async function TenantLandingPage({
   // Redirect if authorized
   if (tenant && userId) {
     const isOwner = tenant.ownerId === userId;
-
-    // Ensure tenant DB schema is up to date before querying
-    const tenantRecord = await master_db.query.tenants.findFirst({
-      where: eq(tenants.slug, slug),
-    });
-    if (tenantRecord?.dbUrl) {
-      await runTenantMigrations(tenantRecord.dbUrl);
-    }
 
     // Check if user is a member of this tenant's workspace
     const db = await getTenantDbBySlug(slug);

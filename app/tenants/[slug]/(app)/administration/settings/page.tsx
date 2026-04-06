@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { master_db } from "@/db/master";
 import { tenants } from "@/db/master/schema";
 import { eq } from "drizzle-orm";
-import { runTenantMigrations } from "@/db/tenants/migrate";
+
 
 export default async function Page({
     params,
@@ -18,15 +18,6 @@ export default async function Page({
     const headersList = await headers();
     const tenantSlug = slug || headersList.get("x-tenant-slug") || "";
 
-    // Ensure tenant DB schema is up to date before querying
-    if (tenantSlug) {
-        const tenantRecord = await master_db.query.tenants.findFirst({
-            where: eq(tenants.slug, tenantSlug),
-        });
-        if (tenantRecord?.dbUrl) {
-            await runTenantMigrations(tenantRecord.dbUrl);
-        }
-    }
 
     const settings = tenantSlug ? await getBusinessSettings(tenantSlug).catch(() => null) : null;
 
