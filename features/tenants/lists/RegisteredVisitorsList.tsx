@@ -84,7 +84,7 @@ export function RegisteredVisitorsList() {
     }
 
     if (isLoading) return (
-        <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-dashed">
+        <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-gray-200 border-dashed">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
             <p className="text-gray-500 font-medium">Chargement des visiteurs...</p>
         </div>
@@ -93,7 +93,7 @@ export function RegisteredVisitorsList() {
     return (
         <div className="space-y-6">
             {/* Header Actions */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                 <div className="relative w-full md:w-80">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
@@ -106,13 +106,13 @@ export function RegisteredVisitorsList() {
                         className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
                     />
                 </div>
-                <div className="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-full border">
+                <div className="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-full border border-gray-200">
                     {filteredVisitors.length} Visiteur{filteredVisitors.length > 1 ? 's' : ''} trouvé{filteredVisitors.length > 1 ? 's' : ''}
                 </div>
             </div>
 
             {/* Table Container */}
-            <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <Table>
                     <TableHeader className="bg-gray-50/50">
                         <TableRow>
@@ -236,7 +236,7 @@ export function RegisteredVisitorsList() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-100 shadow-sm gap-4">
+                <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-200 shadow-sm gap-4">
                     <p className="text-xs font-black uppercase tracking-widest text-gray-400">
                         Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
                         <span className="mx-2 text-gray-200">|</span>
@@ -247,7 +247,7 @@ export function RegisteredVisitorsList() {
                             variant="outline"
                             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
-                            className="flex-1 md:flex-none h-11 px-8 rounded-xl border-gray-100 shadow-sm font-black uppercase tracking-widest text-[10px] transition-all hover:bg-gray-50 disabled:opacity-30"
+                            className="flex-1 md:flex-none h-11 px-8 rounded-xl border border-gray-200 shadow-sm font-black uppercase tracking-widest text-[10px] transition-all hover:bg-gray-50 disabled:opacity-30"
                         >
                             Précédent
                         </Button>
@@ -255,7 +255,7 @@ export function RegisteredVisitorsList() {
                             variant="outline"
                             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages}
-                            className="flex-1 md:flex-none h-11 px-8 rounded-xl border-gray-100 shadow-sm font-black uppercase tracking-widest text-[10px] transition-all hover:bg-gray-50 disabled:opacity-30"
+                            className="flex-1 md:flex-none h-11 px-8 rounded-xl border border-gray-200 shadow-sm font-black uppercase tracking-widest text-[10px] transition-all hover:bg-gray-50 disabled:opacity-30"
                         >
                             Suivant
                         </Button>

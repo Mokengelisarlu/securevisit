@@ -119,7 +119,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Prénom
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Jean" {...field} className="h-11" />
+                                    <Input placeholder="ex: Jean" {...field} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -136,7 +136,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Nom
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Dupont" {...field} className="h-11" />
+                                    <Input placeholder="ex: Dupont" {...field} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -155,7 +155,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Téléphone (Optionnel)
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: +243..." {...field} value={field.value || ""} className="h-11" />
+                                    <Input placeholder="ex: +243..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -172,7 +172,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Entreprise (Optionnel)
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Google, Freelance..." {...field} value={field.value || ""} className="h-11" />
+                                    <Input placeholder="ex: Google, Freelance..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -195,7 +195,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                 value={field.value}
                             >
                                 <FormControl>
-                                    <SelectTrigger className="h-11">
+                                    <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                                         <SelectValue placeholder="Sélectionnez un type" />
                                     </SelectTrigger>
                                 </FormControl>
@@ -218,7 +218,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                     )}
                 />
 
-                <div className="flex justify-end gap-3 pt-6 border-t">
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
                     <Button
                         type="submit"
                         disabled={createVisitor.isPending || updateVisitor.isPending}

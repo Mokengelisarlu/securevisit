@@ -97,8 +97,19 @@ export default function VisitorDetailsPage() {
                 {/* Profile Sidebar (1 Column) */}
                 <div className="lg:col-span-1 space-y-6">
                     <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl border border-gray-100">
-                        <CardHeader className="bg-gradient-to-br from-blue-600 to-blue-800 pb-12">
-                            <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl mx-auto flex items-center justify-center text-3xl font-black text-white border border-white/30 shadow-2xl overflow-hidden">
+                        <CardHeader className="bg-slate-50 pb-16 relative overflow-hidden">
+                            {/* Blurred photo background effect */}
+                            {(visitor.photoUrl || visits?.[0]?.visitorPhotoUrl) && (
+                                <div
+                                    className="absolute inset-0 opacity-10 blur-2xl scale-150"
+                                    style={{
+                                        backgroundImage: `url(/api/tenants/${slug}/photos?url=${encodeURIComponent(visitor.photoUrl || visits![0].visitorPhotoUrl)})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                />
+                            )}
+                            <div className="relative z-10 w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center text-3xl font-black text-gray-300 border-4 border-white shadow-xl overflow-hidden mt-4">
                                 {visitor.photoUrl || visits?.[0]?.visitorPhotoUrl ? (
                                     <img
                                         src={`/api/tenants/${slug}/photos?url=${encodeURIComponent(visitor.photoUrl || visits![0].visitorPhotoUrl)}`}
@@ -106,11 +117,11 @@ export default function VisitorDetailsPage() {
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
-                                    `${visitor.firstName[0]}${visitor.lastName[0]}`
+                                    <User className="w-12 h-12 text-gray-200" />
                                 )}
                             </div>
                         </CardHeader>
-                        <CardContent className="-mt-10 space-y-6 pt-0">
+                        <CardContent className="-mt-8 space-y-6 pt-0">
                             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-xl text-center">
                                 <h2 className="text-xl font-black text-gray-900 leading-tight">{visitor.firstName} {visitor.lastName}</h2>
                                 <p className="text-gray-500 font-bold flex items-center justify-center gap-2 mt-2">

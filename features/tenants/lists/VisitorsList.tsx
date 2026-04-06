@@ -91,18 +91,18 @@ export function VisitorsList() {
         {paginatedVisitors.map((visitor: any) => (
           <div
             key={visitor.id}
-            className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+            className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex-1 min-w-0">
               {editingId === visitor.id ? (
                 <div className="flex flex-col gap-2 pr-4">
                   <div className="flex gap-2">
-                    <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-9 rounded-lg" />
-                    <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-9 rounded-lg" />
+                    <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                    <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                   </div>
-                  <Input value={company} onChange={(e) => setCompany(e.target.value)} className="h-9 rounded-lg" placeholder="Entreprise" />
+                  <Input value={company} onChange={(e) => setCompany(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" placeholder="Entreprise" />
                   <div className="flex gap-2">
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="h-9 rounded-lg" placeholder="Téléphone" />
+                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" placeholder="Téléphone" />
                     <Button size="sm" onClick={() => saveEdit(visitor.id)} disabled={updateMutation.isPending} className="bg-blue-600 hover:bg-blue-700 h-9 rounded-lg">
                       Save
                     </Button>
@@ -156,7 +156,7 @@ export function VisitorsList() {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-100 shadow-sm gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-200 shadow-sm gap-4">
           <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
             Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
             <span className="mx-2 text-gray-200">|</span>
@@ -168,7 +168,7 @@ export function VisitorsList() {
               size="sm"
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
-              className="flex-1 md:flex-none h-9 px-4 rounded-xl border-gray-100 shadow-sm font-black uppercase tracking-widest text-[9px] transition-all hover:bg-gray-50 disabled:opacity-30"
+              className="flex-1 md:flex-none h-9 px-4 rounded-xl border border-gray-200 shadow-sm font-black uppercase tracking-widest text-[9px] transition-all hover:bg-gray-50 disabled:opacity-30"
             >
               Précédent
             </Button>
@@ -177,7 +177,7 @@ export function VisitorsList() {
               size="sm"
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
-              className="flex-1 md:flex-none h-9 px-4 rounded-xl border-gray-100 shadow-sm font-black uppercase tracking-widest text-[9px] transition-all hover:bg-gray-50 disabled:opacity-30"
+              className="flex-1 md:flex-none h-9 px-4 rounded-xl border border-gray-200 shadow-sm font-black uppercase tracking-widest text-[9px] transition-all hover:bg-gray-50 disabled:opacity-30"
             >
               Suivant
             </Button>
