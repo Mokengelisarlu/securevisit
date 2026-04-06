@@ -139,7 +139,7 @@ export function DepartmentsList() {
   return (
     <div className="space-y-4">
       {/* Table Actions & Search */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border shadow-sm">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -158,10 +158,10 @@ export function DepartmentsList() {
       </div>
 
       {/* Table Container */}
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-gray-50/50">
-            <TableRow>
+            <TableRow className="border-b border-gray-200">
               <TableHead className="w-[80px] text-xs font-bold uppercase tracking-wider text-gray-500 py-4 px-6 text-center">Abréviation</TableHead>
               <TableHead className="text-xs font-bold uppercase tracking-wider text-gray-500 py-4 px-6">Nom du Département</TableHead>
               <TableHead className="text-right text-xs font-bold uppercase tracking-wider text-gray-500 py-4 px-6">Actions</TableHead>
@@ -170,7 +170,7 @@ export function DepartmentsList() {
           <TableBody>
             {paginatedDepartments.length > 0 ? (
               paginatedDepartments.map((dept: any) => (
-                <TableRow key={dept.id} className="hover:bg-gray-50/50 transition-colors">
+                <TableRow key={dept.id} className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
                   <TableCell className="py-4 px-6">
                     {editingId === dept.id ? (
                       <Input

@@ -5,7 +5,7 @@ export default function Page() {
     return (
         <div className="max-w-6xl mx-auto space-y-8">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
                 <div>
                     <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
                         <Settings2 className="w-8 h-8 text-[#0055cc]" />

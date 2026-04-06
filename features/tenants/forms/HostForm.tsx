@@ -244,7 +244,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Prénom</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Jean" {...field} />
+                                    <Input placeholder="ex: Jean" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -258,7 +258,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Nom</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Dupont" {...field} />
+                                    <Input placeholder="ex: Dupont" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -273,7 +273,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                         <FormItem>
                             <FormLabel>Postnom / Deuxième Prénom (Optionnel)</FormLabel>
                             <FormControl>
-                                <Input placeholder="ex: Kabasele" {...field} value={field.value || ""} />
+                                <Input placeholder="ex: Kabasele" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} value={field.value || ""} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -288,7 +288,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Email (Optionnel)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: jean.dupont@entreprise.com" {...field} />
+                                    <Input placeholder="ex: jean.dupont@entreprise.com" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -302,7 +302,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Téléphone (Optionnel)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: +243..." {...field} />
+                                    <Input placeholder="ex: +243..." className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -318,7 +318,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormLabel>Département</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                                         <SelectValue placeholder="Sélectionnez un département" />
                                     </SelectTrigger>
                                 </FormControl>
@@ -335,7 +335,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                     )}
                 />
 
-                <div className="flex justify-end gap-3 pt-4 border-t">
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                     <Button
                         type="submit"
                         disabled={isUploading}

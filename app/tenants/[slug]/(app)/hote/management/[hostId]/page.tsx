@@ -65,7 +65,7 @@ export default function HostDetailsPage() {
                 <div className="lg:col-span-4 space-y-10">
                     <div className="flex flex-col items-center lg:items-start space-y-6">
                         <div className="relative">
-                            <div className="w-32 h-32 rounded-[2.5rem] bg-slate-50 border border-slate-100 p-1.5 shadow-sm overflow-hidden flex items-center justify-center">
+                            <div className="w-32 h-32 rounded-[2.5rem] bg-slate-50 border border-gray-200 p-1.5 shadow-sm overflow-hidden flex items-center justify-center">
                                 <div className="w-full h-full overflow-hidden rounded-[2rem] bg-slate-100 flex items-center justify-center">
                                     {host.photoUrl ? (
                                         <img src={host.photoUrl} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -74,7 +74,7 @@ export default function HostDetailsPage() {
                                     )}
                                 </div>
                             </div>
-                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center justify-center text-blue-600">
+                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center text-blue-600">
                                 <ShieldCheck className="w-5 h-5" />
                             </div>
                         </div>
@@ -96,7 +96,7 @@ export default function HostDetailsPage() {
                         </div>
                     </div>
 
-                    <div className="space-y-6 pt-6 border-t border-slate-100">
+                    <div className="space-y-6 pt-6 border-t border-gray-200">
                         <ContactItem
                             icon={<Building2 className="w-4 h-4" />}
                             label="Département"
@@ -129,7 +129,7 @@ export default function HostDetailsPage() {
 
                     {/* Minimalist History Section */}
                     <div className="space-y-6">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
                             <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Historique Récent</h3>
                             {history && history.length > 0 && (
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -195,7 +195,7 @@ export default function HostDetailsPage() {
 function ContactItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
         <div className="group flex items-start gap-4">
-            <div className="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center shrink-0 border border-gray-200 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
                 {icon}
             </div>
             <div className="min-w-0">
@@ -208,7 +208,7 @@ function ContactItem({ icon, label, value }: { icon: React.ReactNode; label: str
 
 function StatItem({ label, value, isStatus }: { label: string; value: string | number; isStatus?: boolean }) {
     return (
-        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100/50">
+        <div className="bg-slate-50 rounded-2xl p-6 border border-gray-200">
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">{label}</p>
             {isStatus ? (
                 <div className="flex items-center gap-2">

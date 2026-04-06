@@ -56,7 +56,7 @@ export function CreateDepartmentForm() {
   }
 
   return (
-    <div className="bg-white p-4 rounded-xl border shadow-sm mb-6">
+    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-end gap-3">
           <FormField

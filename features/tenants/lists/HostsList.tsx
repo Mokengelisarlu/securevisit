@@ -102,7 +102,7 @@ export function HostsList() {
   return (
     <div className="space-y-6">
       {/* Header Actions */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
         <div className="relative w-full md:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -125,10 +125,10 @@ export function HostsList() {
       </div>
 
       {/* Table Container */}
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-gray-50/50">
-            <TableRow>
+            <TableRow className="border-b border-gray-200">
               <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Nom Complet</TableHead>
               <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Département</TableHead>
               <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Contact</TableHead>
@@ -138,14 +138,14 @@ export function HostsList() {
           <TableBody>
             {paginatedHosts.length > 0 ? (
               paginatedHosts.map((host: any) => (
-                <TableRow key={host.id} className="hover:bg-gray-50/50 transition-colors">
+                <TableRow key={host.id} className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
                   <TableCell className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl overflow-hidden bg-gray-100 flex items-center justify-center text-gray-500 border border-gray-100 shrink-0">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 shrink-0 font-bold">
                         {host.photoUrl ? (
                           <img src={host.photoUrl} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <User className="w-5 h-5 opacity-30" />
+                          <span className="text-xs">{host.firstName[0]}{host.lastName[0]}</span>
                         )}
                       </div>
                       <div className="flex flex-col">

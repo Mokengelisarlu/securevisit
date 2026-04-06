@@ -94,7 +94,7 @@ export function ServicesList() {
     return (
         <div className="space-y-6">
             {/* Header Actions */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                 <div className="relative w-full md:w-80">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
@@ -104,7 +104,7 @@ export function ServicesList() {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
+                        className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-gray-50/50"
                     />
                 </div>
                 <Button
@@ -117,10 +117,10 @@ export function ServicesList() {
             </div>
 
             {/* Table Container */}
-            <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <Table>
                     <TableHeader className="bg-gray-50/50">
-                        <TableRow>
+                        <TableRow className="border-b border-gray-200">
                             <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Service</TableHead>
                             <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Département</TableHead>
                             <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Description</TableHead>
@@ -130,7 +130,7 @@ export function ServicesList() {
                     <TableBody>
                         {paginatedServices.length > 0 ? (
                             paginatedServices.map((service: any) => (
-                                <TableRow key={service.id} className="hover:bg-gray-50/50 transition-colors">
+                                <TableRow key={service.id} className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
                                     <TableCell className="py-4 px-6">
                                         <div className="flex flex-col">
                                             <span className="font-bold text-gray-900">{service.name}</span>

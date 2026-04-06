@@ -156,7 +156,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                                     </div>
                                     <Input
                                         placeholder="exemple@entreprise.com"
-                                        className="pl-10 h-11 rounded-xl bg-gray-50 border-gray-100 focus:bg-white transition-all font-medium"
+                                        className="pl-10 h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-blue-500 transition-all font-medium"
                                         {...field}
                                     />
                                 </div>
@@ -174,7 +174,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                             <FormLabel className="text-xs font-black uppercase tracking-widest text-gray-400">Rôle assigné *</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                    <SelectTrigger className="h-11 rounded-xl bg-gray-50 border-gray-100 focus:bg-white transition-all font-medium">
+                                    <SelectTrigger className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-blue-500 transition-all font-medium">
                                         <div className="flex items-center gap-2">
                                             <Shield className="w-4 h-4 text-gray-400" />
                                             <SelectValue placeholder="Choisir un rôle" />

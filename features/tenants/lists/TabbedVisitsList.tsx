@@ -313,8 +313,12 @@ export function TabbedVisitsList() {
                                 <TableRow key={visit.id} className="hover:bg-gray-50/30 transition-colors border-b border-gray-200">
                                     <TableCell className="py-4 px-6">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 border border-blue-100 font-bold shrink-0">
-                                                {visit.visitor.firstName[0]}{visit.visitor.lastName[0]}
+                                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 font-bold shrink-0">
+                                                {visit.visitor.photoUrl ? (
+                                                    <img src={visit.visitor.photoUrl} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <>{visit.visitor.firstName[0]}{visit.visitor.lastName[0]}</>
+                                                )}
                                             </div>
                                             <div className="flex flex-col min-w-0">
                                                 <span className="font-bold text-gray-900 truncate">

@@ -113,8 +113,12 @@ export function VisitorsList() {
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-black border border-blue-100">
-                    {visitor.firstName[0]}{visitor.lastName[0]}
+                  <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-blue-50 text-blue-600 font-black border border-blue-100 shrink-0">
+                    {visitor.photoUrl ? (
+                      <img src={visitor.photoUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <>{visitor.firstName[0]}{visitor.lastName[0]}</>
+                    )}
                   </div>
                   <div className="flex flex-col min-w-0">
                     <p className="font-bold text-gray-900 truncate">{visitor.firstName} {visitor.lastName}</p>
