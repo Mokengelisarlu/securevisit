@@ -57,101 +57,103 @@ export default async function TenantLandingPage({
 
 function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null }) {
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen w-full flex flex-col overflow-x-hidden">
       {/* Background matching kiosk */}
       <div
-          className="absolute inset-0"
-          style={{
-              backgroundImage: 'url(/images/tenant-hero-bg.svg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundAttachment: 'fixed',
-          }}
+        className="absolute inset-0"
+        style={{
+          backgroundImage: 'url(/images/tenant-hero-bg.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
       />
 
       {/* Animated gradient overlay */}
       <div
-          className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/50 to-slate-900/70"
-          style={{
-              animation: 'gradientShift 8s ease infinite',
-          }}
+        className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/50 to-slate-900/70"
+        style={{
+          animation: 'gradientShift 8s ease infinite',
+        }}
       />
 
       {/* Animated particles */}
-      <div className="absolute inset-0 overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-              <div
-                  key={i}
-                  className="absolute rounded-full bg-blue-500"
-                  style={{
-                      width: `${Math.random() * 4 + 2}px`,
-                      height: `${Math.random() * 4 + 2}px`,
-                      opacity: Math.random() * 0.4 + 0.1,
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                      animation: `float ${Math.random() * 10 + 8}s ease-in-out infinite`,
-                      animationDelay: `${Math.random() * 5}s`,
-                  }}
-              />
-          ))}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-blue-500"
+            style={{
+              width: `${Math.random() * 4 + 2}px`,
+              height: `${Math.random() * 4 + 2}px`,
+              opacity: Math.random() * 0.4 + 0.1,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `float ${Math.random() * 10 + 8}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
       </div>
 
       {/* Centered Content Stack */}
-      <div className="relative z-10 w-full max-w-[600px] flex flex-col items-center text-center">
-        {/* Brand Header / Logo */}
-        <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="w-24 h-24 bg-gradient-to-br from-[#1E6EE6] to-[#1a5fcc] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#1E6EE6]/30">
-            <ShieldCheck className="w-12 h-12 text-white" />
+      <div className="relative z-10 flex-1 w-full flex flex-col items-center justify-center text-center p-6 py-20">
+        <div className="w-full max-w-[600px] flex flex-col items-center">
+          {/* Brand Header / Logo */}
+          <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#1E6EE6] to-[#1a5fcc] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#1E6EE6]/30">
+              <ShieldCheck className="w-12 h-12 text-white" />
+            </div>
           </div>
-        </div>
 
-        {/* Company Title */}
-        <div className="mb-10 animate-in fade-in slide-in-from-top-2 duration-700 delay-100">
-          <h1
-            className="text-4xl lg:text-6xl font-bold text-white tracking-tight mb-4"
-            style={{ fontFamily: 'Sora, sans-serif' }}
-          >
-            {tenant.name}
-          </h1>
-          <p className="text-blue-100/80 text-xl font-medium max-w-md mx-auto">
-            Bienvenue sur votre portail professionnel de gestion des visiteurs.
-          </p>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="w-full max-w-[380px] space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-          {userId ? (
-            <Link
-              href="/dashboard"
-              className="w-full flex items-center justify-center gap-2 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          {/* Company Title */}
+          <div className="mb-10 animate-in fade-in slide-in-from-top-2 duration-700 delay-100">
+            <h1
+              className="text-4xl lg:text-6xl font-bold text-white tracking-tight mb-4"
+              style={{ fontFamily: 'Sora, sans-serif' }}
             >
-              <LayoutDashboard className="w-5 h-5" />
-              <span>Accéder au Tableau de Bord</span>
-            </Link>
-          ) : (
-            <Link
-              href="/sign-in"
-              className="w-full flex items-center justify-center gap-3 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <LogIn className="w-5 h-5" />
-              <span>Se connecter</span>
-            </Link>
-          )}
+              {tenant.name}
+            </h1>
+            <p className="text-blue-100/80 text-xl font-medium max-w-md mx-auto">
+              Bienvenue sur votre portail professionnel de gestion des visiteurs.
+            </p>
+          </div>
 
-          <Link
-            href="/kiosk"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:border-blue-400 text-white font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <Monitor className="w-5 h-5" />
-            <span>Émulateur de tablette</span>
-          </Link>
+          {/* CTA Buttons */}
+          <div className="w-full max-w-[380px] space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+            {userId ? (
+              <Link
+                href="/dashboard"
+                className="w-full flex items-center justify-center gap-2 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                <span>Accéder au Tableau de Bord</span>
+              </Link>
+            ) : (
+              <Link
+                href="/sign-in"
+                className="w-full flex items-center justify-center gap-3 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <LogIn className="w-5 h-5" />
+                <span>Se connecter</span>
+              </Link>
+            )}
+
+            <Link
+              href="/kiosk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:border-blue-400 text-white font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Monitor className="w-5 h-5" />
+              <span>Émulateur de tablette</span>
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Branding Footer */}
-      <footer className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-20">
+      <footer className="relative w-full py-10 flex flex-col items-center z-20">
         <div className="flex items-center gap-2 mb-2">
           <Image
             src="/images/logoBlanc.png"

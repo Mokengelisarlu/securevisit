@@ -6,20 +6,17 @@ import Link from 'next/link';
 
 export default function SignInPage() {
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F6F8] node-pattern px-6">
-      {/* Grain overlay */}
-      <div className="grain-overlay" />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-slate-100 px-6">
 
       {/* Centered Content Stack */}
       <div className="relative z-10 w-full max-w-[480px] flex flex-col items-center">
         {/* Brand Header */}
         <Link
           href="/"
-          className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity"
+          className="flex flex-col items-center justify-center mb-10 hover:opacity-80 transition-opacity"
         >
-          <Shield className="w-8 h-8 text-[#1E6EE6]" />
           <span
-            className="font-semibold text-2xl text-[#0E1116] tracking-tight"
+            className="font-black text-3xl text-slate-900 tracking-tighter"
             style={{ fontFamily: 'Sora, sans-serif' }}
           >
             SecureVisit
@@ -27,7 +24,7 @@ export default function SignInPage() {
         </Link>
 
         {/* SignIn Container */}
-        <div className="w-full">
+        <div className="w-full place-items-center">
           <SignIn
             routing="path"
             path="/sign-in"

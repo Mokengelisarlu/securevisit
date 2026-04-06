@@ -76,17 +76,16 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 flex flex-col lg:flex-row relative overflow-hidden">
+    <main className="min-h-screen bg-slate-100 flex flex-col lg:flex-row relative overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full z-0" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full z-0" />
+
 
       {/* Back Button - Responsive Positioning */}
       <div className="absolute top-6 left-6 lg:top-8 lg:left-8 z-50">
         <Button
-          variant="ghost"
+          variant="outline"
           asChild
-          className="text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2 group px-4 py-2 rounded-xl backdrop-blur-md border border-white/5"
+          className="text-slate-600 hover:text-slate-900 hover:bg-slate-200 flex items-center gap-2 group px-4 py-2 rounded-xl border border-slate-200 bg-white shadow-sm"
         >
           <Link href="/">
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -99,17 +98,14 @@ export default function SignInPage() {
       <div className="hidden lg:flex flex-col justify-center items-start lg:w-1/2 p-20 relative z-10 border-r border-white/5 bg-white/[0.02]">
         <div className="space-y-12 max-w-lg animate-in slide-in-from-left duration-700">
           <Link href="/" className="text-4xl font-black flex items-center gap-4 group">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <span className="text-white font-black text-3xl">V</span>
-            </div>
-            <span className="text-white tracking-tight">SecureVisit</span>
+            <span className="text-slate-900 tracking-tight">SecureVisit</span>
           </Link>
 
           <div className="space-y-6">
-            <h1 className="text-5xl font-black text-white leading-tight tracking-tight">
-              Gérez vos visiteurs avec une <span className="text-blue-500">précision absolue.</span>
+            <h1 className="text-5xl font-black text-slate-900 leading-tight tracking-tight">
+              Gérez vos visiteurs avec une <span className="text-blue-600">précision absolue.</span>
             </h1>
-            <p className="text-xl text-slate-400 font-medium leading-relaxed">
+            <p className="text-xl text-slate-600 font-medium leading-relaxed">
               La plateforme moderne pour l'enregistrement, le contrôle des accès et le suivi en temps réel de votre établissement.
             </p>
           </div>
@@ -121,12 +117,12 @@ export default function SignInPage() {
               { icon: Lock, title: "Contrôle Total", desc: "Gérez vos permissions et vos historiques avec précision." }
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4 group">
-                <div className="mt-1 w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+                <div className="mt-1 w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                   <item.icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold text-white">{item.title}</h4>
-                  <p className="text-sm text-slate-500">{item.desc}</p>
+                  <h4 className="text-lg font-bold text-slate-900">{item.title}</h4>
+                  <p className="text-sm text-slate-600">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -141,21 +137,18 @@ export default function SignInPage() {
           {/* Mobile Logo Only */}
           <div className="lg:hidden flex flex-col items-center mb-8">
             <Link href="/" className="text-3xl font-black flex items-center gap-4 group">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
-                <span className="text-white font-black text-2xl">V</span>
-              </div>
-              <span className="text-white tracking-tight">SecureVisit</span>
+              <span className="text-slate-900 tracking-tight">SecureVisit</span>
             </Link>
           </div>
 
           <div className="text-center lg:text-left mb-8">
-            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2 leading-tight">Bon retour !</h2>
-            <p className="text-slate-400 font-medium text-lg">Choisissez votre méthode de connexion</p>
+            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 mb-2 leading-tight">Bon retour !</h2>
+            <p className="text-slate-600 font-medium text-lg">Choisissez votre méthode de connexion</p>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-3xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden">
+          <div className="bg-white border border-slate-200 shadow-xl shadow-slate-200/50 rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden">
             {/* Subtle light effect inside card */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full -mr-16 -mt-16" />
+
 
             <div className="space-y-6 relative z-10">
               {/* Social Logins */}
@@ -164,7 +157,7 @@ export default function SignInPage() {
                   type="button"
                   variant="outline"
                   onClick={() => signInWith("oauth_google")}
-                  className="h-14 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
+                  className="h-14 bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 hover:border-slate-300 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <svg className="w-5 h-5 relative z-10" viewBox="0 0 24 24">
@@ -180,7 +173,7 @@ export default function SignInPage() {
                   type="button"
                   variant="outline"
                   onClick={() => signInWith("oauth_facebook")}
-                  className="h-14 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
+                  className="h-14 bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 hover:border-slate-300 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <svg className="w-5 h-5 text-[#1877F2] relative z-10" fill="currentColor" viewBox="0 0 24 24">
@@ -191,9 +184,9 @@ export default function SignInPage() {
               </div>
 
               <div className="relative flex items-center py-2">
-                <div className="flex-grow border-t border-white/10"></div>
-                <span className="flex-shrink mx-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ou continuer avec</span>
-                <div className="flex-grow border-t border-white/10"></div>
+                <div className="flex-grow border-t border-slate-200"></div>
+                <span className="flex-shrink mx-4 text-xs font-black text-slate-400 uppercase tracking-widest">Ou continuer avec</span>
+                <div className="flex-grow border-t border-slate-200"></div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -205,7 +198,7 @@ export default function SignInPage() {
                 )}
 
                 <div className="space-y-2.5">
-                  <Label htmlFor="email" className="text-slate-300 font-bold ml-1 text-sm">Adresse Email</Label>
+                  <Label htmlFor="email" className="text-slate-700 font-bold ml-1 text-sm">Adresse Email</Label>
                   <div className="relative group">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                     <Input
@@ -215,14 +208,14 @@ export default function SignInPage() {
                       value={emailAddress}
                       onChange={(e) => setEmailAddress(e.target.value)}
                       required
-                      className="h-14 pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-600 rounded-2xl focus:bg-white/10 focus:ring-2 focus:ring-blue-500/50 border-white/10 transition-all text-lg"
+                      className="h-14 pl-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500/50 transition-all text-lg"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between ml-1">
-                    <Label htmlFor="password" className="text-slate-300 font-bold text-sm">Mot de passe</Label>
+                    <Label htmlFor="password" className="text-slate-700 font-bold text-sm">Mot de passe</Label>
                     <Link href="/forgot-password" title="Fonctionnalité bientôt disponible" className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors">
                       Oublié ?
                     </Link>
@@ -236,7 +229,7 @@ export default function SignInPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-14 pl-12 pr-12 bg-white/5 border-white/10 text-white placeholder:text-slate-600 rounded-2xl focus:bg-white/10 focus:ring-2 focus:ring-blue-500/50 border-white/10 transition-all text-lg"
+                      className="h-14 pl-12 pr-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500/50 transition-all text-lg"
                     />
                     <button
                       type="button"
@@ -268,13 +261,13 @@ export default function SignInPage() {
 
               <div className="text-center pt-2">
                 <p className="text-slate-400 text-sm font-medium">
-                  Pas encore de compte ? <Link href="/sign-up" className="text-blue-400 hover:text-blue-300 font-black decoration-2 underline-offset-4 hover:underline transition-all">S'inscrire</Link>
+                  Pas encore de compte ? <Link href="/sign-up" className="text-blue-600 hover:text-blue-700 font-black decoration-2 underline-offset-4 hover:underline transition-all">S'inscrire</Link>
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-12 text-center text-slate-700 text-sm font-bold tracking-tight uppercase">
+          <div className="mt-12 text-center text-slate-400 text-sm font-bold tracking-tight uppercase">
             © {new Date().getFullYear()} SECUREVISIT • VISITOR MANAGEMENT SYSTEM
           </div>
         </div>
