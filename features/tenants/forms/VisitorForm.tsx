@@ -199,7 +199,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                         <SelectValue placeholder="Sélectionnez un type" />
                                     </SelectTrigger>
                                 </FormControl>
-                                <SelectContent>
+                                <SelectContent className="bg-white">
                                     {isLoadingTypes ? (
                                         <div className="flex items-center justify-center p-2">
                                             <Loader2 className="w-4 h-4 animate-spin text-blue-500" />

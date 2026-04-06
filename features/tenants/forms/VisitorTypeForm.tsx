@@ -85,7 +85,7 @@ export function VisitorTypeForm({ initialData, onSuccess }: VisitorTypeFormProps
                         <FormItem>
                             <FormLabel>Nom du Type</FormLabel>
                             <FormControl>
-                                <Input placeholder="ex: Client, Consultant, Prestataire..." {...field} />
+                                <Input placeholder="ex: Client, Consultant, Prestataire..." {...field} className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -101,7 +101,7 @@ export function VisitorTypeForm({ initialData, onSuccess }: VisitorTypeFormProps
                             <FormControl>
                                 <Textarea
                                     placeholder="Décrivez brièvement ce type de visiteur..."
-                                    className="resize-none h-32"
+                                    className="resize-none h-32 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                     {...field}
                                 />
                             </FormControl>
@@ -110,11 +110,11 @@ export function VisitorTypeForm({ initialData, onSuccess }: VisitorTypeFormProps
                     )}
                 />
 
-                <div className="flex justify-end gap-3 pt-4 border-t">
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                     <Button
                         type="submit"
                         disabled={createVisitorType.isPending || updateVisitorType.isPending}
-                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa]"
+                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa] text-white"
                     >
                         {isEditing ? "Enregistrer" : "Créer le Type"}
                     </Button>

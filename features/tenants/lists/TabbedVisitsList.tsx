@@ -298,8 +298,8 @@ export function TabbedVisitsList() {
                     </div>
                 ) : filteredVisits.length > 0 ? (
                     <Table>
-                        <TableHeader className="bg-gray-50/50 [&_tr]:border-gray-200">
-                            <TableRow>
+                        <TableHeader className="bg-gray-50/50 border-b border-gray-200">
+                            <TableRow className="border-gray-200">
                                 <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Visiteur</TableHead>
                                 <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Destination</TableHead>
                                 <TableHead className="py-4 px-6 text-xs font-bold uppercase text-gray-500">Arrivée / Prévu</TableHead>
@@ -310,7 +310,7 @@ export function TabbedVisitsList() {
                         </TableHeader>
                         <TableBody>
                             {paginatedVisits.map((visit: any) => (
-                                <TableRow key={visit.id} className="hover:bg-gray-50/30 transition-colors border-gray-200">
+                                <TableRow key={visit.id} className="hover:bg-gray-50/30 transition-colors border-b border-gray-200">
                                     <TableCell className="py-4 px-6">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 border border-blue-100 font-bold shrink-0">
@@ -327,7 +327,7 @@ export function TabbedVisitsList() {
                                                     </div>
                                                     {visit.vehicleId ? (
                                                         <Link href={`/visiteurs/vehicles/${visit.vehicleId}`}>
-                                                            <Badge variant="outline" className="h-5 px-1.5 border-gray-800 bg-gray-900 text-white flex items-center gap-1 shrink-0 cursor-pointer hover:bg-gray-800 transition-colors">
+                                                            <Badge variant="outline" className="h-5 px-1.5 border-gray-200 bg-gray-50 text-gray-700 flex items-center gap-1 shrink-0 cursor-pointer hover:bg-gray-100 transition-colors">
                                                                 <Car className="w-3 h-3" />
                                                                 <span className="text-[9px] font-bold uppercase font-mono tracking-tighter">{visit.vehicle?.plateNumber}</span>
                                                             </Badge>

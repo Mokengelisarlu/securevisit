@@ -157,7 +157,7 @@ export function ServiceForm({ initialData, onSuccess }: ServiceFormProps) {
                     <Button
                         type="submit"
                         disabled={createService.isPending || updateService.isPending}
-                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa]"
+                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa] text-white"
                     >
                         {isEditing ? "Enregistrer" : "Créer le Service"}
                     </Button>

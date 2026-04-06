@@ -339,7 +339,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                     <Button
                         type="submit"
                         disabled={isUploading}
-                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa]"
+                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa] text-white"
                     >
                         {isUploading ? "Enregistrement..." : (isEditing ? "Enregistrer" : "Créer l'Hôte")}
                     </Button>

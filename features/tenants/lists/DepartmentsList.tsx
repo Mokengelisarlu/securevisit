@@ -218,7 +218,7 @@ export function DepartmentsList() {
                             size="sm"
                             onClick={() => saveEdit(dept.id)}
                             disabled={updateMutation.isPending}
-                            className="bg-blue-600 hover:bg-blue-700 h-8 px-4"
+                            className="bg-blue-600 hover:bg-blue-700 h-8 px-4 text-white font-bold rounded-lg"
                           >
                             Enregistrer
                           </Button>
