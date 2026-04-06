@@ -60,7 +60,7 @@ export function Modal({ isOpen, onClose, title, children, size = "lg" }: ModalPr
                 "relative bg-white rounded-2xl shadow-2xl w-full overflow-hidden animate-in fade-in zoom-in duration-200",
                 sizeClasses[size]
             )}>
-                <div className="flex items-center justify-between p-6 border-b shrink-0">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200 shrink-0">
                     <h2 className="text-xl font-bold text-gray-900">{title}</h2>
                     <button
                         onClick={onClose}

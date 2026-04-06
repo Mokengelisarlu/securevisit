@@ -298,7 +298,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Tapez un nom..."
-                                                className="pl-9 h-11"
+                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                                 value={visitorSearch || ""}
                                                 onChange={(e) => {
                                                     setVisitorSearch(e.target.value);
@@ -318,7 +318,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                                 </button>
                                             )}
                                             {visitorSearch && filteredVisitors.length > 0 && !field.value && (
-                                                <div className="bg-white border rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 z-50 absolute w-full mt-1">
+                                                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 z-50 absolute w-full mt-1">
                                                     {filteredVisitors.map((v: any) => (
                                                         <button
                                                             key={v.id}
@@ -327,7 +327,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                                                 field.onChange(v.id);
                                                                 setVisitorSearch(`${v.firstName} ${v.lastName}`);
                                                             }}
-                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b last:border-0"
+                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <div>
                                                                 <p className="text-sm font-bold text-gray-900">{v.firstName} {v.lastName}</p>
@@ -352,7 +352,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Prénom" {...field} value={field.value || ""} className="h-11" />
+                                                <Input placeholder="Prénom" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -364,7 +364,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Nom" {...field} value={field.value || ""} className="h-11" />
+                                                <Input placeholder="Nom" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -378,7 +378,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Téléphone" {...field} value={field.value || ""} className="h-11" />
+                                                <Input placeholder="Téléphone" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -389,7 +389,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Entreprise" {...field} value={field.value || ""} className="h-11" />
+                                                <Input placeholder="Entreprise" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -402,7 +402,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                     <FormItem>
                                         <Select onValueChange={field.onChange} value={field.value || ""}>
                                             <FormControl>
-                                                <SelectTrigger className="h-11">
+                                                <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                                                     <SelectValue placeholder="Type de visiteur" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -419,7 +419,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                         </div>
                     )}
 
-                    <div className="h-px bg-gray-100 my-2" />
+                    <div className="h-px bg-gray-200 my-2" />
 
                     {/* Destination Logic */}
                     <div className="space-y-4">
@@ -429,7 +429,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                             render={({ field }) => (
                                 <FormItem className="space-y-2">
                                     <FormLabel className="text-xs font-bold uppercase text-gray-400">Destination</FormLabel>
-                                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
+                                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-200">
                                         <button
                                             type="button"
                                             onClick={() => {
@@ -497,7 +497,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Rechercher un employé..."
-                                                className="pl-9 h-11"
+                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                                 value={hostSearch || ""}
                                                 onChange={(e) => {
                                                     setHostSearch(e.target.value);
@@ -519,7 +519,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             )}
 
                                             {hostSearch && filteredHosts.length > 0 && !field.value && (
-                                                <div className="bg-white border rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 absolute w-full z-50 mt-1">
+                                                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 absolute w-full z-50 mt-1">
                                                     {filteredHosts.map((h: any) => (
                                                         <button
                                                             key={h.id}
@@ -531,7 +531,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                                                     form.setValue("departmentId", h.departmentId);
                                                                 }
                                                             }}
-                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b last:border-0"
+                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <div>
                                                                 <p className="text-sm font-bold text-gray-900">{h.firstName} {h.lastName}</p>
@@ -559,7 +559,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Rechercher un département..."
-                                                className="pl-9 h-11"
+                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                                 value={deptSearch || ""}
                                                 onChange={(e) => {
                                                     setDeptSearch(e.target.value);
@@ -580,7 +580,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             )}
 
                                             {deptSearch && filteredDepts.length > 0 && !field.value && (
-                                                <div className="bg-white border rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 absolute w-full z-50 mt-1">
+                                                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 absolute w-full z-50 mt-1">
                                                     {filteredDepts.map((d: any) => (
                                                         <button
                                                             key={d.id}
@@ -589,7 +589,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                                                 field.onChange(d.id);
                                                                 setDeptSearch(d.name);
                                                             }}
-                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b last:border-0"
+                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <div>
                                                                 <p className="text-sm font-bold text-gray-900">{d.name}</p>
@@ -617,7 +617,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Rechercher un service..."
-                                                className="pl-9 h-11"
+                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                                 value={serviceSearch || ""}
                                                 onChange={(e) => {
                                                     setServiceSearch(e.target.value);
@@ -638,7 +638,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             )}
 
                                             {serviceSearch && filteredServices.length > 0 && !field.value && (
-                                                <div className="bg-white border rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 absolute w-full z-50 mt-1">
+                                                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md animate-in fade-in slide-in-from-top-2 absolute w-full z-50 mt-1">
                                                     {filteredServices.map((s: any) => (
                                                         <button
                                                             key={s.id}
@@ -679,7 +679,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                 <FormControl>
                                     <div className="relative">
                                         <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <Input placeholder="ex: Réunion commerciale, Maintenance..." {...field} value={field.value || ""} className="pl-9 h-11" />
+                                        <Input placeholder="ex: Réunion commerciale, Maintenance..." {...field} value={field.value || ""} className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                     </div>
                                 </FormControl>
                                 <FormMessage />
@@ -687,8 +687,8 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                         )}
                     />
 
-                    <div className="space-y-4 pt-4 border-t mt-4">
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="space-y-4 pt-4 border-t border-gray-200 mt-4">
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-blue-100 rounded-lg">
                                     <Car className="w-5 h-5 text-blue-600" />
@@ -713,7 +713,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                         <FormItem>
                                             <FormLabel className="text-xs font-bold uppercase text-gray-400">Plaque d'immatriculation</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="ex: AA-123-BB" {...field} value={field.value || ""} className="h-11" />
+                                                <Input placeholder="ex: AA-123-BB" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -727,7 +727,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                             <FormLabel className="text-xs font-bold uppercase text-gray-400">Type de véhicule</FormLabel>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                    <SelectTrigger className="h-11">
+                                                    <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                                                         <SelectValue placeholder="Sélectionner un type" />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -749,7 +749,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                         <FormItem>
                                             <FormLabel className="text-xs font-bold uppercase text-gray-400">Marque (Optionnel)</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="ex: Toyota, Mercedes..." {...field} value={field.value || ""} className="h-11" />
+                                                <Input placeholder="ex: Toyota, Mercedes..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -767,7 +767,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                                                     min={0}
                                                     {...field}
                                                     onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                                    className="h-11"
+                                                    className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -778,7 +778,7 @@ export function VisitFormModal({ isOpen, onClose }: VisitFormModalProps) {
                         )}
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-6 border-t mt-8">
+                    <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 mt-8">
                         <Button
                             type="button"
                             variant="ghost"
