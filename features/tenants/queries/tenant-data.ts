@@ -1256,7 +1256,7 @@ export async function authorizeUser(
   lastName: string = "",
   middleName?: string
 ) {
-  await requireRole(tenantSlug, ["ROOT"]);
+  await requireRole(tenantSlug, ["ROOT", "ADMIN"]);
   const db = await getTenantDbBySlug(tenantSlug);
 
   const [authorized] = await db
@@ -1278,7 +1278,7 @@ export async function authorizeUser(
 }
 
 export async function removeAuthorization(tenantSlug: string, email: string) {
-  await requireRole(tenantSlug, ["ROOT"]);
+  await requireRole(tenantSlug, ["ROOT", "ADMIN"]);
   const db = await getTenantDbBySlug(tenantSlug);
 
   return await db.delete(authorizedUsers).where(eq(authorizedUsers.email, email.toLowerCase()));
@@ -1289,7 +1289,7 @@ export async function updateUserRole(
   userId: string,
   role: "ROOT" | "ADMIN" | "SECURITY" | "RECEPTION"
 ) {
-  await requireRole(tenantSlug, ["ROOT"]);
+  await requireRole(tenantSlug, ["ROOT", "ADMIN"]);
   const db = await getTenantDbBySlug(tenantSlug);
 
   // If we are updating an active user, we also need to update their entry in the users table
@@ -1311,7 +1311,7 @@ export async function updateUserRole(
 }
 
 export async function deleteUser(tenantSlug: string, userId: string) {
-  await requireRole(tenantSlug, ["ROOT"]);
+  await requireRole(tenantSlug, ["ROOT", "ADMIN"]);
   const db = await getTenantDbBySlug(tenantSlug);
 
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);

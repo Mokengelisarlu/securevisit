@@ -50,6 +50,7 @@ export function UsersList() {
     const [isUpdatingRole, setIsUpdatingRole] = useState(false);
 
     const isRoot = currentUser?.role === "ROOT";
+    const canManage = isRoot || currentUser?.role === "ADMIN";
 
     const { data: usersData, isLoading } = useQuery({
         queryKey: ["tenant-users", slug],
@@ -144,7 +145,7 @@ export function UsersList() {
                     <h2 className="text-xl font-black text-gray-900 tracking-tight">Gestion des Accès</h2>
                     <p className="text-xs text-gray-500 font-bold mt-1">Gérez les collaborateurs autorisés à accéder à cet espace.</p>
                 </div>
-                {isRoot && (
+                {canManage && (
                     <Button
                         onClick={() => setIsInviteModalOpen(true)}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center gap-2"
@@ -214,7 +215,7 @@ export function UsersList() {
                                         )}
                                     </TableCell>
                                     <TableCell className="pr-6 text-right">
-                                        {isRoot && user.role !== 'ROOT' && (
+                                        {canManage && user.role !== 'ROOT' && (
                                             <div className="flex items-center justify-end gap-2">
                                                 <Select
                                                     onValueChange={(value: any) => handleRoleUpdate(user, value)}
