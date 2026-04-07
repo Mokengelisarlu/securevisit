@@ -22,6 +22,15 @@ export async function syncTenantUser(tenantSlug: string) {
             const db = await getTenantDbBySlug(tenantSlug);
 
 
+            // Fetch tenant info from master DB
+            const tenant = await master_db.query.tenants.findFirst({
+                where: eq(tenants.slug, tenantSlug)
+            });
+
+            if (!tenant) {
+                return { ok: false, error: "Tenant not found" };
+            }
+
             // Check if user already exists in THIS tenant DB by Clerk ID
             const existing = await db.query.users.findFirst({
                 where: eq(users.id, user.id)
@@ -29,7 +38,7 @@ export async function syncTenantUser(tenantSlug: string) {
 
             if (!existing) {
                 // ONLY owner can be automatically synced as the FIRST ROOT
-                if (tenant?.ownerId === user.id) {
+                if (tenant.ownerId === user.id) {
                     const rootExists = await db.query.users.findFirst({
                         where: eq(users.role, "ROOT")
                     });
