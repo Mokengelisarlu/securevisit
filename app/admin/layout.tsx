@@ -13,6 +13,7 @@ import {
   Menu,
 } from "lucide-react";
 import { Loader } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -74,7 +75,17 @@ export default function AdminLayout({
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-4 border-b">
           {!collapsed && (
-            <span className="text-lg font-semibold">Admin</span>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 relative overflow-hidden rounded-md">
+                <Image
+                  src="/icons/icon-512x512.png"
+                  alt="SecureVisit Logo"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <span className="text-lg font-semibold">Admin</span>
+            </div>
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}

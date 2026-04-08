@@ -2,7 +2,7 @@ import { getPublicTenantBySlug } from "@/features/tenants/queries/tenant-data";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, LayoutDashboard, ShieldCheck, LogIn, Monitor } from "lucide-react";
+import { ArrowRight, LayoutDashboard, LogIn, Monitor } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getTenantDbBySlug } from "@/db/tenants";
@@ -92,10 +92,20 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
       <div className="relative z-10 flex-1 w-full flex flex-col items-center justify-center text-center p-6 py-20">
         <div className="w-full max-w-[600px] flex flex-col items-center">
           {/* Brand Header / Logo */}
-          <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#1E6EE6] to-[#1a5fcc] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#1E6EE6]/30">
-              <ShieldCheck className="w-12 h-12 text-white" />
-            </div>
+          <div className="mb-10 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-700">
+            <Image
+              src="/icon-192x192.png"
+              alt="SecureVisit Logo"
+              width={56}
+              height={56}
+              className="object-contain"
+            />
+            <span 
+              className="text-3xl lg:text-4xl font-bold text-white tracking-tight"
+              style={{ fontFamily: 'Sora, sans-serif' }}
+            >
+              SecureVisit
+            </span>
           </div>
 
           {/* Company Title */}
@@ -106,9 +116,6 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
             >
               {tenant.name}
             </h1>
-            <p className="text-blue-100/80 text-xl font-medium max-w-md mx-auto">
-              Bienvenue sur votre portail professionnel de gestion des visiteurs.
-            </p>
           </div>
 
           {/* CTA Buttons */}

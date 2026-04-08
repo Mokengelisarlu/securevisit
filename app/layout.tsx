@@ -38,6 +38,16 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'SecureVisit',
   description: 'Powered by Mokengeli Sarlu',
+  icons: {
+    icon: [
+      { url: '/icon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-144x144.png', sizes: '144x144', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+  },
 }
 
 export default function RootLayout({

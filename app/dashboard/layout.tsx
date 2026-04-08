@@ -3,8 +3,8 @@ import { headers } from "next/headers";
 import { getTenantSlugFromHost } from "@/lib/getTenantSlug";
 import { TenantProvider } from "@/lib/tenant-provider";
 import { TenantAuthGuard } from "@/components/TenantAuthGuard";
-import { Shield } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function DashboardLayout({
   children,
@@ -31,7 +31,14 @@ export default async function DashboardLayout({
           <header className="relative z-20 h-20 bg-white/70 backdrop-blur-md border-b border-[#E5E7EB] flex items-center justify-between px-8 shrink-0">
             <div className="flex items-center gap-10">
               <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <Shield className="w-7 h-7 text-[#1E6EE6]" />
+                <div className="w-9 h-9 relative overflow-hidden rounded-lg">
+                  <Image
+                    src="/icons/icon-512x512.png"
+                    alt="SecureVisit Logo"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <span
                   className="font-semibold text-xl text-[#0E1116] tracking-tight"
                   style={{ fontFamily: 'Sora, sans-serif' }}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export function PublicHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,8 +45,13 @@ export function PublicHeader() {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center group-hover:shadow-lg transition-shadow">
-              <span className="text-white font-bold text-lg">V</span>
+            <div className="w-10 h-10 relative overflow-hidden rounded-lg group-hover:shadow-lg transition-shadow">
+              <Image
+                src="/icons/icon-512x512.png"
+                alt="SecureVisit Logo"
+                fill
+                className="object-cover"
+              />
             </div>
             <span className="text-white">SecureVisit</span>
           </Link>
