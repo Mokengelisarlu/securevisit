@@ -1,7 +1,7 @@
 'use client';
 
 import { SignUp } from '@clerk/nextjs';
-import { Shield } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function SignUpPage() {
@@ -17,7 +17,13 @@ export default function SignUpPage() {
                     href="/"
                     className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity"
                 >
-                    <Shield className="w-8 h-8 text-[#1E6EE6]" />
+                    <Image
+                        src="/icon-96x96.png"
+                        alt="SecureVisit"
+                        width={36}
+                        height={36}
+                        className="object-contain"
+                    />
                     <span
                         className="font-semibold text-2xl text-[#0E1116] tracking-tight"
                         style={{ fontFamily: 'Sora, sans-serif' }}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useUser, UserButton } from "@clerk/nextjs";
 import {
@@ -41,11 +42,15 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                     </button>
 
                     <Link href="/dashboard" className="flex items-center gap-2.5 group">
-                        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-all duration-300">
-                            <ShieldCheck className="text-white w-5 h-5" />
-                        </div>
+                        <Image
+                            src="/icon-48x48.png"
+                            alt="SecureVisit"
+                            width={36}
+                            height={36}
+                            className="object-contain group-hover:scale-105 transition-all duration-300"
+                        />
                         <span className="text-xl font-black tracking-tight text-[#0f172a]">
-                            Secure<span className="text-blue-600">Visit</span>
+                            Secure<span style={{ color: '#3ECFCA' }}>Visit</span>
                         </span>
                     </Link>
                 </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { SignIn } from '@clerk/nextjs';
-import { Shield } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function SignInPage() {
@@ -13,8 +13,15 @@ export default function SignInPage() {
         {/* Brand Header */}
         <Link
           href="/"
-          className="flex flex-col items-center justify-center mb-10 hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2 mb-10 hover:opacity-80 transition-opacity"
         >
+          <Image
+            src="/icon-96x96.png"
+            alt="SecureVisit"
+            width={36}
+            height={36}
+            className="object-contain"
+          />
           <span
             className="font-black text-3xl text-slate-900 tracking-tighter"
             style={{ fontFamily: 'Sora, sans-serif' }}
