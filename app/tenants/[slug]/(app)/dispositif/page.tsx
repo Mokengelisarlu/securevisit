@@ -193,10 +193,10 @@ export default function DispositifPage() {
 
             {/* Pairing form (for new device) */}
             {isAdding && (
-                <Card className="border-blue-200 bg-white animate-in slide-in-from-top-4 duration-300 shadow-sm">
+                <Card className="border-teal-200 bg-white animate-in slide-in-from-top-4 duration-300 shadow-sm">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <ShieldCheck className="w-5 h-5 text-blue-600" />
+                            <ShieldCheck className="w-5 h-5 text-teal-600" />
                             Nouvel Appairage
                         </CardTitle>
                         <CardDescription>
@@ -300,7 +300,7 @@ export default function DispositifPage() {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-8 w-8 text-gray-400 hover:text-blue-600"
+                                                    className="h-8 w-8 text-gray-400 hover:text-teal-600"
                                                     onClick={() => openEditModal(device)}
                                                 >
                                                     <Edit2 className="w-4 h-4" />
@@ -327,7 +327,7 @@ export default function DispositifPage() {
                                     </div>
                                     <CardTitle className="mt-4 text-lg">{device.name || "Dispositif sans nom"}</CardTitle>
                                     {device.location && (
-                                        <div className="flex items-center gap-1.5 text-sm text-blue-600 font-medium mt-0.5">
+                                        <div className="flex items-center gap-1.5 text-sm text-teal-600 font-medium mt-0.5">
                                             <MapPin className="w-3.5 h-3.5" />
                                             {device.location}
                                         </div>

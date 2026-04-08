@@ -6,7 +6,7 @@ export default function Page() {
         <div className="space-y-8 py-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-700 shadow-sm">
+                    <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-teal-700 shadow-sm">
                         <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>

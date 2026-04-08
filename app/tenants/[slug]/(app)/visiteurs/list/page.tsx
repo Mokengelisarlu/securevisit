@@ -6,7 +6,7 @@ export default function Page() {
         <div className="space-y-10 py-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 bg-white/50 backdrop-blur-sm border border-[#E5E7EB] rounded-2xl flex items-center justify-center text-[#1E6EE6] shadow-sm">
+                    <div className="w-14 h-14 bg-white/50 backdrop-blur-sm border border-[#E5E7EB] rounded-2xl flex items-center justify-center text-[#0DBDB5] shadow-sm">
                         <ClipboardList className="w-7 h-7" />
                     </div>
                     <div>

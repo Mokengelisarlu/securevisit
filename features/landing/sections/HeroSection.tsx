@@ -194,7 +194,7 @@ const HeroSection = ({ className = '' }: HeroSectionProps) => {
             >
               <Button
                 asChild
-                className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-6 py-3 rounded-full text-sm font-medium btn-hover"
+                className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-6 py-3 rounded-full text-sm font-medium btn-hover"
               >
                 <Link href="/sign-up">Créer un compte gratuit</Link>
               </Button>
@@ -203,7 +203,7 @@ const HeroSection = ({ className = '' }: HeroSectionProps) => {
             <button
               ref={(el) => { textRefs.current[4] = el; }}
               onClick={() => scrollToSection('#howitworks')}
-              className="flex items-center gap-2 text-sm font-medium text-[#6B7280] hover:text-[#1E6EE6] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-[#6B7280] hover:text-[#0DBDB5] transition-colors"
             >
               <Play className="w-4 h-4" />
               Voir comment ça marche
@@ -219,24 +219,24 @@ const HeroSection = ({ className = '' }: HeroSectionProps) => {
             className="grid grid-cols-3 gap-4"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                <Tablet className="w-5 h-5 text-[#1E6EE6]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                <Tablet className="w-5 h-5 text-[#0DBDB5]" />
               </div>
               <span className="text-sm font-medium text-[#0E1116]">
                 Borne libre-service
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                <Bell className="w-5 h-5 text-[#1E6EE6]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                <Bell className="w-5 h-5 text-[#0DBDB5]" />
               </div>
               <span className="text-sm font-medium text-[#0E1116]">
                 Notification auto
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                <Printer className="w-5 h-5 text-[#1E6EE6]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                <Printer className="w-5 h-5 text-[#0DBDB5]" />
               </div>
               <span className="text-sm font-medium text-[#0E1116]">
                 Impression de badges
@@ -260,13 +260,13 @@ const HeroSection = ({ className = '' }: HeroSectionProps) => {
           <div className="flex flex-col gap-3 mb-6">
             <Button
               asChild
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-6 py-3 rounded-full text-sm font-medium"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-6 py-3 rounded-full text-sm font-medium"
             >
               <Link href="/sign-up">Créer un compte gratuit</Link>
             </Button>
             <button
               onClick={() => scrollToSection('#howitworks')}
-              className="flex items-center justify-center gap-2 text-sm font-medium text-[#6B7280] hover:text-[#1E6EE6] transition-colors"
+              className="flex items-center justify-center gap-2 text-sm font-medium text-[#6B7280] hover:text-[#0DBDB5] transition-colors"
             >
               <Play className="w-4 h-4" />
               Voir comment ça marche
@@ -274,24 +274,24 @@ const HeroSection = ({ className = '' }: HeroSectionProps) => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                <Tablet className="w-5 h-5 text-[#1E6EE6]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                <Tablet className="w-5 h-5 text-[#0DBDB5]" />
               </div>
               <span className="text-sm font-medium text-[#0E1116]">
                 Borne libre-service
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                <Bell className="w-5 h-5 text-[#1E6EE6]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                <Bell className="w-5 h-5 text-[#0DBDB5]" />
               </div>
               <span className="text-sm font-medium text-[#0E1116]">
                 Notification auto
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                <Printer className="w-5 h-5 text-[#1E6EE6]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                <Printer className="w-5 h-5 text-[#0DBDB5]" />
               </div>
               <span className="text-sm font-medium text-[#0E1116]">
                 Impression de badges

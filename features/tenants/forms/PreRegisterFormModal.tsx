@@ -267,7 +267,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                         <button
                             type="button"
                             onClick={() => form.setValue("visitorSelection", "existing")}
-                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${visitorSelection === "existing" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${visitorSelection === "existing" ? "bg-white text-teal-600 shadow-sm" : "text-gray-500"
                                 }`}
                         >
                             Visiteur existant
@@ -275,7 +275,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                         <button
                             type="button"
                             onClick={() => form.setValue("visitorSelection", "new")}
-                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${visitorSelection === "new" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${visitorSelection === "new" ? "bg-white text-teal-600 shadow-sm" : "text-gray-500"
                                 }`}
                         >
                             Nouveau visiteur
@@ -294,7 +294,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Tapez un nom..."
-                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                                className="pl-9 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500"
                                                 value={visitorSearch || ""}
                                                 onChange={(e) => {
                                                     setVisitorSearch(e.target.value);
@@ -323,7 +323,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                                 field.onChange(v.id);
                                                                 setVisitorSearch(`${v.firstName} ${v.lastName}`);
                                                             }}
-                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
+                                                            className="w-full flex items-center justify-between p-3 hover:bg-teal-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <div>
                                                                 <p className="text-sm font-bold text-gray-900">{v.firstName} {v.lastName}</p>
@@ -348,7 +348,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Prénom" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                                <Input placeholder="Prénom" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -360,7 +360,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Nom" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                                <Input placeholder="Nom" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -374,7 +374,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Téléphone" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                                <Input placeholder="Téléphone" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -385,7 +385,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Entreprise" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                                <Input placeholder="Entreprise" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                             </FormControl>
                                         </FormItem>
                                     )}
@@ -398,7 +398,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     <FormItem>
                                         <Select onValueChange={field.onChange} value={field.value || ""}>
                                             <FormControl>
-                                                <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                                <SelectTrigger className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500">
                                                     <SelectValue placeholder="Type de visiteur" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -425,7 +425,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     <FormControl>
                                         <div className="relative">
                                             <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                            <Input type="datetime-local" {...field} className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                            <Input type="datetime-local" {...field} className="pl-9 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                         </div>
                                     </FormControl>
                                     <FormMessage />
@@ -441,7 +441,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                     <FormControl>
                                         <div className="relative">
                                             <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                            <Input placeholder="ex: Réunion..." {...field} value={field.value || ""} className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                            <Input placeholder="ex: Réunion..." {...field} value={field.value || ""} className="pl-9 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                         </div>
                                     </FormControl>
                                     <FormMessage />
@@ -453,8 +453,8 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                     <div className="space-y-4 pt-4 border-t border-gray-200 mt-4">
                         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-100 rounded-lg">
-                                    <Car className="w-5 h-5 text-blue-600" />
+                                <div className="p-2 bg-teal-100 rounded-lg">
+                                    <Car className="w-5 h-5 text-teal-600" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-gray-900">Véhicule & Passagers</p>
@@ -476,7 +476,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                         <FormItem>
                                             <FormLabel className="text-xs font-bold uppercase text-gray-400">Plaque d'immatriculation</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="ex: AA-123-BB" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                                <Input placeholder="ex: AA-123-BB" {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -490,7 +490,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                             <FormLabel className="text-xs font-bold uppercase text-gray-400">Type de véhicule</FormLabel>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                    <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                                    <SelectTrigger className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500">
                                                         <SelectValue placeholder="Sélectionner un type" />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -512,7 +512,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                         <FormItem>
                                             <FormLabel className="text-xs font-bold uppercase text-gray-400">Marque (Optionnel)</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="ex: Toyota, Mercedes..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                                <Input placeholder="ex: Toyota, Mercedes..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -530,7 +530,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                     min={0}
                                                     {...field}
                                                     onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                                    className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                                    className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -560,7 +560,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                 setDeptSearch("");
                                                 setServiceSearch("");
                                             }}
-                                            className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${field.value === "host" ? "bg-white text-blue-600 shadow-sm" : "text-gray-400"
+                                            className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${field.value === "host" ? "bg-white text-teal-600 shadow-sm" : "text-gray-400"
                                                 }`}
                                         >
                                             <User className="w-3 h-3" /> Hôte
@@ -576,7 +576,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                 setDeptSearch("");
                                                 setServiceSearch("");
                                             }}
-                                            className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${field.value === "department" ? "bg-white text-blue-600 shadow-sm" : "text-gray-400"
+                                            className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${field.value === "department" ? "bg-white text-teal-600 shadow-sm" : "text-gray-400"
                                                 }`}
                                         >
                                             <MapPin className="w-3 h-3" /> Département
@@ -592,7 +592,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                 setDeptSearch("");
                                                 setServiceSearch("");
                                             }}
-                                            className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${field.value === "service" ? "bg-white text-blue-600 shadow-sm" : "text-gray-400"
+                                            className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${field.value === "service" ? "bg-white text-teal-600 shadow-sm" : "text-gray-400"
                                                 }`}
                                         >
                                             <Compass className="w-3 h-3" /> Service
@@ -612,7 +612,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Employé..."
-                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                                className="pl-9 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500"
                                                 value={hostSearch || ""}
                                                 onChange={(e) => {
                                                     setHostSearch(e.target.value);
@@ -629,7 +629,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                                 field.onChange(h.id);
                                                                 setHostSearch(`${h.firstName} ${h.lastName}`);
                                                             }}
-                                                            className="w-full flex items-center justify-between p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
+                                                            className="w-full flex items-center justify-between p-3 hover:bg-teal-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <p className="text-sm font-bold text-gray-900">{h.firstName} {h.lastName}</p>
                                                         </button>
@@ -653,7 +653,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Département..."
-                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                                className="pl-9 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500"
                                                 value={deptSearch || ""}
                                                 onChange={(e) => {
                                                     setDeptSearch(e.target.value);
@@ -670,7 +670,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                                 field.onChange(d.id);
                                                                 setDeptSearch(d.name);
                                                             }}
-                                                            className="w-full flex items-center p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
+                                                            className="w-full flex items-center p-3 hover:bg-teal-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <p className="text-sm font-bold text-gray-900">{d.name}</p>
                                                         </button>
@@ -694,7 +694,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                                             <Input
                                                 placeholder="Service..."
-                                                className="pl-9 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                                className="pl-9 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500"
                                                 value={serviceSearch || ""}
                                                 onChange={(e) => {
                                                     setServiceSearch(e.target.value);
@@ -711,7 +711,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                                                                 field.onChange(s.id);
                                                                 setServiceSearch(s.name);
                                                             }}
-                                                            className="w-full flex items-center p-3 hover:bg-blue-50 transition-colors text-left border-b border-gray-100 last:border-0"
+                                                            className="w-full flex items-center p-3 hover:bg-teal-50 transition-colors text-left border-b border-gray-100 last:border-0"
                                                         >
                                                             <p className="text-sm font-bold text-gray-900">{s.name}</p>
                                                         </button>
@@ -738,7 +738,7 @@ export function PreRegisterFormModal({ isOpen, onClose }: PreRegisterFormModalPr
                         <Button
                             type="submit"
                             disabled={createScheduledVisit.isPending}
-                            className="px-10 bg-[#0055cc] hover:bg-[#0044aa] font-bold text-white shadow-lg h-11 rounded-lg"
+                            className="px-10 bg-[#0DBDB5] hover:bg-[#0044aa] font-bold text-white shadow-lg h-11 rounded-lg"
                         >
                             {createScheduledVisit.isPending ? (
                                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

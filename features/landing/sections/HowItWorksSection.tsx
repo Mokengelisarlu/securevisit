@@ -140,7 +140,7 @@ const HowItWorksSection = ({ className = '' }: HowItWorksSectionProps) => {
               {/* Content */}
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-sm font-semibold text-[#1E6EE6]">
+                  <span className="text-sm font-semibold text-[#0DBDB5]">
                     {step.number}
                   </span>
                   <div className="flex-1 h-px bg-[#0E1116]/8" />

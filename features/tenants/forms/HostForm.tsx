@@ -184,7 +184,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                     <div className="relative group">
                         <div className={cn(
                             "w-28 h-28 rounded-3xl overflow-hidden border-2 border-dashed flex items-center justify-center transition-all",
-                            photoPreview ? "border-blue-500 border-solid" : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                            photoPreview ? "border-teal-500 border-solid" : "border-gray-200 bg-gray-50 hover:bg-gray-100"
                         )}>
                             {photoPreview ? (
                                 <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
@@ -220,7 +220,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                                 type="button"
                                 onClick={() => setIsCameraOpen(true)}
                                 title="Prendre une photo"
-                                className="w-8 h-8 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all hover:scale-110 active:scale-95"
+                                className="w-8 h-8 bg-teal-600 text-white rounded-xl flex items-center justify-center shadow-lg hover:bg-teal-700 transition-all hover:scale-110 active:scale-95"
                             >
                                 <Camera className="w-4 h-4" />
                             </button>
@@ -244,7 +244,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Prénom</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Jean" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
+                                    <Input placeholder="ex: Jean" className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -258,7 +258,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Nom</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Dupont" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
+                                    <Input placeholder="ex: Dupont" className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -273,7 +273,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                         <FormItem>
                             <FormLabel>Postnom / Deuxième Prénom (Optionnel)</FormLabel>
                             <FormControl>
-                                <Input placeholder="ex: Kabasele" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} value={field.value || ""} />
+                                <Input placeholder="ex: Kabasele" className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} value={field.value || ""} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -288,7 +288,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Email (Optionnel)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: jean.dupont@entreprise.com" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
+                                    <Input placeholder="ex: jean.dupont@entreprise.com" className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -302,7 +302,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormItem>
                                 <FormLabel>Téléphone (Optionnel)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: +243..." className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
+                                    <Input placeholder="ex: +243..." className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -318,7 +318,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                             <FormLabel>Département</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
-                                    <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                    <SelectTrigger className="border-gray-200 focus:border-teal-500 focus:ring-teal-500">
                                         <SelectValue placeholder="Sélectionnez un département" />
                                     </SelectTrigger>
                                 </FormControl>
@@ -339,7 +339,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                     <Button
                         type="submit"
                         disabled={isUploading}
-                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa] text-white"
+                        className="px-8 bg-[#0DBDB5] hover:bg-[#0044aa] text-white"
                     >
                         {isUploading ? "Enregistrement..." : (isEditing ? "Enregistrer" : "Créer l'Hôte")}
                     </Button>

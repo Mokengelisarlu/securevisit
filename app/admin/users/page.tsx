@@ -130,7 +130,7 @@ export default function UsersPage() {
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             user.role === "admin" || user.role === "Admin"
                               ? "bg-red-100 text-red-700"
-                              : "bg-blue-100 text-blue-700"
+                              : "bg-teal-100 text-teal-700"
                           }`}
                         >
                           {user.role === "Admin" || user.role === "admin" ? "admin" : "user"}
@@ -146,7 +146,7 @@ export default function UsersPage() {
                         <button className="p-1 hover:bg-gray-200 rounded">
                           <Eye size={16} />
                         </button>
-                        <button className="p-1 hover:bg-blue-100 rounded text-blue-600">
+                        <button className="p-1 hover:bg-teal-100 rounded text-teal-600">
                           <Shield size={16} />
                         </button>
                         <button className="p-1 hover:bg-red-100 rounded">

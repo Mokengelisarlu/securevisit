@@ -134,8 +134,8 @@ const TestimonialSection = ({ className = '' }: TestimonialSectionProps) => {
                 key={index}
                 className="bg-[#F4F6F8] rounded-xl p-4 text-center"
               >
-                <div className="w-10 h-10 rounded-lg bg-[#1E6EE6]/10 flex items-center justify-center mx-auto mb-2">
-                  <metric.icon className="w-5 h-5 text-[#1E6EE6]" />
+                <div className="w-10 h-10 rounded-lg bg-[#0DBDB5]/10 flex items-center justify-center mx-auto mb-2">
+                  <metric.icon className="w-5 h-5 text-[#0DBDB5]" />
                 </div>
                 <div
                   className="text-xl font-semibold text-[#0E1116] mb-1"
@@ -193,8 +193,8 @@ const TestimonialSection = ({ className = '' }: TestimonialSectionProps) => {
                   key={index}
                   className="bg-[#F4F6F8] rounded-xl p-3 text-center"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#1E6EE6]/10 flex items-center justify-center mx-auto mb-2">
-                    <metric.icon className="w-4 h-4 text-[#1E6EE6]" />
+                  <div className="w-8 h-8 rounded-lg bg-[#0DBDB5]/10 flex items-center justify-center mx-auto mb-2">
+                    <metric.icon className="w-4 h-4 text-[#0DBDB5]" />
                   </div>
                   <div
                     className="text-lg font-semibold text-[#0E1116] mb-1"

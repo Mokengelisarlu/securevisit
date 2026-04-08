@@ -74,7 +74,7 @@ export function VisitorTypesList() {
 
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-dashed">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mb-4" />
             <p className="text-gray-500 font-medium">Chargement des types...</p>
         </div>
     );
@@ -89,12 +89,12 @@ export function VisitorTypesList() {
                         placeholder="Rechercher un type..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
+                        className="pl-10 h-11 border-gray-200 focus:ring-teal-500 focus:border-teal-500 rounded-lg"
                     />
                 </div>
                 <Button
                     onClick={handleCreate}
-                    className="bg-[#0055cc] hover:bg-[#0044aa] text-white px-6 h-11 rounded-lg flex items-center gap-2 font-bold shadow-sm transition-all hover:scale-[1.02]"
+                    className="bg-[#0DBDB5] hover:bg-[#0044aa] text-white px-6 h-11 rounded-lg flex items-center gap-2 font-bold shadow-sm transition-all hover:scale-[1.02]"
                 >
                     <Plus className="w-5 h-5" />
                     Nouveau Type
@@ -117,7 +117,7 @@ export function VisitorTypesList() {
                                 <TableRow key={type.id} className="hover:bg-gray-50/50 transition-colors border-b border-gray-200">
                                     <TableCell className="py-4 px-6 font-bold text-gray-900">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                                            <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600">
                                                 <Tag className="w-4 h-4" />
                                             </div>
                                             {type.name}
@@ -139,7 +139,7 @@ export function VisitorTypesList() {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleEdit(type)}
-                                                className="h-9 w-9 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                                                className="h-9 w-9 hover:text-teal-600 hover:bg-teal-50 rounded-lg"
                                             >
                                                 <Edit2 className="h-4 w-4" />
                                             </Button>

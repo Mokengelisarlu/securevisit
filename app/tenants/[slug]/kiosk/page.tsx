@@ -13,7 +13,7 @@ export default async function KioskPage({
 
     if (!tenant) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 uppercase tracking-widest font-bold text-blue-300/60">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 uppercase tracking-widest font-bold text-teal-300/60">
                 Tenant non trouvé
             </div>
         );
@@ -36,7 +36,7 @@ export default async function KioskPage({
             >
                 {/* Animated gradient overlay */}
                 <div
-                    className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/50 to-slate-900/70"
+                    className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-teal-900/50 to-slate-900/70"
                     style={{
                         animation: 'gradientShift 8s ease infinite',
                     }}
@@ -47,7 +47,7 @@ export default async function KioskPage({
                     {[...Array(12)].map((_, i) => (
                         <div
                             key={i}
-                            className="absolute rounded-full bg-blue-500"
+                            className="absolute rounded-full bg-teal-500"
                             style={{
                                 width: `${Math.random() * 4 + 2}px`,
                                 height: `${Math.random() * 4 + 2}px`,
@@ -72,7 +72,7 @@ export default async function KioskPage({
                                 className="h-14 w-14 md:h-16 md:w-16 object-contain drop-shadow-2xl"
                             />
                         ) : (
-                            <div className="h-14 w-14 md:h-16 md:w-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/50">
+                            <div className="h-14 w-14 md:h-16 md:w-16 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-teal-500/50">
                                 <Building2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
                             </div>
                         )}
@@ -94,7 +94,7 @@ export default async function KioskPage({
 
                     {/* Footer */}
                     <footer className="flex-shrink-0 text-center py-2">
-                        <p className="text-blue-300/60 font-bold text-[9px] uppercase tracking-widest mb-1">
+                        <p className="text-teal-300/60 font-bold text-[9px] uppercase tracking-widest mb-1">
                             Système de gestion des visiteurs
                         </p>
                         <div className="flex items-center justify-center gap-2 opacity-60 hover:opacity-90 transition-opacity duration-300">
@@ -105,7 +105,7 @@ export default async function KioskPage({
                                 height={12}
                                 className="object-contain"
                             />
-                            <span className="text-blue-200/80 text-[8px] font-medium tracking-wide">
+                            <span className="text-teal-200/80 text-[8px] font-medium tracking-wide">
                                 Powered by <span className="text-white/90 font-semibold">MOKENGELI Sarlu</span>
                             </span>
                         </div>

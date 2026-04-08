@@ -53,7 +53,7 @@ export default function VisitorDetailsPage() {
     if (isVisitorLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                <Loader2 className="w-10 h-10 animate-spin text-teal-500" />
                 <p className="text-gray-500 font-medium">Chargement du profil visiteur...</p>
             </div>
         );
@@ -84,7 +84,7 @@ export default function VisitorDetailsPage() {
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-3xl font-black text-gray-900 tracking-tight">Fiche Visiteur</h1>
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-widest">
+                            <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-100 px-3 py-1 text-xs font-bold uppercase tracking-widest">
                                 ID: {visitor.id.split('-')[0]}
                             </Badge>
                         </div>
@@ -125,7 +125,7 @@ export default function VisitorDetailsPage() {
                             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-xl text-center">
                                 <h2 className="text-xl font-black text-gray-900 leading-tight">{visitor.firstName} {visitor.lastName}</h2>
                                 <p className="text-gray-500 font-bold flex items-center justify-center gap-2 mt-2">
-                                    <Building2 className="w-4 h-4 text-blue-400" /> {visitor.company || "Individuel"}
+                                    <Building2 className="w-4 h-4 text-teal-400" /> {visitor.company || "Individuel"}
                                 </p>
                             </div>
 
@@ -134,7 +134,7 @@ export default function VisitorDetailsPage() {
                                 <div className="bg-gray-50/50 p-4 rounded-2xl space-y-4 border border-gray-100">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center border shadow-sm">
-                                            <Phone className="w-4 h-4 text-blue-500" />
+                                            <Phone className="w-4 h-4 text-teal-500" />
                                         </div>
                                         <div>
                                             <p className="text-[9px] font-black text-gray-400 uppercase">Téléphone</p>
@@ -166,7 +166,7 @@ export default function VisitorDetailsPage() {
                                 <div className="p-4 bg-gray-950 rounded-2xl text-center">
                                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Total des visites</p>
                                     <div className="flex items-center justify-center gap-2 mt-1">
-                                        <CalendarCheck2 className="w-4 h-4 text-blue-500" />
+                                        <CalendarCheck2 className="w-4 h-4 text-teal-500" />
                                         <span className="text-2xl font-black text-white">{visits?.length || 0}</span>
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@ export default function VisitorDetailsPage() {
                     <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl border border-gray-100">
                         <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <Clock className="w-5 h-5 text-blue-500" /> Historique des Visites
+                                <Clock className="w-5 h-5 text-teal-500" /> Historique des Visites
                             </CardTitle>
                             <div className="relative w-full md:w-64">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -188,7 +188,7 @@ export default function VisitorDetailsPage() {
                                     placeholder="Rechercher une visite..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-10 h-10 border-gray-200 focus:ring-blue-500 rounded-xl bg-white"
+                                    className="pl-10 h-10 border-gray-200 focus:ring-teal-500 rounded-xl bg-white"
                                 />
                             </div>
                         </CardHeader>
@@ -217,7 +217,7 @@ export default function VisitorDetailsPage() {
                                                             {(visit.checkInAt || visit.createdAt) ? format(new Date(visit.checkInAt || visit.createdAt), "dd MMM yyyy", { locale: fr }) : "N/A"}
                                                         </p>
                                                         <p className="text-xs text-gray-400 flex items-center gap-1.5 font-medium">
-                                                            <Clock className="w-3 h-3 text-blue-400 shrink-0" />
+                                                            <Clock className="w-3 h-3 text-teal-400 shrink-0" />
                                                             {(visit.checkInAt || visit.createdAt) ? format(new Date(visit.checkInAt || visit.createdAt), "HH:mm") : "--:--"}
                                                             {visit.checkOutAt && ` → ${format(new Date(visit.checkOutAt), "HH:mm")}`}
                                                         </p>
@@ -253,7 +253,7 @@ export default function VisitorDetailsPage() {
                                                 </TableCell>
                                                 <TableCell className="py-4 px-6 text-right">
                                                     <Link href={`/visiteurs/list/${visit.id}`}>
-                                                        <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest text-blue-600 hover:bg-blue-50">
+                                                        <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest text-teal-600 hover:bg-teal-50">
                                                             Détails
                                                         </Button>
                                                     </Link>

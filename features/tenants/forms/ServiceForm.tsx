@@ -106,7 +106,7 @@ export function ServiceForm({ initialData, onSuccess }: ServiceFormProps) {
                         <FormItem>
                             <FormLabel>Nom du Service</FormLabel>
                             <FormControl>
-                                <Input placeholder="ex: Maintenance Informatique" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
+                                <Input placeholder="ex: Maintenance Informatique" className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -120,7 +120,7 @@ export function ServiceForm({ initialData, onSuccess }: ServiceFormProps) {
                         <FormItem>
                             <FormLabel>Description (Optionnel)</FormLabel>
                             <FormControl>
-                                <Input placeholder="ex: Support technique de niveau 1" className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" {...field} />
+                                <Input placeholder="ex: Support technique de niveau 1" className="border-gray-200 focus:border-teal-500 focus:ring-teal-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -135,7 +135,7 @@ export function ServiceForm({ initialData, onSuccess }: ServiceFormProps) {
                             <FormLabel>Département</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
-                                    <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                    <SelectTrigger className="border-gray-200 focus:border-teal-500 focus:ring-teal-500">
                                         <SelectValue placeholder="Sélectionnez un département" />
                                     </SelectTrigger>
                                 </FormControl>
@@ -157,7 +157,7 @@ export function ServiceForm({ initialData, onSuccess }: ServiceFormProps) {
                     <Button
                         type="submit"
                         disabled={createService.isPending || updateService.isPending}
-                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa] text-white"
+                        className="px-8 bg-[#0DBDB5] hover:bg-[#0044aa] text-white"
                     >
                         {isEditing ? "Enregistrer" : "Créer le Service"}
                     </Button>

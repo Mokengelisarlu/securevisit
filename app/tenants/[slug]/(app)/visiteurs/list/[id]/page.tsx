@@ -50,7 +50,7 @@ export default function VisitDetailsPage() {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                <Loader2 className="w-10 h-10 animate-spin text-teal-500" />
                 <p className="text-gray-500 font-medium">Chargement des détails de la visite...</p>
             </div>
         );
@@ -94,7 +94,7 @@ export default function VisitDetailsPage() {
                                 {config.label}
                             </Badge>
                         </div>
-                        <p className="text-gray-500 font-medium mt-1">Référence: <span className="font-mono text-blue-600 font-bold">{visit.visitNumber}</span></p>
+                        <p className="text-gray-500 font-medium mt-1">Référence: <span className="font-mono text-teal-600 font-bold">{visit.visitNumber}</span></p>
                     </div>
                 </div>
             </div>
@@ -107,10 +107,10 @@ export default function VisitDetailsPage() {
                         <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <User className="w-4 h-4 text-blue-500" /> Profil Visiteur
+                                    <User className="w-4 h-4 text-teal-500" /> Profil Visiteur
                                 </CardTitle>
                                 <Link href={`/visiteurs/registered/${visit.visitorId}`}>
-                                    <Button variant="outline" size="sm" className="rounded-full text-xs font-bold border-blue-100 text-blue-600 hover:bg-blue-50">
+                                    <Button variant="outline" size="sm" className="rounded-full text-xs font-bold border-teal-100 text-teal-600 hover:bg-teal-50">
                                         Voir Profil Complet
                                     </Button>
                                 </Link>
@@ -122,7 +122,7 @@ export default function VisitDetailsPage() {
                                     onClick={() => visit.visitorPhotoUrl && handleOpenImage(`/api/tenants/${slug}/photos?url=${encodeURIComponent(visit.visitorPhotoUrl)}`, `${visit.visitor.firstName} ${visit.visitor.lastName}`)}
                                     className={cn(
                                         "w-24 h-24 rounded-3xl flex items-center justify-center text-3xl font-black shadow-inner shrink-0 relative overflow-hidden group transition-all",
-                                        visit.visitorPhotoUrl ? "cursor-zoom-in hover:ring-4 hover:ring-blue-100" : "bg-blue-50 text-blue-600 border-2 border-blue-100"
+                                        visit.visitorPhotoUrl ? "cursor-zoom-in hover:ring-4 hover:ring-teal-100" : "bg-teal-50 text-teal-600 border-2 border-teal-100"
                                     )}
                                 >
                                     {visit.visitorPhotoUrl ? (
@@ -151,13 +151,13 @@ export default function VisitDetailsPage() {
                                         <div className="p-4 bg-gray-50 rounded-2xl space-y-1">
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Téléphone</p>
                                             <p className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                                <Phone className="w-3.5 h-3.5 text-blue-400" /> {visit.visitor.phone || "Non renseigné"}
+                                                <Phone className="w-3.5 h-3.5 text-teal-400" /> {visit.visitor.phone || "Non renseigné"}
                                             </p>
                                         </div>
                                         <div className="p-4 bg-gray-50 rounded-2xl space-y-1">
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Type Visiteur</p>
                                             <p className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                                <Tag className="w-3.5 h-3.5 text-blue-400" /> {visit.visitor.type?.name || "Standard"}
+                                                <Tag className="w-3.5 h-3.5 text-teal-400" /> {visit.visitor.type?.name || "Standard"}
                                             </p>
                                         </div>
                                     </div>
@@ -170,7 +170,7 @@ export default function VisitDetailsPage() {
                     <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl">
                         <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6">
                             <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <Shield className="w-4 h-4 text-blue-500" /> Contexte & Destination
+                                <Shield className="w-4 h-4 text-teal-500" /> Contexte & Destination
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-8 space-y-6">
@@ -197,8 +197,8 @@ export default function VisitDetailsPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="p-6 bg-blue-50/30 rounded-3xl border border-blue-50 space-y-2">
-                                    <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Motif de la visite</p>
+                                <div className="p-6 bg-teal-50/30 rounded-3xl border border-teal-50 space-y-2">
+                                    <p className="text-[10px] font-black text-teal-400 uppercase tracking-widest">Motif de la visite</p>
                                     <p className="text-lg font-bold text-blue-900 italic">"{visit.purpose}"</p>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@ export default function VisitDetailsPage() {
                             <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                        <FileSignature className="w-4 h-4 text-blue-500" /> Conformité & Signature
+                                        <FileSignature className="w-4 h-4 text-teal-500" /> Conformité & Signature
                                     </CardTitle>
                                     {visit.policyAcceptedAt && (
                                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-100 flex items-center gap-2 px-3 py-1.5 font-bold text-[10px]">
@@ -242,7 +242,7 @@ export default function VisitDetailsPage() {
                 <div className="space-y-8">
                     {/* Time Tracking */}
                     <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl border border-gray-100">
-                        <CardHeader className="bg-blue-600 pb-8">
+                        <CardHeader className="bg-teal-600 pb-8">
                             <CardTitle className="text-sm font-black text-white/70 uppercase tracking-widest flex items-center gap-2">
                                 <Clock className="w-4 h-4" /> Suivi Temporel
                             </CardTitle>
@@ -286,12 +286,12 @@ export default function VisitDetailsPage() {
                         <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl border border-gray-100">
                             <CardHeader className="bg-gray-900 pb-8">
                                 <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <Car className="w-4 h-4 text-blue-500" /> Véhicule
+                                    <Car className="w-4 h-4 text-teal-500" /> Véhicule
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="-mt-4 space-y-4">
                                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-lg text-center space-y-4 relative overflow-hidden">
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-blue-500" />
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-teal-500" />
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Plaque d'immatriculation</p>
                                         <p className="text-3xl font-black text-gray-900 tracking-tighter uppercase font-mono">{visit.vehicle.plateNumber}</p>

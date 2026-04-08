@@ -34,7 +34,7 @@ export default function DashboardPage() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-6 py-4 font-semibold text-sm transition-all relative ${activeTab === tab
-              ? "text-[#1E6EE6]"
+              ? "text-[#0DBDB5]"
               : "text-[#6B7280] hover:text-[#0E1116]"
               }`}
             style={{ fontFamily: 'Sora, sans-serif' }}
@@ -43,7 +43,7 @@ export default function DashboardPage() {
             {tab === "hosts" && "Hôtes (Employés)"}
             {tab === "visitors" && "Visiteurs"}
             {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1E6EE6] rounded-full animate-in fade-in slide-in-from-bottom-1 duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0DBDB5] rounded-full animate-in fade-in slide-in-from-bottom-1 duration-300" />
             )}
           </button>
         ))}

@@ -62,7 +62,7 @@ export default function AdminDashboard() {
         <StatCard
           title="Total Tenants"
           value={stats?.totalTenants || 0}
-          icon={<Building2 className="h-6 w-6 text-blue-600" />}
+          icon={<Building2 className="h-6 w-6 text-teal-600" />}
           description="Active workspace"
         />
         <StatCard

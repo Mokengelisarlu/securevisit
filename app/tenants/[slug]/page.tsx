@@ -63,7 +63,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
 
       {/* Animated gradient overlay */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/50 to-slate-900/70"
+        className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-teal-900/50 to-slate-900/70"
         style={{
           animation: 'gradientShift 8s ease infinite',
         }}
@@ -74,7 +74,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute rounded-full bg-blue-500"
+            className="absolute rounded-full bg-teal-500"
             style={{
               width: `${Math.random() * 4 + 2}px`,
               height: `${Math.random() * 4 + 2}px`,
@@ -123,7 +123,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
             {userId ? (
               <Link
                 href="/dashboard"
-                className="w-full flex items-center justify-center gap-2 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#0DBDB5]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <LayoutDashboard className="w-5 h-5" />
                 <span>Accéder au Tableau de Bord</span>
@@ -131,7 +131,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
             ) : (
               <Link
                 href="/sign-in"
-                className="w-full flex items-center justify-center gap-3 bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#1E6EE6]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-3 bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white font-semibold py-5 rounded-2xl shadow-xl shadow-[#0DBDB5]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <LogIn className="w-5 h-5" />
                 <span>Se connecter</span>
@@ -142,7 +142,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
               href="/kiosk"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:border-blue-400 text-white font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:border-teal-400 text-white font-semibold py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Monitor className="w-5 h-5" />
               <span>Émulateur de tablette</span>
@@ -165,7 +165,7 @@ function TenantHeroPage({ tenant, userId }: { tenant: any; userId: string | null
             Powered by MOKENGELI Sarlu
           </span>
         </div>
-        <p className="text-[10px] text-blue-200/60 font-medium tracking-tight">
+        <p className="text-[10px] text-teal-200/60 font-medium tracking-tight">
           &copy; {new Date().getFullYear()} SecureVisit. Tous droits réservés.
         </p>
       </footer>

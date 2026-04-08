@@ -64,7 +64,7 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
                     {/* Tenant Name Display */}
                     <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/60 rounded-xl px-3 py-1.5 shadow-sm">
-                        <Building2 className="w-3.5 h-3.5 text-blue-500" />
+                        <Building2 className="w-3.5 h-3.5 text-teal-500" />
                         <span className="text-[10px] font-black text-slate-600 uppercase tracking-wider">
                             {tenantName || "Chargement..."}
                         </span>
@@ -75,7 +75,7 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                     <UserButton
                         appearance={{
                             elements: {
-                                userButtonAvatarBox: "w-9 h-9 border-2 border-white hover:border-blue-400 transition-all shadow-md"
+                                userButtonAvatarBox: "w-9 h-9 border-2 border-white hover:border-teal-400 transition-all shadow-md"
                             }
                         }}
                     />
@@ -149,11 +149,11 @@ function SidebarLink({ href, icon, label, active, collapsed }: { href: string; i
             href={href}
             title={collapsed ? label : ""}
             className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all border-l-[3px] ${active
-                ? 'bg-blue-50/50 text-blue-600 border-blue-600'
+                ? 'bg-teal-50/50 text-teal-600 border-teal-600'
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 border-transparent'
                 } ${collapsed ? 'justify-center px-0' : ''}`}
         >
-            <span className={`${active ? "text-blue-600" : "text-gray-400"} ${collapsed ? "w-6 h-6 flex items-center justify-center ms-1" : ""}`}>
+            <span className={`${active ? "text-teal-600" : "text-gray-400"} ${collapsed ? "w-6 h-6 flex items-center justify-center ms-1" : ""}`}>
                 {icon}
             </span>
             {!collapsed && <span className="truncate">{label}</span>}
@@ -167,7 +167,7 @@ function HeaderAction({ children, href, target, active }: { children: React.Reac
             href={href}
             target={target}
             rel={target === "_blank" ? "noopener noreferrer" : undefined}
-            className={`px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all flex items-center shadow-sm ${active ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'}`}
+            className={`px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all flex items-center shadow-sm ${active ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'}`}
         >
             {children}
         </Link>

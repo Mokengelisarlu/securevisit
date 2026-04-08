@@ -45,7 +45,7 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                 {/* Header Stats */}
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border flex items-center justify-center font-black text-blue-600">
+                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border flex items-center justify-center font-black text-teal-600">
                             {visit.visitor.firstName[0]}{visit.visitor.lastName[0]}
                         </div>
                         <div>
@@ -65,7 +65,7 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                     {/* Visitor Info */}
                     <div className="space-y-4">
                         <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                            <User className="w-4 h-4 text-blue-500" /> Profil Visiteur
+                            <User className="w-4 h-4 text-teal-500" /> Profil Visiteur
                         </h4>
                         <div className="space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
                             <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                     {/* Destination Info */}
                     <div className="space-y-4">
                         <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-blue-500" /> Destination
+                            <MapPin className="w-4 h-4 text-teal-500" /> Destination
                         </h4>
                         <div className="space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
                             <div className="flex items-center gap-3">
@@ -114,15 +114,15 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                 {/* Timeline */}
                 <div className="space-y-4">
                     <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-blue-500" /> Historique
+                        <Clock className="w-4 h-4 text-teal-500" /> Historique
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex items-center gap-4">
-                            <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-blue-100 flex items-center justify-center">
-                                <LogIn className="w-5 h-5 text-blue-500" />
+                        <div className="bg-teal-50/50 p-4 rounded-2xl border border-teal-100 flex items-center gap-4">
+                            <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-teal-100 flex items-center justify-center">
+                                <LogIn className="w-5 h-5 text-teal-500" />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-blue-400 uppercase">Check-in</p>
+                                <p className="text-[10px] font-bold text-teal-400 uppercase">Check-in</p>
                                 <p className="text-sm font-black text-blue-900">
                                     {visit.checkInAt ? format(new Date(visit.checkInAt), "Pp", { locale: fr }) : "À venir"}
                                 </p>
@@ -147,7 +147,7 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                     <div className="space-y-4 pt-4 border-t">
                         <div className="flex items-center justify-between">
                             <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <FileSignature className="w-4 h-4 text-blue-500" /> Conformité & Signature
+                                <FileSignature className="w-4 h-4 text-teal-500" /> Conformité & Signature
                             </h4>
                             {visit.policyAcceptedAt && (
                                 <p className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full flex items-center gap-1 border border-green-100">

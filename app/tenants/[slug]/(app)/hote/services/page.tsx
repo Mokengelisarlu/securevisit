@@ -8,7 +8,7 @@ export default function Page() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
                 <div>
                     <h1 className="text-3xl font-black tracking-tight text-gray-900 flex items-center gap-3">
-                        <Settings2 className="w-8 h-8 text-[#0055cc]" />
+                        <Settings2 className="w-8 h-8 text-[#0DBDB5]" />
                         Gestion des Services
                     </h1>
                     <p className="text-gray-500 mt-1 font-medium">

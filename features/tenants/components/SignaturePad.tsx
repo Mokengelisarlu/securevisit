@@ -163,7 +163,7 @@ export function SignaturePad({ onSave, onClear }: SignaturePadProps) {
                     type="button"
                     variant="outline"
                     onClick={clear}
-                    className="h-16 rounded-2xl font-black text-blue-300 border-white/20 bg-white/5 hover:bg-white/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 backdrop-blur-sm"
+                    className="h-16 rounded-2xl font-black text-teal-300 border-white/20 bg-white/5 hover:bg-white/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 backdrop-blur-sm"
                 >
                     <Eraser className="w-6 h-6" />
                     Effacer

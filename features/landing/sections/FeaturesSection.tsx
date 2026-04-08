@@ -152,8 +152,8 @@ const FeaturesSection = ({ className = '' }: FeaturesSectionProps) => {
           >
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-[#1E6EE6]" />
+                <div className="w-5 h-5 rounded-full bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 text-[#0DBDB5]" />
                 </div>
                 <span className="text-sm text-[#0E1116]">{feature.text}</span>
               </div>
@@ -163,7 +163,7 @@ const FeaturesSection = ({ className = '' }: FeaturesSectionProps) => {
           <div ref={(el) => { textRefs.current[4] = el; }}>
             <Button
               onClick={() => scrollToSection('#security')}
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-6 py-3 rounded-full text-sm font-medium btn-hover"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-6 py-3 rounded-full text-sm font-medium btn-hover"
             >
               Explorer les fonctionnalités
             </Button>
@@ -173,7 +173,7 @@ const FeaturesSection = ({ className = '' }: FeaturesSectionProps) => {
         {/* Accent Pill */}
         <div
           ref={accentRef}
-          className="absolute left-[44vw] top-[46vh] w-[10vw] h-[8vh] bg-[#1E6EE6] rounded-xl hidden lg:block"
+          className="absolute left-[44vw] top-[46vh] w-[10vw] h-[8vh] bg-[#0DBDB5] rounded-xl hidden lg:block"
           style={{ zIndex: 5 }}
         />
 
@@ -218,8 +218,8 @@ const FeaturesSection = ({ className = '' }: FeaturesSectionProps) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {features.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 text-[#1E6EE6]" />
+                  <div className="w-5 h-5 rounded-full bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-[#0DBDB5]" />
                   </div>
                   <span className="text-sm text-[#0E1116]">{feature.text}</span>
                 </div>
@@ -228,7 +228,7 @@ const FeaturesSection = ({ className = '' }: FeaturesSectionProps) => {
 
             <Button
               onClick={() => scrollToSection('#security')}
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-6 py-3 rounded-full text-sm font-medium"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-6 py-3 rounded-full text-sm font-medium"
             >
               Explorer les fonctionnalités
             </Button>

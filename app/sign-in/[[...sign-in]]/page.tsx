@@ -34,7 +34,7 @@ export default function SignInPage() {
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+        <Loader2 className="w-12 h-12 text-teal-500 animate-spin" />
       </div>
     );
   }
@@ -103,7 +103,7 @@ export default function SignInPage() {
 
           <div className="space-y-6">
             <h1 className="text-5xl font-black text-slate-900 leading-tight tracking-tight">
-              Gérez vos visiteurs avec une <span className="text-blue-600">précision absolue.</span>
+              Gérez vos visiteurs avec une <span className="text-teal-600">précision absolue.</span>
             </h1>
             <p className="text-xl text-slate-600 font-medium leading-relaxed">
               La plateforme moderne pour l'enregistrement, le contrôle des accès et le suivi en temps réel de votre établissement.
@@ -117,7 +117,7 @@ export default function SignInPage() {
               { icon: Lock, title: "Contrôle Total", desc: "Gérez vos permissions et vos historiques avec précision." }
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4 group">
-                <div className="mt-1 w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                <div className="mt-1 w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 group-hover:bg-teal-100 transition-colors">
                   <item.icon className="w-5 h-5" />
                 </div>
                 <div>
@@ -175,7 +175,7 @@ export default function SignInPage() {
                   onClick={() => signInWith("oauth_facebook")}
                   className="h-14 bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 hover:border-slate-300 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group overflow-hidden relative"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-teal-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <svg className="w-5 h-5 text-[#1877F2] relative z-10" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
@@ -200,7 +200,7 @@ export default function SignInPage() {
                 <div className="space-y-2.5">
                   <Label htmlFor="email" className="text-slate-700 font-bold ml-1 text-sm">Adresse Email</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-teal-400 transition-colors" />
                     <Input
                       id="email"
                       type="email"
@@ -208,7 +208,7 @@ export default function SignInPage() {
                       value={emailAddress}
                       onChange={(e) => setEmailAddress(e.target.value)}
                       required
-                      className="h-14 pl-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500/50 transition-all text-lg"
+                      className="h-14 pl-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl focus:bg-white focus:ring-2 focus:ring-teal-500/50 transition-all text-lg"
                     />
                   </div>
                 </div>
@@ -216,12 +216,12 @@ export default function SignInPage() {
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between ml-1">
                     <Label htmlFor="password" className="text-slate-700 font-bold text-sm">Mot de passe</Label>
-                    <Link href="/forgot-password" title="Fonctionnalité bientôt disponible" className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors">
+                    <Link href="/forgot-password" title="Fonctionnalité bientôt disponible" className="text-xs font-bold text-teal-400 hover:text-teal-300 transition-colors">
                       Oublié ?
                     </Link>
                   </div>
                   <div className="relative group">
-                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-teal-400 transition-colors" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -229,7 +229,7 @@ export default function SignInPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-14 pl-12 pr-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500/50 transition-all text-lg"
+                      className="h-14 pl-12 pr-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl focus:bg-white focus:ring-2 focus:ring-teal-500/50 transition-all text-lg"
                     />
                     <button
                       type="button"
@@ -245,7 +245,7 @@ export default function SignInPage() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white font-black text-xl rounded-2xl transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-3 group"
+                    className="w-full h-16 bg-teal-600 hover:bg-teal-700 text-white font-black text-xl rounded-2xl transition-all shadow-xl shadow-teal-500/20 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-3 group"
                   >
                     {loading ? (
                       <Loader2 className="w-6 h-6 animate-spin" />
@@ -261,7 +261,7 @@ export default function SignInPage() {
 
               <div className="text-center pt-2">
                 <p className="text-slate-400 text-sm font-medium">
-                  Pas encore de compte ? <Link href="/sign-up" className="text-blue-600 hover:text-blue-700 font-black decoration-2 underline-offset-4 hover:underline transition-all">S'inscrire</Link>
+                  Pas encore de compte ? <Link href="/sign-up" className="text-teal-600 hover:text-teal-700 font-black decoration-2 underline-offset-4 hover:underline transition-all">S'inscrire</Link>
                 </p>
               </div>
             </div>

@@ -177,8 +177,8 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                     {/* Identity */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
                         <div className="flex items-center gap-2 mb-2">
-                            <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center">
-                                <Building2 className="w-4 h-4 text-blue-600" />
+                            <div className="w-7 h-7 bg-teal-50 rounded-lg flex items-center justify-center">
+                                <Building2 className="w-4 h-4 text-teal-600" />
                             </div>
                             <p className="font-black text-sm text-gray-900 tracking-tight">Identité</p>
                         </div>
@@ -199,7 +199,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                                     <FormLabel className={labelClass}>Secteur d'activité</FormLabel>
                                     <FormControl>
                                         <div className="relative group">
-                                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-teal-600 transition-colors" />
                                             <Input placeholder="Technologie, BTP, Finance…" className={`${inputClass} pl-10`} {...field} />
                                         </div>
                                     </FormControl>
@@ -212,7 +212,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                                     <FormLabel className={labelClass}>N° RCCM / NIF / Tax ID</FormLabel>
                                     <FormControl>
                                         <div className="relative group">
-                                            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                                            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-teal-600 transition-colors" />
                                             <Input placeholder="CD-KNG-12-00000" className={`${inputClass} pl-10`} {...field} />
                                         </div>
                                     </FormControl>
@@ -237,7 +237,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                                     <FormLabel className={labelClass}>Téléphone</FormLabel>
                                     <FormControl>
                                         <div className="relative group">
-                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-teal-600 transition-colors" />
                                             <Input placeholder="+243 xxx xxx xxx" className={`${inputClass} pl-10`} {...field} />
                                         </div>
                                     </FormControl>
@@ -250,7 +250,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                                     <FormLabel className={labelClass}>Email de contact</FormLabel>
                                     <FormControl>
                                         <div className="relative group">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-teal-600 transition-colors" />
                                             <Input placeholder="contact@entreprise.com" className={`${inputClass} pl-10`} {...field} />
                                         </div>
                                     </FormControl>
@@ -264,7 +264,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                                 <FormLabel className={labelClass}>Site web</FormLabel>
                                 <FormControl>
                                     <div className="relative group">
-                                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-teal-600 transition-colors" />
                                         <Input placeholder="https://www.entreprise.com" className={`${inputClass} pl-10`} {...field} />
                                     </div>
                                 </FormControl>
@@ -320,7 +320,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-200 transition-all disabled:opacity-50"
+                            className="h-12 px-8 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-teal-200 transition-all disabled:opacity-50"
                         >
                             {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                             Enregistrer les paramètres

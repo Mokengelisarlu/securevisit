@@ -52,7 +52,7 @@ const Navigation = () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <Shield className="w-7 h-7 text-[#1E6EE6]" />
+            <Shield className="w-7 h-7 text-[#0DBDB5]" />
             <span className="font-semibold text-lg tracking-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
               SecureVisit
             </span>
@@ -75,7 +75,7 @@ const Navigation = () => {
           <div className="hidden lg:block">
             <Button
               asChild
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-5 py-2 rounded-full text-sm font-medium btn-hover"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-5 py-2 rounded-full text-sm font-medium btn-hover"
             >
               <Link href="/sign-up">Créer un compte</Link>
             </Button>
@@ -92,7 +92,7 @@ const Navigation = () => {
               <div className="flex flex-col h-full pt-8">
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-2">
-                    <Shield className="w-7 h-7 text-[#1E6EE6]" />
+                    <Shield className="w-7 h-7 text-[#0DBDB5]" />
                     <span className="font-semibold text-lg" style={{ fontFamily: 'Sora, sans-serif' }}>
                       SecureVisit
                     </span>
@@ -109,7 +109,7 @@ const Navigation = () => {
                     <SheetClose key={link.label} asChild>
                       <button
                         onClick={() => scrollToSection(link.href)}
-                        className="text-left text-lg font-medium text-[#0E1116] hover:text-[#1E6EE6] transition-colors py-2"
+                        className="text-left text-lg font-medium text-[#0E1116] hover:text-[#0DBDB5] transition-colors py-2"
                       >
                         {link.label}
                       </button>
@@ -121,7 +121,7 @@ const Navigation = () => {
                   <SheetClose asChild>
                     <Button
                       asChild
-                      className="w-full bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white py-3 rounded-full text-base font-medium"
+                      className="w-full bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white py-3 rounded-full text-base font-medium"
                     >
                       <Link href="/sign-up">Créer un compte</Link>
                     </Button>

@@ -86,7 +86,7 @@ export function ServicesList() {
 
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-dashed">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mb-4" />
             <p className="text-gray-500 font-medium">Chargement des services...</p>
         </div>
     );
@@ -104,12 +104,12 @@ export function ServicesList() {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg bg-gray-50/50"
+                        className="pl-10 h-11 border-gray-200 focus:ring-teal-500 focus:border-teal-500 rounded-lg bg-gray-50/50"
                     />
                 </div>
                 <Button
                     onClick={handleCreate}
-                    className="bg-[#0055cc] hover:bg-[#0044aa] text-white px-6 h-11 rounded-lg flex items-center gap-2 font-bold shadow-sm transition-all hover:scale-[1.02]"
+                    className="bg-[#0DBDB5] hover:bg-[#0044aa] text-white px-6 h-11 rounded-lg flex items-center gap-2 font-bold shadow-sm transition-all hover:scale-[1.02]"
                 >
                     <Plus className="w-5 h-5" />
                     Nouveau Service
@@ -140,7 +140,7 @@ export function ServicesList() {
                                     <TableCell className="py-4 px-6">
                                         {service.department ? (
                                             <div className="flex items-center gap-2">
-                                                <div className="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-md border border-blue-100 uppercase">
+                                                <div className="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-md border border-teal-100 uppercase">
                                                     {service.department.abbreviation || "DEPT"}
                                                 </div>
                                                 <span className="text-sm font-medium text-gray-600">{service.department.name}</span>
@@ -158,7 +158,7 @@ export function ServicesList() {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleEdit(service)}
-                                                className="h-9 w-9 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                                                className="h-9 w-9 hover:text-teal-600 hover:bg-teal-50 rounded-lg"
                                             >
                                                 <Edit2 className="h-4 w-4" />
                                             </Button>

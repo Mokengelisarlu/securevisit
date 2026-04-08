@@ -28,7 +28,7 @@ export default function HostDetailsPage() {
     if (isLoadingHost) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
             </div>
         );
     }
@@ -53,7 +53,7 @@ export default function HostDetailsPage() {
             <div className="flex items-center justify-between">
                 <Link
                     href="/hote/management"
-                    className="group flex items-center gap-2 text-slate-400 hover:text-blue-600 transition-colors"
+                    className="group flex items-center gap-2 text-slate-400 hover:text-teal-600 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     <span className="text-xs font-bold uppercase tracking-widest">Retour au répertoire</span>
@@ -74,7 +74,7 @@ export default function HostDetailsPage() {
                                     )}
                                 </div>
                             </div>
-                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center text-blue-600">
+                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center text-teal-600">
                                 <ShieldCheck className="w-5 h-5" />
                             </div>
                         </div>
@@ -84,12 +84,12 @@ export default function HostDetailsPage() {
                                 {host.firstName} {host.lastName}
                             </h1>
                             {host.middleName && (
-                                <p className="text-xs font-bold text-blue-600 uppercase tracking-[0.2em] mt-2">
+                                <p className="text-xs font-bold text-teal-600 uppercase tracking-[0.2em] mt-2">
                                     {host.middleName}
                                 </p>
                             )}
                             <div className="mt-4">
-                                <Badge variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-50 border-none font-bold text-[10px] px-3 py-1 uppercase tracking-widest">
+                                <Badge variant="secondary" className="bg-teal-50 text-teal-700 hover:bg-teal-50 border-none font-bold text-[10px] px-3 py-1 uppercase tracking-widest">
                                     Membre Actif
                                 </Badge>
                             </div>
@@ -161,7 +161,7 @@ export default function HostDetailsPage() {
                                                 )}
                                             </div>
                                             <div>
-                                                <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                <h4 className="text-sm font-bold text-slate-900 group-hover:text-teal-600 transition-colors">
                                                     {visit.visitor.firstName} {visit.visitor.lastName}
                                                 </h4>
                                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
@@ -195,7 +195,7 @@ export default function HostDetailsPage() {
 function ContactItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
         <div className="group flex items-start gap-4">
-            <div className="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center shrink-0 border border-gray-200 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center shrink-0 border border-gray-200 group-hover:bg-teal-50 group-hover:text-teal-500 transition-colors">
                 {icon}
             </div>
             <div className="min-w-0">

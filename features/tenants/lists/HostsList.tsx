@@ -94,7 +94,7 @@ export function HostsList() {
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-dashed">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mb-4" />
       <p className="text-gray-500 font-medium">Chargement des hôtes...</p>
     </div>
   );
@@ -112,12 +112,12 @@ export function HostsList() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
+            className="pl-10 h-11 border-gray-200 focus:ring-teal-500 focus:border-teal-500 rounded-lg"
           />
         </div>
         <Button
           onClick={handleCreate}
-          className="bg-[#0055cc] hover:bg-[#0044aa] text-white px-6 h-11 rounded-lg flex items-center gap-2 font-bold shadow-sm transition-all hover:scale-[1.02]"
+          className="bg-[#0DBDB5] hover:bg-[#0044aa] text-white px-6 h-11 rounded-lg flex items-center gap-2 font-bold shadow-sm transition-all hover:scale-[1.02]"
         >
           <Plus className="w-5 h-5" />
           Nouvel Hôte
@@ -141,7 +141,7 @@ export function HostsList() {
                 <TableRow key={host.id} className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
                   <TableCell className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 shrink-0 font-bold">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-teal-50 flex items-center justify-center text-teal-600 border border-teal-100 shrink-0 font-bold">
                         {host.photoUrl ? (
                           <img src={host.photoUrl} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -153,7 +153,7 @@ export function HostsList() {
                           {host.firstName} {host.lastName}
                         </span>
                         {host.middleName && (
-                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-600/60 leading-tight">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-teal-600/60 leading-tight">
                             {host.middleName}
                           </span>
                         )}
@@ -164,7 +164,7 @@ export function HostsList() {
                   <TableCell className="py-4 px-6">
                     {host.department ? (
                       <div className="flex items-center gap-2">
-                        <div className="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-md border border-blue-100 uppercase">
+                        <div className="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-md border border-teal-100 uppercase">
                           {host.department.abbreviation || "DEPT"}
                         </div>
                         <span className="text-sm font-medium text-gray-600">{host.department.name}</span>
@@ -198,7 +198,7 @@ export function HostsList() {
                         variant="ghost"
                         size="icon"
                         asChild
-                        className="h-9 w-9 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                        className="h-9 w-9 hover:text-teal-600 hover:bg-teal-50 rounded-lg"
                         title="Détails"
                       >
                         <Link href={`/hote/management/${host.id}`}>
@@ -209,7 +209,7 @@ export function HostsList() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(host)}
-                        className="h-9 w-9 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                        className="h-9 w-9 hover:text-teal-600 hover:bg-teal-50 rounded-lg"
                         title="Modifier"
                       >
                         <Edit2 className="h-4 w-4" />
@@ -254,7 +254,7 @@ export function HostsList() {
         {totalPages > 1 && (
           <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white border-t gap-4">
             <p className="text-xs font-black uppercase tracking-widest text-gray-400">
-              Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
+              Page <span className="text-teal-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
               <span className="mx-2 text-gray-200">|</span>
               <span className="text-gray-500 font-bold normal-case">{filteredHosts.length} résultats</span>
             </p>

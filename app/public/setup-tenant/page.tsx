@@ -29,7 +29,7 @@ export default function CreateTenantPage() {
           href="/"
           className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity"
         >
-          <Shield className="w-8 h-8 text-[#1E6EE6]" />
+          <Shield className="w-8 h-8 text-[#0DBDB5]" />
           <span
             className="font-semibold text-2xl text-[#0E1116] tracking-tight"
             style={{ fontFamily: 'Sora, sans-serif' }}
@@ -54,8 +54,8 @@ export default function CreateTenantPage() {
 
           {isCreating && (
             <div className="mt-6 flex flex-col items-center gap-3 animate-pulse">
-              <div className="w-6 h-6 border-2 border-[#1E6EE6] border-t-transparent rounded-full animate-spin" />
-              <p className="text-center text-sm font-medium text-[#1E6EE6]">Redirection vers votre portail...</p>
+              <div className="w-6 h-6 border-2 border-[#0DBDB5] border-t-transparent rounded-full animate-spin" />
+              <p className="text-center text-sm font-medium text-[#0DBDB5]">Redirection vers votre portail...</p>
             </div>
           )}
         </div>
@@ -63,7 +63,7 @@ export default function CreateTenantPage() {
         {/* Benefits Footer */}
         <div className="mt-8 text-center">
           <p className="text-[#6B7280] text-sm">
-            En créant votre portail, vous acceptez nos <Link href="#" className="text-[#1E6EE6] hover:underline">Conditions d'utilisation</Link>
+            En créant votre portail, vous acceptez nos <Link href="#" className="text-[#0DBDB5] hover:underline">Conditions d'utilisation</Link>
           </p>
           <p className="mt-4 text-xs text-[#9CA3AF]">
             &copy; {new Date().getFullYear()} SecureVisit. Tous droits réservés.

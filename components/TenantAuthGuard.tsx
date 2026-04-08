@@ -60,7 +60,7 @@ export function TenantAuthGuard({ tenantSlug, children }: TenantAuthGuardProps) 
   if (isChecking) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-white">
-        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-gray-500 font-medium animate-pulse">Vérification de l'accès en cours...</p>
       </div>
     );

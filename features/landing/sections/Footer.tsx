@@ -24,7 +24,7 @@ const Footer = () => {
             {/* Logo & Description */}
             <div className="col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <Shield className="w-8 h-8 text-[#1E6EE6]" />
+                <Shield className="w-8 h-8 text-[#0DBDB5]" />
                 <span
                   className="font-semibold text-xl tracking-tight"
                   style={{ fontFamily: 'Sora, sans-serif' }}

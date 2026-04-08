@@ -102,7 +102,7 @@ const IntegrationsSection = ({ className = '' }: IntegrationsSectionProps) => {
             >
               <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-xl bg-[#F4F6F8] flex items-center justify-center">
                 <span
-                  className="text-lg lg:text-xl font-bold text-[#1E6EE6]"
+                  className="text-lg lg:text-xl font-bold text-[#0DBDB5]"
                   style={{ fontFamily: 'Sora, sans-serif' }}
                 >
                   {integration.icon}
@@ -117,7 +117,7 @@ const IntegrationsSection = ({ className = '' }: IntegrationsSectionProps) => {
 
         {/* CTA */}
         <div className="text-center">
-          <button className="inline-flex items-center gap-2 text-sm font-medium text-[#1E6EE6] hover:text-[#1a5fcc] transition-colors">
+          <button className="inline-flex items-center gap-2 text-sm font-medium text-[#0DBDB5] hover:text-[#0CA8A0] transition-colors">
             Voir toutes les intégrations
             <ArrowRight className="w-4 h-4" />
           </button>

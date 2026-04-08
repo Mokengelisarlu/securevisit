@@ -97,13 +97,13 @@ export function VisitorsList() {
               {editingId === visitor.id ? (
                 <div className="flex flex-col gap-2 pr-4">
                   <div className="flex gap-2">
-                    <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
-                    <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                    <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
+                    <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                   </div>
-                  <Input value={company} onChange={(e) => setCompany(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" placeholder="Entreprise" />
+                  <Input value={company} onChange={(e) => setCompany(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-teal-500 focus:ring-teal-500" placeholder="Entreprise" />
                   <div className="flex gap-2">
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500" placeholder="Téléphone" />
-                    <Button size="sm" onClick={() => saveEdit(visitor.id)} disabled={updateMutation.isPending} className="bg-blue-600 hover:bg-blue-700 h-9 rounded-lg">
+                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="h-9 rounded-lg border-gray-200 focus:border-teal-500 focus:ring-teal-500" placeholder="Téléphone" />
+                    <Button size="sm" onClick={() => saveEdit(visitor.id)} disabled={updateMutation.isPending} className="bg-teal-600 hover:bg-teal-700 h-9 rounded-lg">
                       Save
                     </Button>
                     <Button size="sm" variant="ghost" onClick={cancelEdit} className="h-9 rounded-lg">
@@ -113,7 +113,7 @@ export function VisitorsList() {
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-blue-50 text-blue-600 font-black border border-blue-100 shrink-0">
+                  <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-teal-50 text-teal-600 font-black border border-teal-100 shrink-0">
                     {visitor.photoUrl ? (
                       <img src={visitor.photoUrl} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -139,7 +139,7 @@ export function VisitorsList() {
             <div className="flex items-center gap-2">
               {editingId !== visitor.id && (
                 <>
-                  <Button size="sm" variant="ghost" onClick={() => startEdit(visitor)} className="h-8 w-8 p-0 rounded-lg hover:text-blue-600 hover:bg-blue-50">
+                  <Button size="sm" variant="ghost" onClick={() => startEdit(visitor)} className="h-8 w-8 p-0 rounded-lg hover:text-teal-600 hover:bg-teal-50">
                     <Edit2 className="w-4 h-4" />
                   </Button>
                   <Button
@@ -162,7 +162,7 @@ export function VisitorsList() {
       {totalPages > 1 && (
         <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-200 shadow-sm gap-4">
           <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-            Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
+            Page <span className="text-teal-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
             <span className="mx-2 text-gray-200">|</span>
             <span className="text-gray-500 font-bold normal-case">{visitors?.length} visiteurs</span>
           </p>

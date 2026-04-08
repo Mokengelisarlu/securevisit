@@ -148,7 +148,7 @@ export function UsersList() {
                 {canManage && (
                     <Button
                         onClick={() => setIsInviteModalOpen(true)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center gap-2"
+                        className="bg-teal-600 hover:bg-teal-700 text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl shadow-lg shadow-teal-200 transition-all flex items-center gap-2"
                     >
                         <UserPlus className="w-3.5 h-3.5" />
                         Inviter un collaborateur
@@ -185,7 +185,7 @@ export function UsersList() {
                                     <TableCell className="py-4 pl-6">
                                         <div className="flex items-center gap-3">
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform hover:scale-105 ${user.role === 'ROOT' ? 'bg-indigo-50 text-indigo-600 shadow-sm' :
-                                                user.status === 'PENDING' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'
+                                                user.status === 'PENDING' ? 'bg-amber-50 text-amber-600' : 'bg-teal-50 text-teal-600'
                                                 }`}>
                                                 {user.status === 'PENDING' ? <Mail className="w-5 h-5" /> : <User className="w-5 h-5" />}
                                             </div>
@@ -225,7 +225,7 @@ export function UsersList() {
                                                         <SelectValue />
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-xl border-gray-100 shadow-xl">
-                                                        <SelectItem value="ADMIN" className="font-bold text-blue-700">ADMIN</SelectItem>
+                                                        <SelectItem value="ADMIN" className="font-bold text-teal-700">ADMIN</SelectItem>
                                                         <SelectItem value="SECURITY" className="font-bold text-emerald-700">SÉCURITÉ</SelectItem>
                                                         <SelectItem value="RECEPTION" className="font-bold text-amber-700">RÉCEPTION</SelectItem>
                                                     </SelectContent>
@@ -252,7 +252,7 @@ export function UsersList() {
                 {totalPages > 1 && (
                     <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-gray-50/30 border-t border-gray-100 gap-4">
                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                            Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
+                            Page <span className="text-teal-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
                             <span className="mx-2 text-gray-200">|</span>
                             <span className="text-gray-500 font-bold normal-case">{allUsers.length} accès enregistrés</span>
                         </p>
@@ -302,7 +302,7 @@ function RoleBadge({ role }: { role: string }) {
             );
         case "ADMIN":
             return (
-                <Badge className="bg-blue-100 text-blue-700 border-none px-3 py-1 flex items-center gap-1">
+                <Badge className="bg-teal-100 text-teal-700 border-none px-3 py-1 flex items-center gap-1">
                     <ShieldCheck className="w-3 h-3" />
                     ADMIN
                 </Badge>

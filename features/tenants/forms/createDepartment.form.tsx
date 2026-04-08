@@ -72,7 +72,7 @@ export function CreateDepartmentForm() {
                     placeholder="ex: Ressources Humaines"
                     value={field.value ?? ""}
                     onChange={field.onChange}
-                    className="h-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
+                    className="h-10 border-gray-200 focus:border-teal-500 focus:ring-teal-500 transition-all"
                   />
                 </FormControl>
                 <FormMessage />
@@ -93,7 +93,7 @@ export function CreateDepartmentForm() {
                     placeholder="ex: RH"
                     value={field.value ?? ""}
                     onChange={field.onChange}
-                    className="h-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
+                    className="h-10 border-gray-200 focus:border-teal-500 focus:ring-teal-500 transition-all"
                   />
                 </FormControl>
                 <FormMessage />
@@ -104,7 +104,7 @@ export function CreateDepartmentForm() {
           <Button
             type="submit"
             disabled={createDept.isPending}
-            className="h-10 px-6 bg-[#0055cc] hover:bg-[#0044aa] text-white font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2 shrink-0"
+            className="h-10 px-6 bg-[#0DBDB5] hover:bg-[#0044aa] text-white font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2 shrink-0"
           >
             {createDept.isPending ? "Création..." : "Ajouter"}
           </Button>

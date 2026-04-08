@@ -146,12 +146,12 @@ const PricingSection = ({ className = '' }: PricingSectionProps) => {
               ref={(el) => { cardsRef.current[index] = el; }}
               className={`relative rounded-2xl lg:rounded-[28px] p-6 lg:p-8 flex flex-col ${
                 plan.highlighted
-                  ? 'bg-white border-t-4 border-[#1E6EE6] shadow-lg'
+                  ? 'bg-white border-t-4 border-[#0DBDB5] shadow-lg'
                   : 'bg-white border border-[#0E1116]/8'
               } hover:-translate-y-1 transition-transform duration-200`}
             >
               {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1E6EE6] text-white text-xs font-medium px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0DBDB5] text-white text-xs font-medium px-3 py-1 rounded-full">
                   Most Popular
                 </div>
               )}
@@ -180,8 +180,8 @@ const PricingSection = ({ className = '' }: PricingSectionProps) => {
               <div className="flex-1 space-y-3 mb-6">
                 {plan.features.map((feature, fIndex) => (
                   <div key={fIndex} className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-[#1E6EE6]" />
+                    <div className="w-5 h-5 rounded-full bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-[#0DBDB5]" />
                     </div>
                     <span className="text-sm text-[#0E1116]">{feature}</span>
                   </div>
@@ -192,7 +192,7 @@ const PricingSection = ({ className = '' }: PricingSectionProps) => {
                 onClick={scrollToContact}
                 className={`w-full py-3 rounded-full text-sm font-medium ${
                   plan.highlighted
-                    ? 'bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white'
+                    ? 'bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white'
                     : 'bg-[#F4F6F8] hover:bg-[#E8EDF2] text-[#0E1116]'
                 }`}
               >

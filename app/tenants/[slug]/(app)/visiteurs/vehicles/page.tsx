@@ -56,7 +56,7 @@ export default function VehiclesPage() {
         <div className="space-y-8 py-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-700 shadow-sm">
+                    <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-teal-700 shadow-sm">
                         <Car className="w-6 h-6" />
                     </div>
                     <div>
@@ -75,7 +75,7 @@ export default function VehiclesPage() {
                             placeholder="Rechercher par plaque, marque..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 h-11 border-gray-200 focus:ring-blue-500 rounded-lg"
+                            className="pl-10 h-11 border-gray-200 focus:ring-teal-500 rounded-lg"
                         />
                     </div>
                     <div className="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-full border">
@@ -87,7 +87,7 @@ export default function VehiclesPage() {
                 <div className="bg-white rounded-xl border shadow-sm overflow-hidden min-h-[400px]">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center p-20 gap-4">
-                            <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                            <Loader2 className="w-10 h-10 animate-spin text-teal-500" />
                             <p className="text-gray-500 font-medium">Chargement des véhicules...</p>
                         </div>
                     ) : filteredVehicles.length > 0 ? (
@@ -107,7 +107,7 @@ export default function VehiclesPage() {
                                         <TableCell className="py-4 px-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-12 h-8 bg-gray-900 flex items-center justify-center rounded border border-gray-700 shadow-sm relative overflow-hidden">
-                                                    <div className="absolute top-0 left-0 w-full h-0.5 bg-blue-500" />
+                                                    <div className="absolute top-0 left-0 w-full h-0.5 bg-teal-500" />
                                                     <span className="text-xs font-mono font-black text-white tracking-widest uppercase">{vehicle.plateNumber}</span>
                                                 </div>
                                             </div>
@@ -115,7 +115,7 @@ export default function VehiclesPage() {
                                         <TableCell className="py-4 px-6">
                                             <div className="flex flex-col gap-1">
                                                 <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                                                    <div className="text-blue-500">{getVehicleIcon(vehicle.type)}</div>
+                                                    <div className="text-teal-500">{getVehicleIcon(vehicle.type)}</div>
                                                     {vehicle.type}
                                                 </div>
                                                 <div className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
@@ -144,7 +144,7 @@ export default function VehiclesPage() {
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="h-9 px-4 rounded-xl border-gray-200 text-[#0055cc] hover:bg-blue-50 font-bold flex items-center gap-2"
+                                                    className="h-9 px-4 rounded-xl border-gray-200 text-[#0DBDB5] hover:bg-teal-50 font-bold flex items-center gap-2"
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                     Historique

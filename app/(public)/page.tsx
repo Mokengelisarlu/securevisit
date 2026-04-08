@@ -21,20 +21,20 @@ export default function HomePage() {
       <PublicHeader />
       <main className="min-h-screen bg-white">
         {/* ============ SECTION 1: HERO ============ */}
-        <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-32">
+        <section className="bg-gradient-to-br from-slate-900 via-teal-900 to-slate-800 text-white py-32">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Left: Content */}
               <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 border border-blue-400/30 w-fit">
-                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                  <span className="text-sm font-semibold text-blue-200">Visitor Management System</span>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/20 border border-teal-400/30 w-fit">
+                  <div className="w-2 h-2 rounded-full bg-teal-400"></div>
+                  <span className="text-sm font-semibold text-teal-200">Visitor Management System</span>
                 </div>
 
                 <div className="space-y-6">
                   <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                     Gérez vos visiteurs <br />
-                    <span className="text-blue-400">simplement et en toute sécurité</span>
+                    <span className="text-teal-400">simplement et en toute sécurité</span>
                   </h1>
                   <p className="text-xl text-slate-300 leading-relaxed max-w-lg">
                     Une plateforme moderne pour l'enregistrement des visiteurs, le contrôle des accès et le suivi en temps réel — adaptée aux entreprises, écoles et institutions.
@@ -42,7 +42,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
+                  <Button size="lg" className="bg-teal-600 hover:bg-teal-700 text-white" asChild>
                     <Link href="/sign-up">Créer un compte</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="border-slate-400 text-slate-200 hover:bg-slate-800">
@@ -76,22 +76,22 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <FeatureCard
-                icon={<LayoutDashboard className="w-8 h-8 text-blue-600" />}
+                icon={<LayoutDashboard className="w-8 h-8 text-teal-600" />}
                 title="Tableau de Bord Live"
                 description="Visualisez en temps réel les arrivées, les visiteurs sur place et les sorties."
               />
               <FeatureCard
-                icon={<ClipboardList className="w-8 h-8 text-blue-600" />}
+                icon={<ClipboardList className="w-8 h-8 text-teal-600" />}
                 title="Gestion des Visites"
                 description="Suivi détaillé avec filtrage avancé par date et statut pour la traçabilité."
               />
               <FeatureCard
-                icon={<TabletSmartphone className="w-8 h-8 text-blue-600" />}
+                icon={<TabletSmartphone className="w-8 h-8 text-teal-600" />}
                 title="Borne d'Enregistrement"
                 description="Interface publique intuitive pour un check-in autonome sur tablette."
               />
               <FeatureCard
-                icon={<Users className="w-8 h-8 text-blue-600" />}
+                icon={<Users className="w-8 h-8 text-teal-600" />}
                 title="Base de Données Visiteurs"
                 description="Gérez vos visiteurs récurrents et catégorisez-les par type."
               />
@@ -130,7 +130,7 @@ export default function HomePage() {
                     "Horloge synchronisée en temps réel"
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-teal-600 flex-shrink-0" />
                       <span className="text-slate-700">{feature}</span>
                     </div>
                   ))}
@@ -172,14 +172,14 @@ export default function HomePage() {
               ].map((item, i) => (
                 <div key={i} className="relative">
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-lg">
                       {item.step}
                     </div>
                     <h4 className="text-xl font-bold text-slate-900">{item.title}</h4>
                     <p className="text-slate-600 leading-relaxed">{item.description}</p>
                   </div>
                   {i < 2 && (
-                    <div className="hidden lg:block absolute top-6 -right-4 text-blue-400 opacity-50">
+                    <div className="hidden lg:block absolute top-6 -right-4 text-teal-400 opacity-50">
                       <ArrowRight className="w-8 h-8" />
                     </div>
                   )}
@@ -221,7 +221,7 @@ export default function HomePage() {
                     "Conformité RGPD prête",
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <ShieldCheck className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                      <ShieldCheck className="w-5 h-5 text-teal-400 flex-shrink-0" />
                       <span className="text-slate-200">{feature}</span>
                     </div>
                   ))}
@@ -242,19 +242,19 @@ export default function HomePage() {
         {/* ============ SECTION 6: FINAL CTA ============ */}
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6">
-            <Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-2xl border-0">
+            <Card className="bg-gradient-to-r from-teal-600 to-teal-700 text-white shadow-2xl border-0">
               <CardContent className="p-16 text-center space-y-8">
                 <h2 className="text-4xl lg:text-5xl font-bold">
                   Transformez votre gestion des visiteurs dès aujourd'hui
                 </h2>
-                <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+                <p className="text-xl text-teal-100 max-w-2xl mx-auto">
                   Rejoignez les entreprises qui font confiance à SecureVisit pour sécuriser leur accueil et moderniser leur accueil des visiteurs.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold" asChild>
+                  <Button size="lg" className="bg-white text-teal-600 hover:bg-teal-50 font-semibold" asChild>
                     <Link href="/sign-up">Créer un compte gratuit</Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-blue-600/20">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-teal-600/20">
                     Planifier une démo
                   </Button>
                 </div>
@@ -290,7 +290,7 @@ function FeatureCard({
   return (
     <Card className="hover:shadow-lg transition border-slate-200 bg-white">
       <CardContent className="p-8 space-y-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal-100">
           {icon}
         </div>
         <h3 className="font-bold text-lg text-slate-900">{title}</h3>

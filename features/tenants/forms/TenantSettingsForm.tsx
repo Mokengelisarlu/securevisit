@@ -49,9 +49,9 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
 
     return (
         <Card className="border-none shadow-md overflow-hidden bg-white rounded-2xl">
-            <CardHeader className="bg-blue-50/50 pb-8 pt-8 px-8">
+            <CardHeader className="bg-teal-50/50 pb-8 pt-8 px-8">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                    <div className="w-12 h-12 bg-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-200">
                         <Shield className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -72,7 +72,7 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
                         placeholder="Saisissez ici le texte que les visiteurs doivent lire avant de signer..."
                         value={ndaPolicyText}
                         onChange={(e) => setNdaPolicyText(e.target.value)}
-                        className="min-h-[200px] text-base rounded-xl border-gray-200 focus:border-blue-500 reflection-none transition-all"
+                        className="min-h-[200px] text-base rounded-xl border-gray-200 focus:border-teal-500 reflection-none transition-all"
                     />
                     <p className="text-xs text-gray-400 font-medium italic">
                         Ce texte s'affichera à l'étape finale de l'enregistrement sur le Kiosk.
@@ -96,10 +96,10 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex flex-col justify-between p-6 bg-blue-50/30 rounded-2xl border border-blue-100/50 transition-colors hover:bg-blue-50/50">
+                    <div className="flex flex-col justify-between p-6 bg-teal-50/30 rounded-2xl border border-teal-100/50 transition-colors hover:bg-teal-50/50">
                         <div className="space-y-1 mb-4">
                             <div className="flex items-center gap-2 mb-1">
-                                <Camera className="w-4 h-4 text-blue-600" />
+                                <Camera className="w-4 h-4 text-teal-600" />
                                 <Label htmlFor="reqVisPhoto" className="text-base font-bold text-gray-800">
                                     Photo Visiteur
                                 </Label>
@@ -143,7 +143,7 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
                     <Button
                         onClick={handleSave}
                         disabled={isPending}
-                        className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-100 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                        className="h-12 px-8 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg shadow-blue-100 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
                     >
                         {isPending ? (
                             <Loader2 className="w-5 h-5 animate-spin" />

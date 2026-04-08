@@ -22,12 +22,12 @@ export default function FeaturesPage() {
             {/* Hero Header */}
             <section className="bg-slate-50 border-b py-20">
                 <div className="container mx-auto px-6 text-center max-w-4xl">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-6">
-                        <Zap className="w-3 h-3 text-blue-600" />
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-100 text-teal-700 text-xs font-bold uppercase tracking-wider mb-6">
+                        <Zap className="w-3 h-3 text-teal-600" />
                         Fonctionnalités Clés
                     </div>
                     <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tight leading-tight mb-6">
-                        Une solution complète pour votre <span className="text-blue-600">gestion des visiteurs</span>
+                        Une solution complète pour votre <span className="text-teal-600">gestion des visiteurs</span>
                     </h1>
                     <p className="text-xl text-gray-600 font-medium leading-relaxed">
                         Découvrez comment SecureVisit transforme votre accueil en un espace sécurisé, moderne et efficace.
@@ -45,7 +45,7 @@ export default function FeaturesPage() {
                             description="Visualisez en temps réel les arrivées, les visiteurs sur place et les sorties. Statisques quotidiennes et mensuelles automatisées."
                         />
                         <FeatureItem
-                            icon={<ClipboardList className="w-10 h-10 text-blue-500" />}
+                            icon={<ClipboardList className="w-10 h-10 text-teal-500" />}
                             title="Gestion des Visites"
                             description="Suivi détaillé via des onglets spécialisés. Filtrage avancé par date et statut pour une traçabilité totale."
                         />
@@ -118,7 +118,7 @@ export default function FeaturesPage() {
                     <div className="max-w-2xl mx-auto space-y-10">
                         <h2 className="text-4xl font-black text-gray-900">Prêt à moderniser votre accueil ?</h2>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Button asChild size="lg" className="h-14 px-10 text-lg font-bold rounded-2xl bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-100">
+                            <Button asChild size="lg" className="h-14 px-10 text-lg font-bold rounded-2xl bg-teal-600 hover:bg-teal-700 shadow-xl shadow-blue-100">
                                 <Link href="/sign-up">Créer mon espace</Link>
                             </Button>
                             <Button asChild variant="outline" size="lg" className="h-14 px-10 text-lg font-bold rounded-2xl border-2">
@@ -149,11 +149,11 @@ export default function FeaturesPage() {
 
 function FeatureItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
     return (
-        <div className="group p-8 rounded-[2.5rem] bg-gray-50 border border-transparent hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-50 transition-all duration-500">
+        <div className="group p-8 rounded-[2.5rem] bg-gray-50 border border-transparent hover:border-teal-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-50 transition-all duration-500">
             <div className="mb-6 bg-white w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg shadow-gray-100 group-hover:scale-110 transition-transform duration-500">
                 {icon}
             </div>
-            <h3 className="text-xl font-black text-gray-900 mb-3 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{title}</h3>
+            <h3 className="text-xl font-black text-gray-900 mb-3 group-hover:text-teal-600 transition-colors uppercase tracking-tight">{title}</h3>
             <p className="text-gray-500 font-medium leading-relaxed italic line-clamp-3">
                 {description}
             </p>

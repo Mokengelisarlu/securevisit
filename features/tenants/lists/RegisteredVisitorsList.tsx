@@ -85,7 +85,7 @@ export function RegisteredVisitorsList() {
 
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-gray-200 border-dashed">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mb-4" />
             <p className="text-gray-500 font-medium">Chargement des visiteurs...</p>
         </div>
     );
@@ -103,7 +103,7 @@ export function RegisteredVisitorsList() {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500 rounded-lg"
+                        className="pl-10 h-11 border-gray-200 focus:ring-teal-500 focus:border-teal-500 rounded-lg"
                     />
                 </div>
                 <div className="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-full border border-gray-200">
@@ -129,7 +129,7 @@ export function RegisteredVisitorsList() {
                                 <TableRow key={visitor.id} className="hover:bg-gray-50/50 transition-colors border-b border-gray-200">
                                     <TableCell className="py-4 px-6">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 font-bold shrink-0">
+                                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-teal-50 text-teal-600 border border-teal-100 font-bold shrink-0">
                                                 {visitor.photoUrl ? (
                                                     <img src={visitor.photoUrl} alt="" className="w-full h-full object-cover" />
                                                 ) : (
@@ -162,7 +162,7 @@ export function RegisteredVisitorsList() {
                                     </TableCell>
                                     <TableCell className="py-4 px-6">
                                         {visitor.type ? (
-                                            <Badge variant="outline" className="bg-blue-50/50 text-blue-700 border-blue-100 flex items-center gap-1.5 w-fit px-2.5 py-0.5 font-semibold">
+                                            <Badge variant="outline" className="bg-teal-50/50 text-teal-700 border-teal-100 flex items-center gap-1.5 w-fit px-2.5 py-0.5 font-semibold">
                                                 <Tag className="w-3 h-3" />
                                                 {visitor.type.name}
                                             </Badge>
@@ -188,7 +188,7 @@ export function RegisteredVisitorsList() {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-9 w-9 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                                                    className="h-9 w-9 hover:text-teal-600 hover:bg-teal-50 rounded-lg"
                                                     title="Voir les détails"
                                                 >
                                                     <Eye className="h-4 w-4" />
@@ -198,7 +198,7 @@ export function RegisteredVisitorsList() {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleEdit(visitor)}
-                                                className="h-9 w-9 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                                                className="h-9 w-9 hover:text-teal-600 hover:bg-teal-50 rounded-lg"
                                             >
                                                 <Edit2 className="h-4 w-4" />
                                             </Button>
@@ -242,7 +242,7 @@ export function RegisteredVisitorsList() {
             {totalPages > 1 && (
                 <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-200 shadow-sm gap-4">
                     <p className="text-xs font-black uppercase tracking-widest text-gray-400">
-                        Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
+                        Page <span className="text-teal-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
                         <span className="mx-2 text-gray-200">|</span>
                         <span className="text-gray-500 font-bold normal-case">{filteredVisitors.length} résultats</span>
                     </p>

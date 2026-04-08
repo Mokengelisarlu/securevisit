@@ -144,7 +144,7 @@ export function TabbedVisitsList() {
                 <Button
                     onClick={() => setIsPreRegisterModalOpen(true)}
                     variant="outline"
-                    className="flex-1 md:flex-none border-blue-200 text-blue-600 hover:bg-blue-50 font-black uppercase tracking-widest text-xs px-6 h-12 rounded-2xl shadow-sm transition-all hover:scale-[1.02] flex items-center gap-2"
+                    className="flex-1 md:flex-none border-teal-200 text-teal-600 hover:bg-teal-50 font-black uppercase tracking-widest text-xs px-6 h-12 rounded-2xl shadow-sm transition-all hover:scale-[1.02] flex items-center gap-2"
                 >
                     <CalendarCheck2 className="w-4 h-4" />
                     Pré-enregistrer
@@ -152,7 +152,7 @@ export function TabbedVisitsList() {
 
                 <Button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-xs px-6 h-12 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] flex items-center gap-2"
+                    className="flex-1 md:flex-none bg-teal-600 hover:bg-teal-700 text-white font-black uppercase tracking-widest text-xs px-6 h-12 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] flex items-center gap-2"
                 >
                     <UserPlus className="w-4 h-4" />
                     Nouvelle Visite
@@ -165,7 +165,7 @@ export function TabbedVisitsList() {
                     <button
                         onClick={() => setActiveTab("today")}
                         className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "today"
-                            ? "bg-white text-blue-600 shadow-sm border border-gray-100"
+                            ? "bg-white text-teal-600 shadow-sm border border-gray-100"
                             : "text-gray-500 hover:bg-white/50"
                             }`}
                     >
@@ -232,12 +232,12 @@ export function TabbedVisitsList() {
             {/* Row 3: Filters Bar (Prominent Search) */}
             <div className="flex flex-col md:flex-row gap-4 items-stretch">
                 <div className="flex-1 relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-teal-500 transition-colors" />
                     <Input
                         placeholder="Rechercher par nom, entreprise ou motif de visite..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="h-14 pl-12 bg-white border-gray-200 focus:ring-blue-500 rounded-2xl shadow-sm text-base font-medium placeholder:text-gray-400"
+                        className="h-14 pl-12 bg-white border-gray-200 focus:ring-teal-500 rounded-2xl shadow-sm text-base font-medium placeholder:text-gray-400"
                     />
                 </div>
 
@@ -261,28 +261,28 @@ export function TabbedVisitsList() {
             </div>
 
             {dateFilter === "custom" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-blue-50/50 rounded-3xl border border-blue-100/50 animate-in fade-in slide-in-from-top-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-teal-50/50 rounded-3xl border border-teal-100/50 animate-in fade-in slide-in-from-top-4">
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-blue-400 uppercase tracking-widest px-1">Date & Heure de début</label>
+                        <label className="text-[10px] font-black text-teal-400 uppercase tracking-widest px-1">Date & Heure de début</label>
                         <div className="relative">
-                            <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
+                            <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-400" />
                             <Input
                                 type="datetime-local"
                                 value={customStartDate}
                                 onChange={(e) => setCustomStartDate(e.target.value)}
-                                className="h-12 pl-12 bg-white border-blue-100 rounded-xl font-bold text-blue-900"
+                                className="h-12 pl-12 bg-white border-teal-100 rounded-xl font-bold text-blue-900"
                             />
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-blue-400 uppercase tracking-widest px-1">Date & Heure de fin</label>
+                        <label className="text-[10px] font-black text-teal-400 uppercase tracking-widest px-1">Date & Heure de fin</label>
                         <div className="relative">
-                            <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
+                            <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-400" />
                             <Input
                                 type="datetime-local"
                                 value={customEndDate}
                                 onChange={(e) => setCustomEndDate(e.target.value)}
-                                className="h-12 pl-12 bg-white border-blue-100 rounded-xl font-bold text-blue-900"
+                                className="h-12 pl-12 bg-white border-teal-100 rounded-xl font-bold text-blue-900"
                             />
                         </div>
                     </div>
@@ -293,7 +293,7 @@ export function TabbedVisitsList() {
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px]">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center p-20 gap-4">
-                        <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                        <Loader2 className="w-10 h-10 animate-spin text-teal-500" />
                         <p className="text-gray-500 font-medium">Chargement des visites...</p>
                     </div>
                 ) : filteredVisits.length > 0 ? (
@@ -313,7 +313,7 @@ export function TabbedVisitsList() {
                                 <TableRow key={visit.id} className="hover:bg-gray-50/30 transition-colors border-b border-gray-200">
                                     <TableCell className="py-4 px-6">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 font-bold shrink-0">
+                                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-teal-50 text-teal-600 border border-teal-100 font-bold shrink-0">
                                                 {visit.visitor.photoUrl ? (
                                                     <img src={visit.visitor.photoUrl} alt="" className="w-full h-full object-cover" />
                                                 ) : (
@@ -360,7 +360,7 @@ export function TabbedVisitsList() {
                                     </TableCell>
                                     <TableCell className="py-4 px-6 text-sm text-gray-600 font-medium">
                                         <div className="flex items-center gap-2">
-                                            <Clock className={`w-3.5 h-3.5 ${visit.status === "SCHEDULED" ? "text-amber-400" : "text-blue-400"}`} />
+                                            <Clock className={`w-3.5 h-3.5 ${visit.status === "SCHEDULED" ? "text-amber-400" : "text-teal-400"}`} />
                                             {visit.status === "SCHEDULED" ? (
                                                 <span>{new Date(visit.visitDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                             ) : visit.checkInAt ? (
@@ -408,7 +408,7 @@ export function TabbedVisitsList() {
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0 rounded-lg border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-200 transition-all"
+                                                    className="h-8 w-8 p-0 rounded-lg border-gray-200 text-gray-400 hover:text-teal-600 hover:border-teal-200 transition-all"
                                                     title="Voir les détails"
                                                 >
                                                     <Eye className="w-4 h-4" />
@@ -455,7 +455,7 @@ export function TabbedVisitsList() {
             {totalPages > 1 && (
                 <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-white rounded-2xl border border-gray-100 shadow-sm gap-4">
                     <p className="text-xs font-black uppercase tracking-widest text-gray-400">
-                        Page <span className="text-blue-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
+                        Page <span className="text-teal-600 font-black">{currentPage}</span> sur <span className="text-gray-900">{totalPages}</span>
                         <span className="mx-2 text-gray-200">|</span>
                         <span className="text-gray-500 font-bold normal-case">{filteredVisits.length} résultats</span>
                     </p>

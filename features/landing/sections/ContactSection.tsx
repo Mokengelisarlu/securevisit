@@ -132,11 +132,11 @@ const ContactSection = ({ className = '' }: ContactSectionProps) => {
                 <a
                   key={index}
                   href={item.href}
-                  className="flex items-center gap-3 text-sm text-[#6B7280] hover:text-[#1E6EE6] transition-colors"
+                  className="flex items-center gap-3 text-sm text-[#6B7280] hover:text-[#0DBDB5] transition-colors"
                   ref={(el) => { formFieldsRef.current[index] = el; }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                    <item.icon className="w-5 h-5 text-[#1E6EE6]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-5 h-5 text-[#0DBDB5]" />
                   </div>
                   {item.label}
                 </a>
@@ -211,7 +211,7 @@ const ContactSection = ({ className = '' }: ContactSectionProps) => {
               <div ref={(el) => { formFieldsRef.current[6] = el; }}>
                 <Button
                   type="submit"
-                  className="w-full bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white py-3 rounded-full text-sm font-medium"
+                  className="w-full bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white py-3 rounded-full text-sm font-medium"
                 >
                   <Send className="w-4 h-4 mr-2" />
                   Envoyer le message

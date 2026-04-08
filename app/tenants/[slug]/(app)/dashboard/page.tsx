@@ -59,8 +59,8 @@ export default function TenantDashboard() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-6">
         <div className="relative">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-          <div className="absolute inset-0 blur-xl bg-blue-400/20 animate-pulse rounded-full" />
+          <Loader2 className="w-12 h-12 animate-spin text-teal-600" />
+          <div className="absolute inset-0 blur-xl bg-teal-400/20 animate-pulse rounded-full" />
         </div>
         <div className="space-y-2 text-center">
           <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] animate-pulse">Synchronisation</p>
@@ -92,7 +92,7 @@ export default function TenantDashboard() {
           </div>
           <div className="flex items-center space-x-6">
             <DigitalClock />
-            <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-500/20">
+            <div className="bg-teal-600 p-3 rounded-2xl shadow-lg shadow-teal-500/20">
               <Building className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -103,8 +103,8 @@ export default function TenantDashboard() {
           <StatCard
             title="Visiteurs Actuels"
             value={stats?.onSite || 0}
-            icon={<Users className="w-6 h-6 text-blue-600" />}
-            iconBg="bg-blue-50"
+            icon={<Users className="w-6 h-6 text-teal-600" />}
+            iconBg="bg-teal-50"
             trendIcon={<TrendingUp className="w-4 h-4 text-green-500" />}
             trendText="+12% depuis hier"
             trendColor="text-green-600"
@@ -114,9 +114,9 @@ export default function TenantDashboard() {
             value={stats?.arrivedToday || 0}
             icon={<UserCheck className="w-6 h-6 text-emerald-600" />}
             iconBg="bg-emerald-50"
-            trendIcon={<Calendar className="w-4 h-4 text-blue-500" />}
+            trendIcon={<Calendar className="w-4 h-4 text-teal-500" />}
             trendText="Aujourd'hui"
-            trendColor="text-blue-500"
+            trendColor="text-teal-500"
           />
           <StatCard
             title="En Attente"
@@ -146,8 +146,8 @@ export default function TenantDashboard() {
                 <h2 className="text-xl font-bold text-slate-900">Analyse du Flux</h2>
                 <p className="text-sm text-slate-500 mt-1">Évolution des visites sur 7 jours</p>
               </div>
-              <div className="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-wider">
-                <div className="w-2 h-2 rounded-full bg-blue-600 mr-1" />
+              <div className="flex items-center gap-2 text-teal-600 font-bold text-xs uppercase tracking-wider">
+                <div className="w-2 h-2 rounded-full bg-teal-600 mr-1" />
                 Visites
               </div>
             </div>
@@ -202,7 +202,7 @@ export default function TenantDashboard() {
 
               <div className="pt-6 mt-6 border-t border-slate-100">
                 <div className="bg-slate-50 border border-slate-100 rounded-xl p-6 relative overflow-hidden">
-                  <TrendingUp className="w-5 h-5 text-blue-500 mb-3" />
+                  <TrendingUp className="w-5 h-5 text-teal-500 mb-3" />
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Smart Insights</p>
                   <p className="text-sm font-medium leading-relaxed text-slate-700">
                     &quot;Le flux de visiteurs est en hausse de 12% par rapport à hier.&quot;
@@ -224,13 +224,13 @@ export default function TenantDashboard() {
                   <input
                     type="text"
                     placeholder="Rechercher des visiteurs..."
-                    className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-medium"
+                    className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm font-medium"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <select
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-medium text-slate-700"
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm font-medium text-slate-700"
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
                 >

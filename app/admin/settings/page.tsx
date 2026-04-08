@@ -6,7 +6,7 @@ export default function SettingsPage() {
         <p className="text-gray-600 mt-2">System configuration and settings</p>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+      <div className="bg-teal-50 border border-teal-200 rounded-lg p-6 text-center">
         <p className="text-blue-900">Settings page coming soon...</p>
       </div>
     </div>

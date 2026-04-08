@@ -27,7 +27,7 @@ export default function ManagementPage() {
           onClick={() => setActiveTab("departments")}
           className={`px-4 py-2 font-medium border-b-2 transition ${
             activeTab === "departments"
-              ? "border-blue-500 text-blue-600"
+              ? "border-teal-500 text-teal-600"
               : "border-transparent text-gray-600 hover:text-gray-900"
           }`}
         >
@@ -37,7 +37,7 @@ export default function ManagementPage() {
           onClick={() => setActiveTab("hosts")}
           className={`px-4 py-2 font-medium border-b-2 transition ${
             activeTab === "hosts"
-              ? "border-blue-500 text-blue-600"
+              ? "border-teal-500 text-teal-600"
               : "border-transparent text-gray-600 hover:text-gray-900"
           }`}
         >
@@ -47,7 +47,7 @@ export default function ManagementPage() {
           onClick={() => setActiveTab("visitors")}
           className={`px-4 py-2 font-medium border-b-2 transition ${
             activeTab === "visitors"
-              ? "border-blue-500 text-blue-600"
+              ? "border-teal-500 text-teal-600"
               : "border-transparent text-gray-600 hover:text-gray-900"
           }`}
         >

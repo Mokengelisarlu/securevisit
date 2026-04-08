@@ -25,7 +25,7 @@ export default async function Page({
         <div className="space-y-6">
             <div>
                 <h1 className="text-[28px] font-black text-gray-900 tracking-tight flex items-center gap-3">
-                    <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-200">
+                    <div className="w-9 h-9 bg-teal-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-200">
                         <Building2 className="w-5 h-5 text-white" />
                     </div>
                     Mon Entreprise

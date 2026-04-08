@@ -6,7 +6,7 @@ export default function Page() {
         <div className="max-w-4xl mx-auto space-y-8 py-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shadow-inner">
+                    <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 shadow-inner">
                         <UserPlus className="w-7 h-7" />
                     </div>
                     <div>
@@ -19,8 +19,8 @@ export default function Page() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden transition-all hover:border-blue-200">
-                <div className="bg-gradient-to-r from-blue-50/50 to-transparent p-6 border-b border-gray-200">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden transition-all hover:border-teal-200">
+                <div className="bg-gradient-to-r from-teal-50/50 to-transparent p-6 border-b border-gray-200">
                     <h2 className="text-lg font-bold text-gray-800">Informations du Visiteur</h2>
                     <p className="text-sm text-gray-500">Veuillez remplir soigneusement tous les champs obligatoires.</p>
                 </div>

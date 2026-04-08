@@ -119,7 +119,7 @@ export function DepartmentsList() {
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-dashed">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mb-4" />
       <p className="text-gray-500">Chargement des départements...</p>
     </div>
   );
@@ -149,7 +149,7 @@ export function DepartmentsList() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="pl-10 h-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
+            className="pl-10 h-10 border-gray-200 focus:border-teal-500 focus:ring-teal-500 transition-all"
           />
         </div>
         <div className="text-sm text-gray-500 font-medium">
@@ -184,9 +184,9 @@ export function DepartmentsList() {
                         }}
                       />
                     ) : (
-                      <div className="w-12 h-10 bg-blue-50 rounded-lg flex items-center justify-center mx-auto border border-blue-100">
-                        <span className="text-xs font-bold text-blue-600 uppercase">
-                          {dept.abbreviation || <Building2 className="w-4 h-4 text-blue-400" />}
+                      <div className="w-12 h-10 bg-teal-50 rounded-lg flex items-center justify-center mx-auto border border-teal-100">
+                        <span className="text-xs font-bold text-teal-600 uppercase">
+                          {dept.abbreviation || <Building2 className="w-4 h-4 text-teal-400" />}
                         </span>
                       </div>
                     )}
@@ -218,7 +218,7 @@ export function DepartmentsList() {
                             size="sm"
                             onClick={() => saveEdit(dept.id)}
                             disabled={updateMutation.isPending}
-                            className="bg-blue-600 hover:bg-blue-700 h-8 px-4 text-white font-bold rounded-lg"
+                            className="bg-teal-600 hover:bg-teal-700 h-8 px-4 text-white font-bold rounded-lg"
                           >
                             Enregistrer
                           </Button>
@@ -232,7 +232,7 @@ export function DepartmentsList() {
                             variant="ghost"
                             size="icon"
                             onClick={() => startEdit(dept)}
-                            className="h-8 w-8 text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+                            className="h-8 w-8 text-gray-400 hover:text-teal-600 hover:bg-teal-50"
                           >
                             <Edit2 className="h-4 w-4" />
                           </Button>

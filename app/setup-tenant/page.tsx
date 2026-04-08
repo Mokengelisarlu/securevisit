@@ -31,7 +31,7 @@ export default function CreateTenantPage() {
 
         {/* Brand/Logo Section */}
         <div className="flex flex-col items-center gap-4 mb-10 text-center">
-          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-600/20">
+          <div className="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-600/20">
             <Laptop className="text-white w-8 h-8" />
           </div>
           <div>
@@ -46,8 +46,8 @@ export default function CreateTenantPage() {
 
           {isCreating && (
             <div className="mt-6 flex flex-col items-center gap-2 animate-pulse">
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-center text-sm text-blue-400">Redirection vers votre portail...</p>
+              <div className="w-5 h-5 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-center text-sm text-teal-400">Redirection vers votre portail...</p>
             </div>
           )}
         </div>

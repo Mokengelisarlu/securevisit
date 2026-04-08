@@ -91,7 +91,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                                 <FormLabel className="text-xs font-black uppercase tracking-widest text-gray-400">Prénom *</FormLabel>
                                 <FormControl>
                                     <div className="relative group">
-                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-600 transition-colors">
                                             <User className="w-4 h-4" />
                                         </div>
                                         <Input
@@ -151,12 +151,12 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                             <FormLabel className="text-xs font-black uppercase tracking-widest text-gray-400">Adresse email *</FormLabel>
                             <FormControl>
                                 <div className="relative group">
-                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-600 transition-colors">
                                         <Mail className="w-4 h-4" />
                                     </div>
                                     <Input
                                         placeholder="exemple@entreprise.com"
-                                        className="pl-10 h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-blue-500 transition-all font-medium"
+                                        className="pl-10 h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-teal-500 transition-all font-medium"
                                         {...field}
                                     />
                                 </div>
@@ -174,7 +174,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                             <FormLabel className="text-xs font-black uppercase tracking-widest text-gray-400">Rôle assigné *</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                    <SelectTrigger className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-blue-500 transition-all font-medium">
+                                    <SelectTrigger className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-teal-500 transition-all font-medium">
                                         <div className="flex items-center gap-2">
                                             <Shield className="w-4 h-4 text-gray-400" />
                                             <SelectValue placeholder="Choisir un rôle" />
@@ -183,7 +183,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                                 </FormControl>
                                 <SelectContent className="rounded-xl border-gray-100 shadow-xl">
                                     <SelectItem value="ROOT" className="py-3 font-bold text-indigo-700">ROOT (Super Admin)</SelectItem>
-                                    <SelectItem value="ADMIN" className="py-3 font-bold text-blue-700">ADMINISTRATEUR</SelectItem>
+                                    <SelectItem value="ADMIN" className="py-3 font-bold text-teal-700">ADMINISTRATEUR</SelectItem>
                                     <SelectItem value="SECURITY" className="py-3 font-bold text-emerald-700">SÉCURITÉ</SelectItem>
                                     <SelectItem value="RECEPTION" className="py-3 font-bold text-amber-700">RÉCEPTION</SelectItem>
                                 </SelectContent>
@@ -197,7 +197,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-200 transition-all disabled:opacity-50"
+                        className="h-12 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-teal-200 transition-all disabled:opacity-50"
                     >
                         {isSubmitting ? (
                             <Loader2 className="w-4 h-4 animate-spin mr-2" />

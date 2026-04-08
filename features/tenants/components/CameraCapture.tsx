@@ -88,7 +88,7 @@ export function CameraCapture({
                         <Button
                             onClick={capture}
                             disabled={!!error}
-                            className="h-16 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl flex items-center gap-3 transition-all active:scale-95"
+                            className="h-16 px-8 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-2xl shadow-xl flex items-center gap-3 transition-all active:scale-95"
                         >
                             <Camera className="w-6 h-6" />
                             Prendre la photo

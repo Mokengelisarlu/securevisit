@@ -105,7 +105,7 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
               <FormControl>
                 <Input
                   placeholder="Acme Corporation"
-                  className="bg-[#F9FAFB] border-[#E5E7EB] focus:border-[#1E6EE6] focus:ring-[#1E6EE6]/20 rounded-xl py-3 text-[#0E1116] placeholder:text-[#9CA3AF]"
+                  className="bg-[#F9FAFB] border-[#E5E7EB] focus:border-[#0DBDB5] focus:ring-[#0DBDB5]/20 rounded-xl py-3 text-[#0E1116] placeholder:text-[#9CA3AF]"
                   value={field.value ?? ""}
                   onChange={field.onChange}
                 />
@@ -132,7 +132,7 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
                 <div className="relative flex items-center">
                   <Input
                     placeholder="mon-entreprise"
-                    className="bg-[#F9FAFB] border-[#E5E7EB] focus:border-[#1E6EE6] focus:ring-[#1E6EE6]/20 rounded-xl py-3 text-[#0E1116] placeholder:text-[#9CA3AF] pr-40"
+                    className="bg-[#F9FAFB] border-[#E5E7EB] focus:border-[#0DBDB5] focus:ring-[#0DBDB5]/20 rounded-xl py-3 text-[#0E1116] placeholder:text-[#9CA3AF] pr-40"
                     value={field.value ?? ""}
                     onChange={field.onChange}
                   />
@@ -150,7 +150,7 @@ export function CreateTenantForm({ onSuccess }: CreateTenantFormProps) {
         <Button
           type="submit"
           disabled={createTenant.isPending}
-          className="w-full bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white font-medium py-7 rounded-xl shadow-lg shadow-[#1E6EE6]/20 transition-all active:scale-[0.98] mt-4"
+          className="w-full bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white font-medium py-7 rounded-xl shadow-lg shadow-[#0DBDB5]/20 transition-all active:scale-[0.98] mt-4"
         >
           {createTenant.isPending ? (
             <div className="flex items-center gap-2">

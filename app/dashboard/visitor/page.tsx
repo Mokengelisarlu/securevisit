@@ -5,7 +5,7 @@ import { CreateVisitorForm } from "@/features/tenants/forms/createVisitor.form";
 
 function VisitorKioskContent() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-500 via-blue-600 to-indigo-700 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl p-8 md:p-12 max-w-md w-full">
         {/* Heading */}
         <h1 className="text-4xl md:text-5xl font-bold text-center text-gray-800 mb-3">

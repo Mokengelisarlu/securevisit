@@ -119,7 +119,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Prénom
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Jean" {...field} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                    <Input placeholder="ex: Jean" {...field} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -136,7 +136,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Nom
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Dupont" {...field} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                    <Input placeholder="ex: Dupont" {...field} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -155,7 +155,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Téléphone (Optionnel)
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: +243..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                    <Input placeholder="ex: +243..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -172,7 +172,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                     Entreprise (Optionnel)
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ex: Google, Freelance..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500" />
+                                    <Input placeholder="ex: Google, Freelance..." {...field} value={field.value || ""} className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -195,14 +195,14 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                                 value={field.value}
                             >
                                 <FormControl>
-                                    <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                    <SelectTrigger className="h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500">
                                         <SelectValue placeholder="Sélectionnez un type" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent className="bg-white">
                                     {isLoadingTypes ? (
                                         <div className="flex items-center justify-center p-2">
-                                            <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                                            <Loader2 className="w-4 h-4 animate-spin text-teal-500" />
                                         </div>
                                     ) : (
                                         visitorTypes?.map((type: any) => (
@@ -222,7 +222,7 @@ export function VisitorForm({ initialData, onSuccess }: VisitorFormProps) {
                     <Button
                         type="submit"
                         disabled={createVisitor.isPending || updateVisitor.isPending}
-                        className="px-8 bg-[#0055cc] hover:bg-[#0044aa] h-11 text-white font-bold rounded-lg shadow-sm transition-all hover:scale-[1.02]"
+                        className="px-8 bg-[#0DBDB5] hover:bg-[#0044aa] h-11 text-white font-bold rounded-lg shadow-sm transition-all hover:scale-[1.02]"
                     >
                         {createVisitor.isPending || updateVisitor.isPending ? (
                             <Loader2 className="w-4 h-4 animate-spin mr-2" />

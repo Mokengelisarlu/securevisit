@@ -46,7 +46,7 @@ export function ConfirmModal({
                             onConfirm();
                             onClose();
                         }}
-                        className={variant === "destructive" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-[#0055cc] hover:bg-[#0044aa] text-white"}
+                        className={variant === "destructive" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-[#0DBDB5] hover:bg-[#0044aa] text-white"}
                     >
                         {confirmText}
                     </AlertDialogAction>

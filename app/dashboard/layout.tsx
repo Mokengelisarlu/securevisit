@@ -49,14 +49,14 @@ export default async function DashboardLayout({
               <nav className="hidden md:flex items-center gap-8">
                 <Link
                   href="/"
-                  className="text-sm font-medium text-[#0E1116] hover:text-[#1E6EE6] transition-colors"
+                  className="text-sm font-medium text-[#0E1116] hover:text-[#0DBDB5] transition-colors"
                   style={{ fontFamily: 'Sora, sans-serif' }}
                 >
                   Aperçu
                 </Link>
                 <Link
                   href="/management"
-                  className="text-sm font-medium text-[#6B7280] hover:text-[#1E6EE6] transition-colors"
+                  className="text-sm font-medium text-[#6B7280] hover:text-[#0DBDB5] transition-colors"
                   style={{ fontFamily: 'Sora, sans-serif' }}
                 >
                   Gestion

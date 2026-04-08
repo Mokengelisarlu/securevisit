@@ -37,7 +37,7 @@ export function DigitalClock() {
     return (
         <div className="flex items-center gap-4 bg-white border border-slate-200 rounded-[1.25rem] px-6 py-2 shadow-sm">
             <div className="flex flex-col items-end border-r border-slate-100 pr-4">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-tight">
+                <span className="text-[10px] font-black text-teal-600 uppercase tracking-widest leading-tight">
                     {formatDay(time)}
                 </span>
                 <span className="text-xs font-bold text-slate-500 whitespace-nowrap">
@@ -45,7 +45,7 @@ export function DigitalClock() {
                 </span>
             </div>
             <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600">
                     <Clock className="w-4 h-4" />
                 </div>
                 <div className="font-mono text-xl font-black text-slate-800 tracking-tighter tabular-nums flex items-baseline">

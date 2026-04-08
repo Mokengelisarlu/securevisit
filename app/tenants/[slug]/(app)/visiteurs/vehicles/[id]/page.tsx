@@ -78,7 +78,7 @@ export default function VehicleDetailsPage() {
     if (isVehicleLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                <Loader2 className="w-10 h-10 animate-spin text-teal-500" />
                 <p className="text-gray-500 font-medium">Chargement des détails du véhicule...</p>
             </div>
         );
@@ -129,7 +129,7 @@ export default function VehicleDetailsPage() {
                             )}
                             onClick={() => vehiclePhoto && handleOpenImage(`/api/tenants/${slug}/photos?url=${encodeURIComponent(vehiclePhoto)}`, `Véhicule: ${vehicle.plateNumber}`)}
                         >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-blue-500 z-10" />
+                            <div className="absolute top-0 left-0 w-full h-1 bg-teal-500 z-10" />
                             {vehiclePhoto ? (
                                 <>
                                     <img
@@ -142,7 +142,7 @@ export default function VehicleDetailsPage() {
                                     </div>
                                 </>
                             ) : (
-                                <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl mx-auto flex items-center justify-center text-blue-400 border border-white/10 shadow-2xl overflow-hidden">
+                                <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl mx-auto flex items-center justify-center text-teal-400 border border-white/10 shadow-2xl overflow-hidden">
                                     {getVehicleIcon(vehicle.type)}
                                 </div>
                             )}
@@ -158,7 +158,7 @@ export default function VehicleDetailsPage() {
                                 <div className="bg-gray-50/50 p-4 rounded-2xl space-y-4 border border-gray-100">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center border shadow-sm">
-                                            <Settings2 className="w-4 h-4 text-blue-500" />
+                                            <Settings2 className="w-4 h-4 text-teal-500" />
                                         </div>
                                         <div>
                                             <p className="text-[9px] font-black text-gray-400 uppercase">Marque</p>
@@ -187,7 +187,7 @@ export default function VehicleDetailsPage() {
                             </div>
 
                             <div className="pt-2">
-                                <div className="p-4 bg-blue-600 rounded-2xl text-center shadow-lg shadow-blue-200">
+                                <div className="p-4 bg-teal-600 rounded-2xl text-center shadow-lg shadow-teal-200">
                                     <p className="text-[10px] font-black text-white/60 uppercase tracking-widest">Total des accès</p>
                                     <div className="flex items-center justify-center gap-2 mt-1">
                                         <CalendarCheck2 className="w-4 h-4 text-white/80" />
@@ -204,7 +204,7 @@ export default function VehicleDetailsPage() {
                     <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl border border-gray-100">
                         <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <Clock className="w-5 h-5 text-blue-500" /> Historique des Passages
+                                <Clock className="w-5 h-5 text-teal-500" /> Historique des Passages
                             </CardTitle>
                             <div className="relative w-full md:w-64">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -212,7 +212,7 @@ export default function VehicleDetailsPage() {
                                     placeholder="Rechercher par conducteur..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-10 h-10 border-gray-200 focus:ring-blue-500 rounded-xl bg-white"
+                                    className="pl-10 h-10 border-gray-200 focus:ring-teal-500 rounded-xl bg-white"
                                 />
                             </div>
                         </CardHeader>
@@ -239,18 +239,18 @@ export default function VehicleDetailsPage() {
                                                     <div className="space-y-1">
                                                         <p className="text-sm font-bold text-gray-900">{format(new Date(visit.checkInAt || visit.createdAt), "dd MMM yyyy", { locale: fr })}</p>
                                                         <p className="text-xs text-gray-400 flex items-center gap-1.5 font-medium">
-                                                            <Clock className="w-3 h-3 text-blue-400 shrink-0" />
+                                                            <Clock className="w-3 h-3 text-teal-400 shrink-0" />
                                                             {format(new Date(visit.checkInAt || visit.createdAt), "HH:mm")}
                                                         </p>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="py-4 px-6">
                                                     <Link href={`/visiteurs/registered/${visit.visitorId}`} className="flex items-center gap-3 group">
-                                                        <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-bold text-xs ring-1 ring-blue-100 group-hover:bg-blue-100 transition-colors">
+                                                        <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600 font-bold text-xs ring-1 ring-teal-100 group-hover:bg-teal-100 transition-colors">
                                                             {visit.visitor?.firstName[0]}{visit.visitor?.lastName[0]}
                                                         </div>
                                                         <div className="space-y-0.5">
-                                                            <p className="text-sm font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">{visit.visitor?.firstName} {visit.visitor?.lastName}</p>
+                                                            <p className="text-sm font-bold text-gray-900 leading-tight group-hover:text-teal-600 transition-colors">{visit.visitor?.firstName} {visit.visitor?.lastName}</p>
                                                             <p className="text-[10px] text-gray-500 font-medium flex items-center gap-1">
                                                                 <Building2 className="w-2.5 h-2.5" /> {visit.visitor?.company || "Individuel"}
                                                             </p>
@@ -274,7 +274,7 @@ export default function VehicleDetailsPage() {
                                                 </TableCell>
                                                 <TableCell className="py-4 px-6 text-right">
                                                     <Link href={`/visiteurs/list/${visit.id}`}>
-                                                        <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest text-blue-600 hover:bg-blue-50">
+                                                        <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest text-teal-600 hover:bg-teal-50">
                                                             Détails
                                                         </Button>
                                                     </Link>

@@ -99,8 +99,8 @@ const AccountCTASection = ({ className = '' }: AccountCTASectionProps) => {
           ref={cardRef}
           className="max-w-2xl mx-auto card-white p-8 lg:p-12 text-center"
         >
-          <div className="w-16 h-16 rounded-2xl bg-[#1E6EE6]/10 flex items-center justify-center mx-auto mb-6">
-            <UserPlus className="w-8 h-8 text-[#1E6EE6]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#0DBDB5]/10 flex items-center justify-center mx-auto mb-6">
+            <UserPlus className="w-8 h-8 text-[#0DBDB5]" />
           </div>
 
           <h3
@@ -118,8 +118,8 @@ const AccountCTASection = ({ className = '' }: AccountCTASectionProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-left">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-[#1E6EE6]" />
+                <div className="w-5 h-5 rounded-full bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 text-[#0DBDB5]" />
                 </div>
                 <span className="text-sm text-[#0E1116]">{benefit}</span>
               </div>
@@ -129,7 +129,7 @@ const AccountCTASection = ({ className = '' }: AccountCTASectionProps) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               asChild
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-8 py-4 rounded-full text-base font-medium btn-hover"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-8 py-4 rounded-full text-base font-medium btn-hover"
             >
               <Link href="/sign-up">
                 Créer un compte gratuit

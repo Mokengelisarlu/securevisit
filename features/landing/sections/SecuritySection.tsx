@@ -156,8 +156,8 @@ const SecuritySection = ({ className = '' }: SecuritySectionProps) => {
           >
             {securityFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-4 h-4 text-[#1E6EE6]" />
+                <div className="w-9 h-9 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-4 h-4 text-[#0DBDB5]" />
                 </div>
                 <span className="text-sm text-[#0E1116]">{feature.text}</span>
               </div>
@@ -167,7 +167,7 @@ const SecuritySection = ({ className = '' }: SecuritySectionProps) => {
           <div ref={(el) => { textRefs.current[4] = el; }}>
             <Button
               onClick={() => scrollToSection('#contact')}
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-6 py-3 rounded-full text-sm font-medium btn-hover"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-6 py-3 rounded-full text-sm font-medium btn-hover"
             >
               Voir les détails de sécurité
             </Button>
@@ -199,8 +199,8 @@ const SecuritySection = ({ className = '' }: SecuritySectionProps) => {
             <div className="space-y-3 mb-6">
               {securityFeatures.map((feature, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#1E6EE6]/10 flex items-center justify-center flex-shrink-0">
-                    <feature.icon className="w-4 h-4 text-[#1E6EE6]" />
+                  <div className="w-9 h-9 rounded-xl bg-[#0DBDB5]/10 flex items-center justify-center flex-shrink-0">
+                    <feature.icon className="w-4 h-4 text-[#0DBDB5]" />
                   </div>
                   <span className="text-sm text-[#0E1116]">{feature.text}</span>
                 </div>
@@ -209,7 +209,7 @@ const SecuritySection = ({ className = '' }: SecuritySectionProps) => {
 
             <Button
               onClick={() => scrollToSection('#contact')}
-              className="bg-[#1E6EE6] hover:bg-[#1a5fcc] text-white px-6 py-3 rounded-full text-sm font-medium"
+              className="bg-[#0DBDB5] hover:bg-[#0CA8A0] text-white px-6 py-3 rounded-full text-sm font-medium"
             >
               Voir les détails de sécurité
             </Button>

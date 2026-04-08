@@ -74,7 +74,7 @@ export function PublicHeader() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button asChild className="bg-teal-600 hover:bg-teal-700 text-white">
               <Link href="/sign-up">Créer un compte</Link>
             </Button>
           </div>
@@ -106,7 +106,7 @@ export function PublicHeader() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-slate-700 space-y-3 flex flex-col">
-                <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                <Button asChild className="w-full bg-teal-600 hover:bg-teal-700 text-white">
                   <Link href="/sign-up">Créer un compte</Link>
                 </Button>
               </div>
