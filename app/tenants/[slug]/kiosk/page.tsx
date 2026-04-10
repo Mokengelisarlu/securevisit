@@ -23,35 +23,30 @@ export default async function KioskPage({
     const settings = await getBusinessSettings(slug).catch(() => null);
 
     return (
-        <div className="h-screen w-full overflow-hidden">
-            {/* Background matching landing page */}
+        <div className="h-screen w-full overflow-hidden bg-white">
+            {/* Light Teal Theme Background */}
             <div
                 className="relative h-full w-full flex flex-col items-center justify-between"
                 style={{
-                    backgroundImage: 'url(/images/tenant-hero-bg.svg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundAttachment: 'fixed',
+                    backgroundColor: '#F0FDFA', // teal-50
+                    backgroundImage: 'radial-gradient(circle at top left, #E0F2FE 0%, transparent 40%), radial-gradient(circle at bottom right, #F0FDFA 0%, transparent 40%)',
                 }}
             >
-                {/* Animated gradient overlay */}
+                {/* Subtle animated overlay */}
                 <div
-                    className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-teal-900/50 to-slate-900/70"
-                    style={{
-                        animation: 'gradientShift 8s ease infinite',
-                    }}
+                    className="absolute inset-0 bg-white/40 backdrop-blur-[2px]"
                 />
-
-                {/* Animated particles */}
-                <div className="absolute inset-0 overflow-hidden">
+ 
+                {/* Animated particles (Teal) */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     {[...Array(12)].map((_, i) => (
                         <div
                             key={i}
-                            className="absolute rounded-full bg-teal-500"
+                            className="absolute rounded-full bg-teal-400"
                             style={{
                                 width: `${Math.random() * 4 + 2}px`,
                                 height: `${Math.random() * 4 + 2}px`,
-                                opacity: Math.random() * 0.4 + 0.1,
+                                opacity: Math.random() * 0.3 + 0.1,
                                 left: `${Math.random() * 100}%`,
                                 top: `${Math.random() * 100}%`,
                                 animation: `float ${Math.random() * 10 + 8}s ease-in-out infinite`,
@@ -60,53 +55,52 @@ export default async function KioskPage({
                         />
                     ))}
                 </div>
-
+ 
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center w-full h-full p-4 md:p-6">
                     {/* Logo Section */}
-                    <div className="flex-shrink-0 flex items-center justify-center">
-                        {settings?.logoUrl ? (
-                            <img
-                                src={settings.logoUrl}
-                                alt={tenant.name}
-                                className="h-14 w-14 md:h-16 md:w-16 object-contain drop-shadow-2xl"
-                            />
-                        ) : (
-                            <div className="h-14 w-14 md:h-16 md:w-16 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-teal-500/50">
-                                <Building2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
-                            </div>
-                        )}
+                    <div className="flex-shrink-0 flex flex-col items-center justify-center">
+                        <Image
+                            src="/icon-192x192.png"
+                            alt="SecureVisit Logo"
+                            width={80}
+                            height={80}
+                            className="object-contain drop-shadow-xl"
+                        />
+                        <span className="text-teal-600 font-bold text-xl mt-2 tracking-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
+                            SecureVisit
+                        </span>
                     </div>
-
+ 
                     {/* Tenant Name */}
-                    <div className="text-center flex-shrink-0 mt-2">
-                        <h1 className="text-xl md:text-2xl font-black text-white tracking-tighter">
+                    <div className="text-center flex-shrink-0 mt-6">
+                        <h1 className="text-3xl md:text-5xl font-black text-slate-800 tracking-tighter">
                             {tenant.name}
                         </h1>
                     </div>
-
+ 
                     {/* Main Form Content */}
                     <div className="flex-1 w-full max-w-3xl flex flex-col items-center justify-center overflow-hidden">
                         <div className="w-full max-h-full overflow-y-auto px-2 py-2 custom-scrollbar">
                             <VisitorKioskForm tenantSlug={slug} />
                         </div>
                     </div>
-
+ 
                     {/* Footer */}
                     <footer className="flex-shrink-0 text-center py-2">
-                        <p className="text-teal-300/60 font-bold text-[9px] uppercase tracking-widest mb-1">
+                        <p className="text-teal-600 font-bold text-[9px] uppercase tracking-widest mb-1">
                             Système de gestion des visiteurs
                         </p>
-                        <div className="flex items-center justify-center gap-2 opacity-60 hover:opacity-90 transition-opacity duration-300">
+                        <div className="flex items-center justify-center gap-2 opacity-80 hover:opacity-100 transition-opacity duration-300">
                             <Image
                                 src="/images/logoBlanc.png"
                                 alt="MOKENGELI Logo"
                                 width={12}
                                 height={12}
-                                className="object-contain"
+                                className="object-contain invert opacity-60"
                             />
-                            <span className="text-teal-200/80 text-[8px] font-medium tracking-wide">
-                                Powered by <span className="text-white/90 font-semibold">MOKENGELI Sarlu</span>
+                            <span className="text-teal-700 text-[8px] font-medium tracking-wide">
+                                Powered by <span className="text-teal-900 font-semibold">MOKENGELI Sarlu</span>
                             </span>
                         </div>
                     </footer>
