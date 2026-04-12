@@ -6,16 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster } from '@/components/ui/sonner';
 
 // Cloned Sections
-import Navigation from '@/features/landing/sections/Navigation';
 import HeroSection from '@/features/landing/sections/HeroSection';
-import FeaturesSection from '@/features/landing/sections/FeaturesSection';
-import HowItWorksSection from '@/features/landing/sections/HowItWorksSection';
-import SecuritySection from '@/features/landing/sections/SecuritySection';
-import IntegrationsSection from '@/features/landing/sections/IntegrationsSection';
-import UseCasesSection from '@/features/landing/sections/UseCasesSection';
-import TestimonialSection from '@/features/landing/sections/TestimonialSection';
-import AccountCTASection from '@/features/landing/sections/AccountCTASection';
-import ContactSection from '@/features/landing/sections/ContactSection';
+
 import Footer from '@/features/landing/sections/Footer';
 
 // Register GSAP plugins
@@ -81,23 +73,12 @@ export default function HomePage() {
       <Toaster position="top-center" />
 
       {/* Navigation */}
-      <Navigation />
+
 
       {/* Main content */}
       <main className="relative">
         <HeroSection className="z-10" />
-        <FeaturesSection className="z-20" />
-        <HowItWorksSection className="z-30" />
-        <SecuritySection className="z-40" />
-        <IntegrationsSection className="z-50" />
-        <UseCasesSection className="z-60" />
-        <TestimonialSection className="z-70" />
-        <AccountCTASection className="z-80" />
-        <ContactSection className="z-90" />
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
