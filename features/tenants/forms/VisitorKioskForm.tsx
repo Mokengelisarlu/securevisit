@@ -430,10 +430,10 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                 <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 rounded-full flex items-center justify-center shadow-lg shadow-green-500/10">
                     <CheckCircle2 className="w-10 h-10 md:w-14 md:h-14 text-green-400" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight mt-1 md:mt-2">
+                <h2 className="text-2xl md:text-3xl font-black text-teal-800 tracking-tight leading-tight mt-1 md:mt-2">
                     {successType === "IN" ? "Bienvenue !" : "Merci de votre visite !"}
                 </h2>
-                <p className="text-xs md:text-sm text-teal-200/80 font-medium max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs md:text-sm text-teal-800/80 font-medium max-w-sm mx-auto leading-relaxed">
                     {successType === "IN"
                         ? "Votre enregistrement a été effectué avec succès. Votre hôte a été prévenu."
                         : "Votre départ a été enregistré. À bientôt !"}
@@ -444,7 +444,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                         setIsSuccess(false);
                         resetAll();
                     }}
-                    className="h-10 md:h-12 px-6 md:px-10 text-sm md:text-base font-black bg-gradient-to-r from-teal-600 to-teal-700 hover:from-blue-700 hover:to-blue-800 rounded-xl shadow-lg shadow-teal-500/30 transition-all active:scale-95 mt-3 md:mt-4"
+                    className="h-10 md:h-12 px-6 md:px-10 text-sm md:text-base font-black text-teal-100 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 rounded-xl shadow-lg shadow-teal-500/30 transition-all active:scale-95 mt-3 md:mt-4"
                 >
                     Retour à l'accueil
                 </Button>
@@ -473,8 +473,8 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                             <LogIn className="w-8 h-8 md:w-10 md:h-10 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-2xl md:text-3xl font-black text-white mb-1">Arrivée</h3>
-                            <p className="text-sm md:text-base text-teal-200/80 font-bold leading-snug">Je viens d'arriver</p>
+                            <h3 className="text-2xl md:text-3xl font-black text-teal-800 mb-1">Arrivée</h3>
+                            <p className="text-sm md:text-base text-teal-500 font-bold leading-snug">Je viens d'arriver</p>
                         </div>
                     </button>
 
@@ -498,8 +498,8 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                             <LogOut className="w-8 h-8 md:w-10 md:h-10 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-2xl md:text-3xl font-black text-white mb-1">Départ</h3>
-                            <p className="text-sm md:text-base text-orange-200/80 font-bold leading-snug">Je m'en vais</p>
+                            <h3 className="text-2xl md:text-3xl font-black text-red-600 mb-1">Départ</h3>
+                            <p className="text-sm md:text-base text-orange-500 font-bold leading-snug">Je m'en vais</p>
                         </div>
                     </button>
                 </div>
@@ -531,21 +531,21 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
         return (
             <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-bottom-10 duration-500 w-full">
                 <div className="text-center mb-1">
-                    <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+                    <h2 className="text-xl md:text-2xl font-black text-teal-800 tracking-tight">
                         Enregistrer votre départ
                     </h2>
-                    <p className="text-xs md:text-sm text-teal-200/70 font-medium">
+                    <p className="text-xs md:text-sm text-teal-400 font-medium">
                         Saisissez votre nom ou numéro de téléphone
                     </p>
                 </div>
 
                 <div className="relative">
-                    <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-teal-300/50" />
+                    <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-teal-500 z-10" />
                     <Input
                         placeholder="Nom ou téléphone..."
                         value={checkoutQuery}
                         onChange={(e) => setCheckoutQuery(e.target.value)}
-                        className="h-14 md:h-16 text-xl pl-14 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder:text-teal-300/50 focus:border-orange-500 shadow-lg"
+                        className="h-14 md:h-16 text-xl pl-14 rounded-2xl border border-teal-400 bg-white/10 backdrop-blur-sm text-teal-800 placeholder:text-teal-500 focus:border-orange-600 focus:shadow-lg"
                         autoFocus
                     />
                 </div>
@@ -564,7 +564,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         key={v.id}
                                         onClick={() => handleCheckout(v.id)}
                                         disabled={checkoutVisit.isPending}
-                                        className="flex flex-col md:flex-row items-center justify-between p-6 md:p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl hover:border-orange-500/50 hover:bg-orange-500/10 transition-all text-left group shadow-lg hover:shadow-xl active:scale-95 w-full gap-4 md:gap-6"
+                                        className="flex flex-col md:flex-row items-center justify-between p-6 md:p-8 bg-teal-200/10 backdrop-blur-sm border border-teal-500 rounded-3xl hover:border-orange-500/50 hover:bg-orange-500/10 transition-all text-left group shadow-lg hover:shadow-xl active:scale-95 w-full gap-4 md:gap-6"
                                     >
                                         <div className="flex items-center gap-4 w-full md:w-auto overflow-hidden">
                                             {/* Photo or Avatar */}
@@ -579,15 +579,15 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             )}
 
                                             <div className="space-y-1 md:space-y-2 overflow-hidden flex-1">
-                                                <h4 className="text-xl md:text-3xl font-black text-white truncate">
+                                                <h4 className="md:text-xl font-black text-teal-800 capitalize">
                                                     {v.visitor.firstName} {v.visitor.lastName}
                                                 </h4>
                                                 {v.visitor.company && (
-                                                    <p className="text-orange-400 font-bold text-sm md:text-base tracking-widest uppercase truncate">
+                                                    <p className="text-orange-400 font-bold text-sm md:text-base tracking-widest capitalize">
                                                         {v.visitor.company}
                                                     </p>
                                                 )}
-                                                <div className="flex items-center gap-2 text-teal-200/70 font-bold uppercase tracking-tight text-xs md:text-sm">
+                                                <div className="flex items-center gap-2 text-teal-500 font-bold uppercase tracking-tight text-xs md:text-sm">
                                                     <Clock className="w-4 h-4" />
                                                     Arrivé à {new Date(v.checkInAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                                 </div>
@@ -616,13 +616,13 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                             /* Not found → refer to security */
                             <div className="flex flex-col items-center gap-6 p-10 bg-amber-500/10 border border-amber-500/30 rounded-3xl text-center backdrop-blur-sm mx-auto max-w-2xl">
                                 <div className="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center">
-                                    <AlertCircle className="w-12 h-12 text-amber-400" />
+                                    <AlertCircle className="w-12 h-12 text-amber-500" />
                                 </div>
                                 <div className="flex flex-col items-center">
-                                    <h3 className="text-2xl font-black text-amber-300 mb-2">
+                                    <h3 className="text-2xl font-black text-amber-500 mb-2">
                                         Aucune visite active trouvée
                                     </h3>
-                                    <p className="text-lg text-amber-200/70 font-medium max-w-sm mx-auto">
+                                    <p className="text-lg text-amber-800 max-w-sm mx-auto">
                                         Votre visite ne figure pas dans le registre actif. Veuillez vous adresser à l'agent de sécurité ou à la réception.
                                     </p>
                                 </div>
@@ -633,9 +633,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
 
                 <div className="flex justify-center pt-4">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => { setMode(null); setCheckoutQuery(""); }}
-                        className="h-16 text-xl font-bold text-teal-300 hover:bg-white/10 rounded-2xl px-12"
+                        className="h-16 text-xl font-bold text-teal-500 hover:bg-white/10 rounded-2xl px-12"
                     >
                         Retour
                     </Button>
@@ -652,24 +652,24 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                     {/* Existing visitor */}
                     <button
                         onClick={() => setVisitorMode("existing")}
-                        className="group flex flex-1 items-center gap-6 p-6 md:p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl md:rounded-[2rem] hover:border-teal-500/50 hover:bg-teal-500/10 transition-all duration-300 shadow-xl shadow-teal-500/10 active:scale-95 text-left"
+                        className="group flex flex-1 items-center gap-6 p-6 md:p-8 bg-teal-100/10 backdrop-blur-sm border border-teal-500 rounded-2xl md:rounded-[2rem] hover:border-teal-400 hover:bg-teal-500/10 transition-all duration-300 shadow-xl shadow-teal-500/10 active:scale-95 text-left"
                     >
-                        <div className="w-16 h-16 md:w-20 md:h-20 bg-teal-600/20 rounded-2xl flex items-center justify-center group-hover:bg-teal-600 transition-colors shrink-0">
-                            <UserCheck className="w-8 h-8 md:w-12 md:h-12 text-teal-400 group-hover:text-white" />
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-teal-600 rounded-2xl flex items-center justify-center group-hover:bg-teal-600 transition-colors shrink-0">
+                            <UserCheck className="w-8 h-8 md:w-12 md:h-12 text-white group-hover:text-teal-100" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-xl md:text-2xl font-black text-white mb-1">Visiteur enregistré</h3>
-                            <p className="text-sm md:text-base text-teal-200/70 font-bold">J'ai déjà visité</p>
+                            <h3 className="text-xl md:text-2xl font-black text-teal-800 mb-1">Visiteur enregistré</h3>
+                            <p className="text-sm md:text-base text-teal-500 font-bold">J'ai déjà visité</p>
                         </div>
                     </button>
 
                     {/* New visitor */}
                     <button
                         onClick={() => setVisitorMode("new")}
-                        className="group flex flex-1 items-center gap-6 p-6 md:p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl md:rounded-[2rem] hover:border-green-500/50 hover:bg-green-500/10 transition-all duration-300 shadow-xl shadow-green-500/10 active:scale-95 text-left"
+                        className="group flex flex-1 items-center gap-6 p-6 md:p-8 bg-teal-800 backdrop-blur-sm border border-white/10 rounded-2xl md:rounded-[2rem] hover:border-teal-800 hover:bg-teal-500 transition-all duration-300 shadow-xl shadow-teal-500/10 active:scale-95 text-left"
                     >
-                        <div className="w-16 h-16 md:w-20 md:h-20 bg-green-600/20 rounded-2xl flex items-center justify-center group-hover:bg-green-600 transition-colors shrink-0">
-                            <UserPlus className="w-8 h-8 md:w-12 md:h-12 text-green-400 group-hover:text-white" />
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl flex items-center justify-center group-hover:bg-green-600 transition-colors shrink-0">
+                            <UserPlus className="w-8 h-8 md:w-12 md:h-12 text-teal-800 group-hover:text-white" />
                         </div>
                         <div className="flex-1">
                             <h3 className="text-xl md:text-2xl font-black text-white mb-1">Nouveau visiteur</h3>
@@ -678,11 +678,11 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                     </button>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-10">
                     <Button
                         variant="ghost"
                         onClick={() => setMode(null)}
-                        className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-10"
+                        className="h-12 text-lg font-bold text-teal-800 hover:bg-white/10 rounded-xl px-10"
                     >
                         Retour
                     </Button>
@@ -699,22 +699,22 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
         return (
             <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-right-10 duration-500 w-full">
                 <div className="text-center">
-                    <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+                    <h2 className="text-xl md:text-2xl font-black text-teal-800 tracking-tight">
                         Rechercher votre profil
                     </h2>
-                    <p className="text-xs md:text-sm text-teal-200/70 font-medium">
+                    <p className="text-xs md:text-sm text-teal-800/70 font-medium">
                         Entrez votre nom ou numéro de téléphone
                     </p>
                 </div>
 
                 {/* Search bar */}
                 <div className="relative">
-                    <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-teal-300/50" />
+                    <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-teal-500 z-10" />
                     <Input
                         placeholder="Nom ou téléphone..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="h-14 md:h-16 text-xl pl-14 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder:text-teal-300/50 focus:border-teal-500 shadow-lg"
+                        className="h-14 md:h-16 text-xl pl-14 rounded-2xl border border-teal-400 bg-white/10 backdrop-blur-sm text-teal-800 placeholder:text-teal-400 focus:border-teal-500 shadow-lg"
                         autoFocus
                     />
                     {isSearching && (
@@ -754,10 +754,10 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                     setStep(2);
                                                 }}
                                                 className={cn(
-                                                    "flex flex-col md:flex-row items-center justify-between p-6 md:p-8 bg-white/5 backdrop-blur-sm border rounded-3xl transition-all text-left group shadow-lg hover:shadow-xl active:scale-95 w-full gap-4 md:gap-6",
+                                                    "flex flex-col md:flex-row items-center justify-between p-6 md:p-8 bg-teal-200/10 backdrop-blur-sm border rounded-3xl transition-all text-left group shadow-lg hover:shadow-xl active:scale-95 w-full gap-4 md:gap-6",
                                                     isActive
                                                         ? "border-amber-500/30 bg-amber-500/10 opacity-80 cursor-not-allowed"
-                                                        : "border-white/10 hover:border-teal-500/50 hover:bg-teal-500/10"
+                                                        : "border-teal-500 hover:border-teal-400 hover:bg-teal-500/10"
                                                 )}
                                             >
                                                 <div className="flex items-center gap-4 w-full md:w-auto overflow-hidden">
@@ -774,26 +774,21 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
 
                                                     <div className="space-y-1 md:space-y-2 overflow-hidden flex-1">
                                                         <div className="flex items-center gap-2">
-                                                            <h4 className="text-xl md:text-3xl font-black text-white truncate">
-                                                                {v.firstName} {v.lastNameMasked}
+                                                            <h4 className="text-xl md:text-3xl font-black text-teal-800">
+                                                                {v.firstName} {v.lastName}
                                                             </h4>
-                                                            {isActive && (
-                                                                <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] md:text-xs font-black uppercase px-2 py-0.5 shrink-0">
-                                                                    Sur place
-                                                                </Badge>
-                                                            )}
+
                                                         </div>
 
                                                         {v.company ? (
-                                                            <p className="text-teal-400 font-bold text-sm md:text-base tracking-widest uppercase truncate">
-                                                                {v.company}
-                                                            </p>
+                                                            <p className="text-orange-500 font-bold text-sm md:text-base tracking-widest uppercase ">
+                                                                {v.company}                                                            </p>
                                                         ) : v.visitorTypeName ? (
-                                                            <p className="text-teal-300/50 text-sm md:text-base font-medium truncate">{v.visitorTypeName}</p>
+                                                            <p className="text-teal-500/70 text-sm md:text-base font-medium ">{v.visitorTypeName}</p>
                                                         ) : null}
 
                                                         {v.phoneMasked && (
-                                                            <div className="flex items-center gap-2 text-teal-200/60 font-medium text-xs md:text-sm">
+                                                            <div className="flex items-center gap-2 text-teal-500 font-medium text-xs md:text-sm">
                                                                 <Phone className="w-4 h-4 md:w-5 md:h-5" />
                                                                 {v.phoneMasked}
                                                             </div>
@@ -806,7 +801,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                         "flex items-center justify-center gap-2 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-black uppercase text-sm md:text-base shadow-md transition-all w-full md:w-auto",
                                                         isActive
                                                             ? "bg-amber-500/50 cursor-not-allowed"
-                                                            : "bg-gradient-to-r from-teal-500 to-blue-600 group-hover:from-teal-600 group-hover:to-teal-700"
+                                                            : "bg-gradient-to-r from-teal-600 to-teal-700 group-hover:from-teal-700 group-hover:to-teal-800"
                                                     )}>
                                                         {isActive ? (
                                                             <>
@@ -830,13 +825,13 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                             /* Not found → offer to register */
                             <div className="flex flex-col items-center gap-6 p-10 bg-white/5 backdrop-blur-sm border border-white/10 border-dashed rounded-3xl text-center">
                                 <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center">
-                                    <UserPlus className="w-12 h-12 text-teal-300/50" />
+                                    <UserPlus className="w-12 h-12 text-amber-800" />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-black text-white mb-2">
+                                    <h3 className="text-2xl font-black text-amber-800 mb-2">
                                         Profil introuvable
                                     </h3>
-                                    <p className="text-lg text-teal-200/70 font-medium max-w-sm mx-auto mb-6">
+                                    <p className="text-lg text-amber-500 font-medium max-w-sm mx-auto mb-6">
                                         Aucun visiteur ne correspond à cette recherche. Souhaitez-vous vous enregistrer comme nouveau visiteur ?
                                     </p>
                                     <Button
@@ -844,7 +839,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             setVisitorMode("new");
                                             setSearchQuery("");
                                         }}
-                                        className="h-14 px-10 text-xl font-black bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-2xl shadow-lg shadow-green-500/30"
+                                        className="h-14 px-10 text-xl text-white font-black bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 rounded-2xl shadow-lg shadow-teal-500/30"
                                     >
                                         <UserPlus className="w-6 h-6 mr-2" />
                                         S'enregistrer
@@ -857,9 +852,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
 
                 <div className="flex justify-center pt-4">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => { setVisitorMode(null); setSearchQuery(""); }}
-                        className="h-16 text-xl font-bold text-teal-300 hover:bg-white/10 rounded-2xl px-12"
+                        className="h-16 text-xl font-bold text-teal-800 hover:bg-white/10 rounded-2xl px-12"
                     >
                         Retour
                     </Button>
@@ -887,25 +882,25 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     <Users className="w-7 h-7 text-white" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-0.5">Visiteur</p>
-                                    <h3 className="text-lg font-black text-white leading-tight">
+                                    <p className="text-xs font-bold text-teal-500 uppercase tracking-wider mb-0.5">Visiteur</p>
+                                    <h3 className="text-lg font-black text-teal-800 leading-tight">
                                         {selectedVisitor.firstName} {selectedVisitor.lastNameMasked}
                                     </h3>
                                     {selectedVisitor.phoneMasked && (
-                                        <p className="text-xs md:text-sm text-teal-200/60 font-medium">{selectedVisitor.phoneMasked}</p>
+                                        <p className="text-xs md:text-sm text-teal-500/60 font-medium">{selectedVisitor.phoneMasked}</p>
                                     )}
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                                <SearchIcon className="w-6 h-6 text-teal-400" />
+                            <h3 className="text-xl font-black text-teal-800 tracking-tight flex items-center gap-3">
+                                <SearchIcon className="w-6 h-6 text-teal-500" />
                                 Quelle est votre destination ?
                             </h3>
 
                             {/* Vehicle Question */}
-                            <div className="space-y-4 pt-4 border-t border-white/10">
-                                <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                                    <Car className="w-6 h-6 text-teal-400" />
+                            <div className="space-y-4 pt-4 border-t border-teal-400">
+                                <h3 className="text-xl font-black text-teal-800 tracking-tight flex items-center gap-3">
+                                    <Car className="w-6 h-6 text-teal-500" />
                                     Êtes-vous venu avec un véhicule ?
                                 </h3>
                                 <div className="grid grid-cols-2 gap-4">
@@ -917,11 +912,11 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         }}
                                         className={cn(
                                             "flex items-center justify-center p-4 rounded-2xl border transition-all gap-3",
-                                            hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-white/10 hover:border-teal-500/30"
+                                            hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-teal-400 hover:border-teal-500/30"
                                         )}
                                     >
-                                        <Car className={cn("w-6 h-6", hasVehicle ? "text-teal-400" : "text-teal-300/40")} />
-                                        <span className={cn("text-base font-bold", hasVehicle ? "text-white" : "text-teal-200/60")}>Oui</span>
+                                        <Car className={cn("w-6 h-6", hasVehicle ? "text-teal-600" : "text-teal-500/40")} />
+                                        <span className={cn("text-base font-bold", hasVehicle ? "text-teal-800" : "text-teal-500/60")}>Oui</span>
                                     </button>
                                     <button
                                         type="button"
@@ -931,26 +926,26 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         }}
                                         className={cn(
                                             "flex items-center justify-center p-4 rounded-2xl border transition-all gap-3",
-                                            !hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-white/10 hover:border-teal-500/30"
+                                            !hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-teal-400 hover:border-teal-500/30"
                                         )}
                                     >
-                                        <Users className={cn("w-6 h-6", !hasVehicle ? "text-teal-400" : "text-teal-300/40")} />
-                                        <span className={cn("text-base font-bold", !hasVehicle ? "text-white" : "text-teal-200/60")}>Non</span>
+                                        <Users className={cn("w-6 h-6", !hasVehicle ? "text-teal-600" : "text-teal-500/40")} />
+                                        <span className={cn("text-base font-bold", !hasVehicle ? "text-teal-800" : "text-teal-500/60")}>Non</span>
                                     </button>
                                 </div>
                             </div>
 
                             {hasVehicle && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-top-5 duration-500 bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+                                <div className="space-y-6 animate-in fade-in slide-in-from-top-5 duration-500 bg-teal-50 p-6 rounded-2xl border border-teal-400 backdrop-blur-sm">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <FormField
                                             control={form.control}
                                             name="plateNumber"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Plaque d'immatriculation</FormLabel>
+                                                    <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Plaque d'immatriculation</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="ex: AB-123-CD" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 uppercase px-5" />
+                                                        <Input placeholder="ex: AB-123-CD" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 uppercase px-5" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -961,18 +956,18 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             name="vehicleType"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Type de véhicule</FormLabel>
+                                                    <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Type de véhicule</FormLabel>
                                                     <Select onValueChange={field.onChange} value={field.value || ""}>
                                                         <FormControl>
-                                                            <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                            <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                                 <SelectValue placeholder="Choisir..." />
                                                             </SelectTrigger>
                                                         </FormControl>
-                                                        <SelectContent className="bg-slate-900 border-white/20 text-white">
-                                                            <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-600 focus:text-white transition-colors">Voiture</SelectItem>
-                                                            <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-600 focus:text-white transition-colors">Camion</SelectItem>
-                                                            <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-600 focus:text-white transition-colors">Moto</SelectItem>
-                                                            <SelectItem value="OTHER" className="py-3 font-medium focus:bg-teal-600 focus:text-white transition-colors">Autre</SelectItem>
+                                                        <SelectContent className="bg-white border-teal-400 text-teal-800">
+                                                            <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Voiture</SelectItem>
+                                                            <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Camion</SelectItem>
+                                                            <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Moto</SelectItem>
+                                                            <SelectItem value="OTHER" className="py-3 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Autre</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </FormItem>
@@ -985,9 +980,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             name="vehicleBrand"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Marque (Optionnel)</FormLabel>
+                                                    <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Marque (Optionnel)</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="ex: Toyota" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 px-5" />
+                                                        <Input placeholder="ex: Toyota" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 px-5" />
                                                     </FormControl>
                                                 </FormItem>
                                             )}
@@ -997,9 +992,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             name="vehicleColor"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Couleur (Optionnel)</FormLabel>
+                                                    <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Couleur (Optionnel)</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="ex: Noir" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 px-5" />
+                                                        <Input placeholder="ex: Noir" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 px-5" />
                                                     </FormControl>
                                                 </FormItem>
                                             )}
@@ -1011,13 +1006,13 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                             name="passengerCount"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Nombre de passagers</FormLabel>
+                                                    <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Nombre de passagers</FormLabel>
                                                     <FormControl>
                                                         <div className="flex items-center gap-3">
                                                             <Button
                                                                 type="button"
                                                                 variant="outline"
-                                                                className="h-12 w-12 rounded-xl border border-white/20 bg-white/10 text-white text-xl font-bold hover:bg-white/20"
+                                                                className="h-12 w-12 rounded-xl border border-teal-400 bg-white/10 text-teal-800 text-xl font-bold hover:bg-white/20"
                                                                 onClick={() => field.onChange(Math.max(0, (field.value || 0) - 1))}
                                                             >-</Button>
                                                             <Input
@@ -1025,12 +1020,12 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                                 {...field}
                                                                 value={field.value ?? 0}
                                                                 readOnly
-                                                                className="h-12 text-center text-xl font-bold rounded-xl border border-white/20 w-20 bg-white/10 text-white"
+                                                                className="h-12 text-center text-xl font-bold rounded-xl border border-teal-400 w-20 bg-white/10 text-teal-800"
                                                             />
                                                             <Button
                                                                 type="button"
                                                                 variant="outline"
-                                                                className="h-12 w-12 rounded-xl border border-white/20 bg-white/10 text-white text-xl font-bold hover:bg-white/20"
+                                                                className="h-12 w-12 rounded-xl border border-teal-400 bg-white/10 text-teal-800 text-xl font-bold hover:bg-white/20"
                                                                 onClick={() => field.onChange((field.value || 0) + 1)}
                                                             >+</Button>
                                                         </div>
@@ -1050,22 +1045,22 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     name="departmentId"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 flex items-center gap-2">
+                                            <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 flex items-center gap-2">
                                                 <Building className="w-4 h-4" /> Département
                                             </FormLabel>
-                                            <Select 
-                                                onValueChange={field.onChange} 
+                                            <Select
+                                                onValueChange={field.onChange}
                                                 value={field.value || ""}
                                                 disabled={!departments || departments.length === 0}
                                             >
                                                 <FormControl>
-                                                    <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                    <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                         <SelectValue placeholder={!departments ? "Chargement..." : "Choisir..."} />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                                <SelectContent className="bg-white border-teal-400 text-teal-800">
                                                     {departments?.map((d: any) => (
-                                                        <SelectItem key={d.id} value={d.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                        <SelectItem key={d.id} value={d.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                             {d.name} {d.abbreviation ? `(${d.abbreviation})` : ""}
                                                         </SelectItem>
                                                     ))}
@@ -1080,22 +1075,22 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     name="serviceId"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 flex items-center gap-2">
+                                            <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 flex items-center gap-2">
                                                 <ClipboardList className="w-4 h-4" /> Service
                                             </FormLabel>
-                                            <Select 
-                                                onValueChange={field.onChange} 
+                                            <Select
+                                                onValueChange={field.onChange}
                                                 value={field.value || ""}
                                                 disabled={!services || services.length === 0}
                                             >
                                                 <FormControl>
-                                                    <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                    <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                         <SelectValue placeholder={!services ? "Chargement..." : "Choisir..."} />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                                <SelectContent className="bg-white border-teal-400 text-teal-800">
                                                     {services?.map((s: any) => (
-                                                        <SelectItem key={s.id} value={s.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                        <SelectItem key={s.id} value={s.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                             {s.name}
                                                         </SelectItem>
                                                     ))}
@@ -1112,22 +1107,22 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     name="hostId"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 flex items-center gap-2">
+                                            <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 flex items-center gap-2">
                                                 <UserCircle className="w-4 h-4" /> Hôte
                                             </FormLabel>
-                                            <Select 
-                                                onValueChange={field.onChange} 
+                                            <Select
+                                                onValueChange={field.onChange}
                                                 value={field.value || ""}
                                                 disabled={!hosts || hosts.length === 0}
                                             >
                                                 <FormControl>
-                                                    <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                    <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                         <SelectValue placeholder={!hosts ? "Chargement..." : "Choisir..."} />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                                <SelectContent className="bg-white border-teal-400 text-teal-800">
                                                     {hosts?.map((h: any) => (
-                                                        <SelectItem key={h.id} value={h.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                        <SelectItem key={h.id} value={h.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                             {h.firstName} {h.lastName}
                                                         </SelectItem>
                                                     ))}
@@ -1142,7 +1137,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     name="purpose"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">
+                                            <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">
                                                 Motif de la visite
                                             </FormLabel>
                                             <FormControl>
@@ -1150,7 +1145,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                     placeholder="ex: Réunion..."
                                                     {...field}
                                                     value={field.value || ""}
-                                                    className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5"
+                                                    className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -1164,14 +1159,14 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     type="button"
                                     variant="ghost"
                                     onClick={() => { setSelectedVisitor(null); setStep(1); }}
-                                    className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-8"
+                                    className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-8"
                                 >
                                     Retour
                                 </Button>
                                 <Button
                                     type="submit"
                                     disabled={createVisit.isPending || isUploading}
-                                    className="h-16 px-10 text-xl font-black bg-gradient-to-r from-teal-600 to-teal-700 hover:from-blue-700 hover:to-blue-800 rounded-2xl shadow-2xl shadow-teal-500/30 flex items-center gap-3 transition-all hover:scale-105 text-white"
+                                    className="h-16 px-10 text-xl text-white font-black bg-gradient-to-r from-teal-600 to-teal-700 hover:from-blue-700 hover:to-blue-800 rounded-2xl shadow-2xl shadow-teal-500/30 flex items-center gap-3 transition-all hover:scale-105 text-white"
                                 >
                                     {createVisit.isPending || isUploading ? (
                                         <Loader2 className="w-6 h-6 animate-spin" />
@@ -1190,19 +1185,19 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                         <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 md:space-y-6 animate-in fade-in slide-in-from-right-10 duration-500">
                             <div className="w-full max-w-2xl">
                                 <div className="bg-teal-600/10 p-5 rounded-2xl border border-teal-500/30 mb-4 backdrop-blur-sm">
-                                    <h3 className="text-xl font-black text-white mb-3 flex items-center gap-3">
-                                        <Shield className="w-6 h-6 text-teal-400" />
+                                    <h3 className="text-xl font-black text-teal-800 mb-3 flex items-center gap-3">
+                                        <Shield className="w-6 h-6 text-teal-500" />
                                         Politique de visite
                                     </h3>
-                                    <div className="prose prose-blue max-w-none text-teal-200/70 text-base leading-snug whitespace-pre-wrap max-h-32 overflow-y-auto">
+                                    <div className="prose prose-blue max-w-none text-teal-800/70 text-base leading-snug whitespace-pre-wrap max-h-32 overflow-y-auto">
                                         {settings?.ndaPolicyText || "Veuillez lire et signer ci-dessous pour confirmer votre arrivée."}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-sm font-bold text-teal-200 flex items-center gap-2">
-                                    <Scale className="w-4 h-4 text-teal-400" /> Signature numérique
+                                <label className="text-sm font-bold text-teal-600 flex items-center gap-2">
+                                    <Scale className="w-4 h-4 text-teal-500" /> Signature numérique
                                 </label>
                                 <SignaturePad
                                     onSave={(img) => setSignatureData(img)}
@@ -1219,7 +1214,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         else if (hasVehicle && requireVehiclePhoto) setStep(2.5);
                                         else setStep(2);
                                     }}
-                                    className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-8"
+                                    className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-8"
                                 >
                                     Retour
                                 </Button>
@@ -1239,7 +1234,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         )}
                                     </Button>
                                     {!signatureData && requireSignature && (
-                                        <p className="text-[10px] text-teal-300/40 text-center animate-pulse">
+                                        <p className="text-[10px] text-teal-600/40 text-center animate-pulse">
                                             Veuillez valider votre signature ci-dessus
                                         </p>
                                     )}
@@ -1271,7 +1266,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     type="button"
                                     variant="ghost"
                                     onClick={() => setStep(2)}
-                                    className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-8"
+                                    className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-8"
                                 >
                                     Retour
                                 </Button>
@@ -1306,7 +1301,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         if (requireVisitorPhoto) setStep(1.5);
                                         else setStep(2);
                                     }}
-                                    className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-8"
+                                    className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-8"
                                 >
                                     Retour
                                 </Button>
@@ -1337,9 +1332,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="firstName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Prénom</FormLabel>
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Prénom</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Votre prénom" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 focus:border-teal-500 px-5" />
+                                            <Input placeholder="Votre prénom" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 focus:border-teal-500 px-5" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1350,9 +1345,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="lastName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Nom</FormLabel>
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Nom</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Votre nom" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 focus:border-teal-500 px-5" />
+                                            <Input placeholder="Votre nom" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 focus:border-teal-500 px-5" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1366,9 +1361,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Téléphone (Optionnel)</FormLabel>
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Téléphone (Optionnel)</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Votre numéro" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 focus:border-teal-500 px-5" />
+                                            <Input placeholder="Votre numéro" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 focus:border-teal-500 px-5" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1379,9 +1374,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="company"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Entreprise (Optionnel)</FormLabel>
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Entreprise (Optionnel)</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Votre entreprise" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 focus:border-teal-500 px-5" />
+                                            <Input placeholder="Votre entreprise" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 focus:border-teal-500 px-5" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1394,21 +1389,21 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                             name="visitorTypeId"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Type de Visiteur</FormLabel>
+                                    <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Type de Visiteur</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         value={field.value || ""}
                                         disabled={!visitorTypes || visitorTypes.length === 0}
                                     >
                                         <FormControl>
-                                            <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white focus:border-teal-500 px-5 shadow-2xl">
+                                            <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 focus:border-teal-500 px-5 shadow-2xl">
                                                 <SelectValue placeholder={!visitorTypes ? "Chargement..." : "Qui êtes-vous ?"} />
                                             </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                        <SelectContent className="bg-white border-teal-400 text-teal-800">
                                             {visitorTypes && visitorTypes.length > 0 ? (
                                                 visitorTypes.map((type: any) => (
-                                                    <SelectItem key={type.id} value={type.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                    <SelectItem key={type.id} value={type.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                         {type.name}
                                                     </SelectItem>
                                                 ))
@@ -1429,7 +1424,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setVisitorMode(null)}
-                                className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-10"
+                                className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-10"
                             >
                                 Annuler
                             </Button>
@@ -1467,7 +1462,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
 
                                     setStep(2);
                                 }}
-                                className="h-16 px-10 text-xl font-black bg-gradient-to-r from-teal-600 to-teal-700 hover:from-blue-700 hover:to-blue-800 rounded-2xl shadow-2xl shadow-teal-500/30 flex items-center gap-3 transition-all hover:scale-105"
+                                className="h-16 px-10 text-xl text-white font-black bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 rounded-2xl shadow-2xl shadow-teal-500/30 flex items-center gap-3 transition-all hover:scale-105"
                             >
                                 Suivant
                                 <ArrowRight className="w-6 h-6" />
@@ -1478,8 +1473,8 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
 
                 {step === 2 && (
                     <div className="space-y-5 animate-in fade-in slide-in-from-right-10 duration-500">
-                        <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                            <SearchIcon className="w-6 h-6 text-teal-400" />
+                        <h3 className="text-xl font-black text-teal-800 tracking-tight flex items-center gap-3">
+                            <SearchIcon className="w-6 h-6 text-teal-500" />
                             Quelle est votre destination ?
                         </h3>
 
@@ -1489,22 +1484,22 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="departmentId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 flex items-center gap-2">
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 flex items-center gap-2">
                                             <Building className="w-4 h-4" /> Département
                                         </FormLabel>
-                                        <Select 
-                                            onValueChange={field.onChange} 
+                                        <Select
+                                            onValueChange={field.onChange}
                                             value={field.value || ""}
                                             disabled={!departments || departments.length === 0}
                                         >
                                             <FormControl>
-                                                <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                     <SelectValue placeholder={!departments ? "Chargement..." : "Choisir..."} />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                            <SelectContent className="bg-white border-teal-400 text-teal-800">
                                                 {departments?.map((d: any) => (
-                                                    <SelectItem key={d.id} value={d.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                    <SelectItem key={d.id} value={d.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                         {d.name} {d.abbreviation ? `(${d.abbreviation})` : ""}
                                                     </SelectItem>
                                                 ))}
@@ -1519,23 +1514,23 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="serviceId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 flex items-center gap-2">
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 flex items-center gap-2">
                                             <ClipboardList className="w-4 h-4" /> Service
                                         </FormLabel>
-                                        <Select 
-                                            onValueChange={field.onChange} 
+                                        <Select
+                                            onValueChange={field.onChange}
                                             value={field.value || ""}
                                             disabled={!services || services.length === 0}
                                         >
                                             <FormControl>
-                                                <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                     <SelectValue placeholder={!services ? "Chargement..." : "Choisir..."} />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                            <SelectContent className="bg-white border-teal-400 text-teal-800">
                                                 {services && services.length > 0 ? (
                                                     services.map((s: any) => (
-                                                        <SelectItem key={s.id} value={s.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                        <SelectItem key={s.id} value={s.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                             {s.name}
                                                         </SelectItem>
                                                     ))
@@ -1557,23 +1552,23 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="hostId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 flex items-center gap-2">
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 flex items-center gap-2">
                                             <UserCircle className="w-4 h-4" /> Hôte
                                         </FormLabel>
-                                        <Select 
-                                            onValueChange={field.onChange} 
+                                        <Select
+                                            onValueChange={field.onChange}
                                             value={field.value || ""}
                                             disabled={!hosts || hosts.length === 0}
                                         >
                                             <FormControl>
-                                                <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                     <SelectValue placeholder={!hosts ? "Chargement..." : "Choisir..."} />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent className="bg-slate-900 border-white/20 text-white">
+                                            <SelectContent className="bg-white border-teal-400 text-teal-800">
                                                 {hosts && hosts.length > 0 ? (
                                                     hosts.map((h: any) => (
-                                                        <SelectItem key={h.id} value={h.id} className="text-base py-3 focus:bg-teal-600 focus:text-white transition-colors">
+                                                        <SelectItem key={h.id} value={h.id} className="text-base py-3 focus:bg-teal-100 focus:text-teal-800 transition-colors">
                                                             {h.firstName} {h.lastName}
                                                         </SelectItem>
                                                     ))
@@ -1593,7 +1588,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 name="purpose"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">
+                                        <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">
                                             Motif de la visite
                                         </FormLabel>
                                         <FormControl>
@@ -1601,7 +1596,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                 placeholder="ex: Réunion..."
                                                 {...field}
                                                 value={field.value || ""}
-                                                className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5"
+                                                className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5"
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -1611,9 +1606,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                         </div>
 
                         {/* Vehicle Question */}
-                        <div className="space-y-4 pt-4 border-t border-white/10">
-                            <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                                <Car className="w-6 h-6 text-teal-400" />
+                        <div className="space-y-4 pt-4 border-t border-teal-400/20">
+                            <h3 className="text-xl font-black text-teal-800 tracking-tight flex items-center gap-3">
+                                <Car className="w-6 h-6 text-teal-500" />
                                 Êtes-vous venu avec un véhicule ?
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
@@ -1625,11 +1620,11 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     }}
                                     className={cn(
                                         "flex items-center justify-center p-4 rounded-2xl border transition-all gap-3",
-                                        hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-white/10 hover:border-teal-500/30"
+                                        hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-teal-400 hover:border-teal-500/30"
                                     )}
                                 >
-                                    <Car className={cn("w-6 h-6", hasVehicle ? "text-teal-400" : "text-teal-300/40")} />
-                                    <span className={cn("text-base font-bold", hasVehicle ? "text-white" : "text-teal-200/60")}>Oui</span>
+                                    <Car className={cn("w-6 h-6", hasVehicle ? "text-teal-600" : "text-teal-500/40")} />
+                                    <span className={cn("text-base font-bold", hasVehicle ? "text-teal-800" : "text-teal-500/60")}>Oui</span>
                                 </button>
                                 <button
                                     type="button"
@@ -1639,26 +1634,26 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     }}
                                     className={cn(
                                         "flex items-center justify-center p-4 rounded-2xl border transition-all gap-3",
-                                        !hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-white/10 hover:border-teal-500/30"
+                                        !hasVehicle ? "border-teal-500 bg-teal-600/20" : "border-teal-400 hover:border-teal-500/30"
                                     )}
                                 >
-                                    <Users className={cn("w-6 h-6", !hasVehicle ? "text-teal-400" : "text-teal-300/40")} />
-                                    <span className={cn("text-base font-bold", !hasVehicle ? "text-white" : "text-teal-200/60")}>Non</span>
+                                    <Users className={cn("w-6 h-6", !hasVehicle ? "text-teal-600" : "text-teal-500/40")} />
+                                    <span className={cn("text-base font-bold", !hasVehicle ? "text-teal-800" : "text-teal-500/60")}>Non</span>
                                 </button>
                             </div>
                         </div>
 
                         {hasVehicle && (
-                            <div className="space-y-6 animate-in fade-in slide-in-from-top-5 duration-500 bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+                            <div className="space-y-6 animate-in fade-in slide-in-from-top-5 duration-500 bg-teal-50 p-6 rounded-2xl border border-teal-400 backdrop-blur-sm">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <FormField
                                         control={form.control}
                                         name="plateNumber"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Plaque d'immatriculation</FormLabel>
+                                                <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Plaque d'immatriculation</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="ex: AB-123-CD" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 uppercase px-5" />
+                                                    <Input placeholder="ex: AB-123-CD" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 uppercase px-5" />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -1669,21 +1664,21 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         name="vehicleType"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Type de véhicule</FormLabel>
-                                                <Select 
-                                                    onValueChange={field.onChange} 
+                                                <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Type de véhicule</FormLabel>
+                                                <Select
+                                                    onValueChange={field.onChange}
                                                     value={field.value || ""}
                                                 >
                                                     <FormControl>
-                                                        <SelectTrigger className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white px-5">
+                                                        <SelectTrigger className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 px-5">
                                                             <SelectValue placeholder="Choisir..." />
                                                         </SelectTrigger>
                                                     </FormControl>
-                                                    <SelectContent className="bg-slate-900 border-white/20 text-white">
-                                                        <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-600 focus:text-white transition-colors">Voiture</SelectItem>
-                                                        <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-600 focus:text-white transition-colors">Camion</SelectItem>
-                                                        <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-600 focus:text-white transition-colors">Moto</SelectItem>
-                                                        <SelectItem value="OTHER" className="py-3 font-medium focus:bg-teal-600 focus:text-white transition-colors">Autre</SelectItem>
+                                                    <SelectContent className="bg-white border-teal-400 text-teal-800">
+                                                        <SelectItem value="CAR" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Voiture</SelectItem>
+                                                        <SelectItem value="TRUCK" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Camion</SelectItem>
+                                                        <SelectItem value="MOTORCYCLE" className="py-3 flex items-center gap-2 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Moto</SelectItem>
+                                                        <SelectItem value="OTHER" className="py-3 font-medium focus:bg-teal-100 focus:text-teal-800 transition-colors">Autre</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </FormItem>
@@ -1696,9 +1691,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         name="vehicleBrand"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Marque (Optionnel)</FormLabel>
+                                                <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Marque (Optionnel)</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="ex: Toyota" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 px-5" />
+                                                    <Input placeholder="ex: Toyota" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 px-5" />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -1708,9 +1703,9 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         name="vehicleColor"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Couleur (Optionnel)</FormLabel>
+                                                <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Couleur (Optionnel)</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="ex: Noir" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-white/20 bg-white/10 text-white placeholder:text-teal-300/50 px-5" />
+                                                    <Input placeholder="ex: Noir" {...field} value={field.value || ""} className="h-14 text-lg rounded-xl border border-teal-400 bg-white/10 text-teal-800 placeholder:text-teal-500/50 px-5" />
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -1722,13 +1717,13 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                         name="passengerCount"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-sm font-bold text-teal-200 mb-1.5 block">Nombre de passagers</FormLabel>
+                                                <FormLabel className="text-sm font-bold text-teal-600 mb-1.5 block">Nombre de passagers</FormLabel>
                                                 <FormControl>
                                                     <div className="flex items-center gap-3">
                                                         <Button
                                                             type="button"
                                                             variant="outline"
-                                                            className="h-12 w-12 rounded-xl border border-white/20 bg-white/10 text-white text-xl font-bold hover:bg-white/20"
+                                                            className="h-12 w-12 rounded-xl border border-teal-400 bg-white/10 text-teal-800 text-xl font-bold hover:bg-white/20"
                                                             onClick={() => field.onChange(Math.max(0, (field.value || 0) - 1))}
                                                         >-</Button>
                                                         <Input
@@ -1736,12 +1731,12 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                                             {...field}
                                                             value={field.value ?? 0}
                                                             readOnly
-                                                            className="h-12 text-center text-xl font-bold rounded-xl border border-white/20 w-20 bg-white/10 text-white"
+                                                            className="h-12 text-center text-xl font-bold rounded-xl border border-teal-400 w-20 bg-white/10 text-teal-800"
                                                         />
                                                         <Button
                                                             type="button"
                                                             variant="outline"
-                                                            className="h-12 w-12 rounded-xl border border-white/20 bg-white/10 text-white text-xl font-bold hover:bg-white/20"
+                                                            className="h-12 w-12 rounded-xl border border-teal-400 bg-white/10 text-teal-800 text-xl font-bold hover:bg-white/20"
                                                             onClick={() => field.onChange((field.value || 0) + 1)}
                                                         >+</Button>
                                                     </div>
@@ -1759,7 +1754,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setStep(1)}
-                                className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-8"
+                                className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-8"
                             >
                                 Retour
                             </Button>
@@ -1778,11 +1773,11 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                     <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 md:space-y-6 animate-in fade-in slide-in-from-right-10 duration-500">
                         <div className="w-full max-w-2xl">
                             <div className="bg-teal-600/10 p-5 rounded-2xl border border-teal-500/30 mb-4 backdrop-blur-sm">
-                                <h3 className="text-xl font-black text-white mb-3 flex items-center gap-3">
-                                    <Shield className="w-6 h-6 text-teal-400" />
+                                <h3 className="text-xl font-black text-teal-800 mb-3 flex items-center gap-3">
+                                    <Shield className="w-6 h-6 text-teal-500" />
                                     Politique de visite
                                 </h3>
-                                <div className="prose prose-blue max-w-none text-teal-200/70 text-base leading-snug whitespace-pre-wrap max-h-32 overflow-y-auto">
+                                <div className="prose prose-blue max-w-none text-teal-800/70 text-base leading-snug whitespace-pre-wrap max-h-32 overflow-y-auto">
                                     {settings?.ndaPolicyText || "Veuillez lire et signer ci-dessous pour confirmer votre arrivée."}
                                 </div>
                             </div>
@@ -1790,8 +1785,8 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
 
                         <div className="w-full max-w-2xl">
                             <div className="space-y-3">
-                                <label className="text-sm font-bold text-teal-200 flex items-center gap-2">
-                                    <Scale className="w-4 h-4 text-teal-400" /> Signature numérique
+                                <label className="text-sm font-bold text-teal-600 flex items-center gap-2">
+                                    <Scale className="w-4 h-4 text-teal-500" /> Signature numérique
                                 </label>
                                 <SignaturePad
                                     onSave={(img) => setSignatureData(img)}
@@ -1809,7 +1804,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                                     else if (requireVisitorPhoto) setStep(1.5);
                                     else setStep(2);
                                 }}
-                                className="h-12 text-lg font-bold text-teal-300 hover:bg-white/10 rounded-xl px-8"
+                                className="h-12 text-lg font-bold text-teal-600 hover:bg-teal-100 rounded-xl px-8"
                             >
                                 Retour
                             </Button>

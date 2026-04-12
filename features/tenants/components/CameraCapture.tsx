@@ -12,9 +12,9 @@ interface CameraCaptureProps {
     defaultFacingMode?: "user" | "environment";
 }
 
-export function CameraCapture({ 
-    onCapture, 
-    title, 
+export function CameraCapture({
+    onCapture,
+    title,
     description,
     defaultFacingMode = "user"
 }: CameraCaptureProps) {

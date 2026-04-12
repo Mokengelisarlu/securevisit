@@ -6,9 +6,7 @@ import Link from 'next/link';
 
 export default function SignUpPage() {
     return (
-        <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F6F8] node-pattern px-6">
-            {/* Grain overlay */}
-            <div className="grain-overlay" />
+        <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F0FDFA] px-6">
 
             {/* Centered Content Stack */}
             <div className="relative z-10 w-full max-w-[480px] flex flex-col items-center">
