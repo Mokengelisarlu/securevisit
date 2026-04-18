@@ -71,8 +71,12 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
     // Main domain OR global shared route → route to /public
     url.pathname = `/public${url.pathname}`;
   } else {
-    // Tenant subdomain → route to /tenants/[slug] and set tenant slug header
-    url.pathname = `/tenants/${subdomain}${url.pathname}`;
+    // Tenant subdomain
+    // /kiosk stays as /kiosk (no path modification)
+    if (!url.pathname.startsWith('/kiosk')) {
+      // Other routes → route to /tenants/[slug]
+      url.pathname = `/tenants/${subdomain}${url.pathname}`;
+    }
   }
 
   // Create response and set tenant slug header
@@ -99,7 +103,7 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip)).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],

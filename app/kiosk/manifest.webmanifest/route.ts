@@ -1,25 +1,32 @@
-import { MetadataRoute } from 'next'
+import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 import { getPublicTenantBySlug } from '@/features/tenants/queries/tenant-data'
 
-export default async function manifest({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<MetadataRoute.Manifest> {
-  const { slug } = await params
+export async function GET(request: Request) {
+  const headersList = await headers()
+  const slug = headersList.get('x-tenant-slug')
+
+  if (!slug) {
+    return NextResponse.json(
+      { error: 'Tenant not found' },
+      { status: 404 }
+    )
+  }
+
   const tenant = await getPublicTenantBySlug(slug).catch(() => null)
   const tenantName = tenant?.name ?? 'Kiosk'
 
-  return {
-    name: `${tenantName} — Kiosk`,
-    short_name: tenantName,
-    description: `Borne d'accueil visiteurs — ${tenantName}`,
-    start_url: `https://${slug}.securevisitapp.com/kiosk`,
-    scope: `https://${slug}.securevisitapp.com/kiosk`,
+  const manifest = {
+    name: `${tenantName} — Borne d'accueil`,
+    short_name: `Kiosk ${tenantName}`,
+    description: `Système de gestion de visiteurs pour ${tenantName}`,
+    start_url: '/kiosk',
+    scope: '/kiosk',
     display: 'standalone',
     orientation: 'portrait',
-    background_color: '#0f172a',
-    theme_color: '#0DBDB5',
+    background_color: '#F0FDFA',
+    theme_color: '#0D9488',
+    id: `kiosk-${slug}`,
     icons: [
       {
         src: '/icon-48x48.png',
@@ -75,4 +82,10 @@ export default async function manifest({
       },
     ],
   }
+
+  return NextResponse.json(manifest, {
+    headers: {
+      'Content-Type': 'application/manifest+json',
+    },
+  })
 }
