@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
+// CORS: Get allowed origins from environment (comma-separated, default: *)
+const RAW_ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS || "*";
+const ALLOWED_ORIGINS = RAW_ALLOWED_ORIGINS.split(",").map((s) => s.trim()).filter(Boolean);
+
+function getAllowedOrigin(origin: string | null): string {
+  if (!origin) return ALLOWED_ORIGINS[0] ?? "*";
+  if (ALLOWED_ORIGINS.includes("*")) return "*";
+  if (ALLOWED_ORIGINS.includes(origin)) return origin;
+  return ALLOWED_ORIGINS[0] ?? "*";
+}
+
 /**
  * Extracts subdomain from hostname
  * @param hostname - The request hostname (e.g., "admin.example.com", "localhost:3000")
@@ -49,12 +60,30 @@ const isGlobalSharedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, request: NextRequest) => {
   const hostname = request.headers.get('host') || '';
   const subdomain = extractSubdomain(hostname);
+  const origin = request.headers.get('origin');
+  const allowed = getAllowedOrigin(origin);
 
   const url = request.nextUrl.clone();
 
-  // 🚀 Skip subdomain logic for API routes to avoid 404s
+  // 🚀 Handle CORS for API routes (preflight + headers)
   if (url.pathname.startsWith('/api')) {
-    return NextResponse.next();
+    // Handle OPTIONS preflight
+    if (request.method === 'OPTIONS') {
+      const res = new NextResponse(null, { status: 204 });
+      res.headers.set('Access-Control-Allow-Origin', allowed);
+      res.headers.set('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+      res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.headers.set('Access-Control-Allow-Credentials', 'true');
+      return res;
+    }
+
+    // Add CORS headers to API response
+    const res = NextResponse.next();
+    res.headers.set('Access-Control-Allow-Origin', allowed);
+    res.headers.set('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.headers.set('Access-Control-Allow-Credentials', 'true');
+    return res;
   }
 
   // Route based on subdomain

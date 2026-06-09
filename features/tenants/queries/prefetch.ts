@@ -12,12 +12,14 @@ import {
     getServices,
     getDashboardStats,
     getBusinessSettings,
+} from "./tenant-data";
+import {
     getPublicDepartments,
     getPublicServices,
     getPublicVisitorTypes,
     getPublicHosts,
     getPublicOnSiteVisitors,
-} from "./tenant-data";
+} from "../client/kiosk-api";
 
 /**
  * Prefetch all dashboard data

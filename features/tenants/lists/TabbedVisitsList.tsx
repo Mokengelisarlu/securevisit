@@ -47,6 +47,7 @@ import { useCheckInScheduledVisit } from "../hooks/useScheduledVisits.hook";
 import { toast } from "sonner";
 import { VisitDetailsModal } from "../modals/VisitDetailsModal";
 import { Eye } from "lucide-react";
+import { getBlobUrl } from "@/lib/utils";
 
 type TabType = "today" | "on-site" | "exited" | "scheduled";
 
@@ -315,7 +316,7 @@ export function TabbedVisitsList() {
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-teal-50 text-teal-600 border border-teal-100 font-bold shrink-0">
                                                 {visit.visitor.photoUrl ? (
-                                                    <img src={visit.visitor.photoUrl} alt="" className="w-full h-full object-cover" />
+                                                    <img src={getBlobUrl(visit.visitor.photoUrl)} alt="" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <>{visit.visitor.firstName[0]}{visit.visitor.lastName[0]}</>
                                                 )}

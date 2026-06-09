@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { checkoutPublicVisit } from "../queries/tenant-data";
+import { checkoutPublicVisit } from "../client/kiosk-api";
 
 export function useCheckoutPublicVisit(tenantSlug: string, deviceToken: string | null) {
     const queryClient = useQueryClient();

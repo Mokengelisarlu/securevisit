@@ -5,21 +5,21 @@ export async function POST(request: Request): Promise<NextResponse> {
     const { searchParams } = new URL(request.url);
     const filename = searchParams.get('filename') || 'upload';
 
-    // Extract file from form data
     let file;
     try {
         const formData = await request.formData();
-        file = formData.get('file');
+        file = (formData as any).get('file');
     } catch (e) {
         return NextResponse.json({ error: 'Failed to parse form data' }, { status: 400 });
     }
 
-    if (!file || !(file instanceof Blob)) {
+    if (!file || typeof (file as any).arrayBuffer !== 'function') {
         return NextResponse.json({ error: 'No valid file provided in "file" field' }, { status: 400 });
     }
 
     try {
-        const blob = await put(file.name || filename, file, {
+        const name = (file as any).name || filename;
+        const blob = await put(name, file as any, {
             access: 'private',
         });
 

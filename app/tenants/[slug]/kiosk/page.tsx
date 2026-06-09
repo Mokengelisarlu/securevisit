@@ -1,7 +1,8 @@
-import { getPublicTenantBySlug, getBusinessSettings } from "@/features/tenants/queries/tenant-data";
+import { getPublicTenantBySlug, getPublicBusinessSettings } from "@/features/tenants/queries/tenant-data";
 import { VisitorKioskForm } from "@/features/tenants/forms/VisitorKioskForm";
 import { Building2 } from "lucide-react";
 import Image from "next/image";
+import { getBlobUrl } from "@/lib/utils";
 
 export default async function KioskPage({
     params,
@@ -20,7 +21,7 @@ export default async function KioskPage({
     }
 
     // Fetch business settings to get logo
-    const settings = await getBusinessSettings(slug).catch(() => null);
+    const settings = await getPublicBusinessSettings(slug).catch(() => null);
 
     return (
         <div className="h-screen w-full overflow-hidden bg-white">
@@ -59,17 +60,40 @@ export default async function KioskPage({
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center w-full h-full p-4 md:p-6">
                     {/* Logo Section */}
-                    <div className="flex-shrink-0 flex flex-col items-center justify-center">
-                        <Image
-                            src="/icon-192x192.png"
-                            alt="SecureVisit Logo"
-                            width={80}
-                            height={80}
-                            className="object-contain drop-shadow-xl"
-                        />
-                        <span className="text-teal-600 font-bold text-xl mt-2 tracking-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
-                            SecureVisit
-                        </span>
+                    <div className="flex-shrink-0 flex items-center gap-6">
+                        {/* SecureVisit Logo */}
+                        <div className="flex flex-col items-center justify-center">
+                            <Image
+                                src="/icon-192x192.png"
+                                alt="SecureVisit Logo"
+                                width={60}
+                                height={60}
+                                className="object-contain drop-shadow-xl"
+                            />
+                            <span className="text-teal-600 font-black text-sm mt-1 tracking-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
+                                SecureVisit
+                            </span>
+                        </div>
+
+                        {/* Separator */}
+                        {settings?.logoUrl && (
+                            <div className="h-10 w-px bg-gray-200/50" />
+                        )}
+
+                        {/* Tenant Logo */}
+                        {settings?.logoUrl && (
+                            <div className="flex flex-col items-center justify-center">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={getBlobUrl(settings.logoUrl)}
+                                    alt={tenant.name}
+                                    className="h-[60px] w-auto object-contain drop-shadow-lg"
+                                />
+                                <span className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">
+                                    Partenaire
+                                </span>
+                            </div>
+                        )}
                     </div>
  
                     {/* Tenant Name */}

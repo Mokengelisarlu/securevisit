@@ -42,7 +42,7 @@ export default async function VisitorPage() {
   }
 
   return (
-    <TenantProvider slug={tenantSlug} name={null}>
+    <TenantProvider slug={tenantSlug} name={null} logoUrl={null}>
       <VisitorKioskContent />
     </TenantProvider>
   );

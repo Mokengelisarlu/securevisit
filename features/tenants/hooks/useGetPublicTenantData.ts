@@ -7,7 +7,7 @@ import {
     getPublicOnSiteVisitors,
     searchPublicVisitors,
     getPublicSettings
-} from "../queries/tenant-data";
+} from "../client/kiosk-api";
 
 export function useGetPublicSettings(tenantSlug: string, deviceToken: string | null) {
     return useQuery({
@@ -75,7 +75,7 @@ export function useSearchPublicVisitors(
     query: string
 ) {
     return useQuery({
-        queryKey: ["public-visitor-search", tenantSlug, query],
+        queryKey: ["public-visitor-search", tenantSlug, deviceToken, query],
         queryFn: () => searchPublicVisitors(tenantSlug, deviceToken!, query),
         enabled: !!tenantSlug && !!deviceToken && query.trim().length >= 2,
         staleTime: 30_000, // Cache results for 30 seconds

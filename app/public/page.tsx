@@ -86,14 +86,6 @@ export default function HomePage() {
       {/* Main content */}
       <main className="relative">
         <HeroSection className="z-10" />
-        <FeaturesSection className="z-20" />
-        <HowItWorksSection className="z-30" />
-        <SecuritySection className="z-40" />
-        <IntegrationsSection className="z-50" />
-        <UseCasesSection className="z-60" />
-        <TestimonialSection className="z-70" />
-        <AccountCTASection className="z-80" />
-        <ContactSection className="z-90" />
       </main>
 
       {/* Footer */}

@@ -18,7 +18,9 @@ import { upsertBusinessSettings } from "../queries/tenant-data";
 import { useTenant } from "@/lib/tenant-provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Building2, Phone, Mail, Globe, MapPin, Hash, Briefcase, Image as ImageIcon, X } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getBlobUrl } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(1, "Le nom de l'entreprise est requis"),
@@ -40,8 +42,16 @@ interface BusinessSettingsFormProps {
 
 export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProps) {
     const { slug } = useTenant();
+    const router = useRouter();
     const queryClient = useQueryClient();
     const [logoPreview, setLogoPreview] = useState<string | null>(defaultValues?.logoUrl || null);
+
+    // Sync state with props when they change
+    useEffect(() => {
+        if (defaultValues?.logoUrl) {
+            setLogoPreview(defaultValues.logoUrl);
+        }
+    }, [defaultValues?.logoUrl]);
     const [uploadingLogo, setUploadingLogo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -97,6 +107,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
             });
             toast.success("Paramètres enregistrés");
             queryClient.invalidateQueries({ queryKey: ["business-settings", slug] });
+            router.refresh();
         } catch (error: any) {
             toast.error(error.message || "Erreur lors de la sauvegarde");
         }
@@ -118,7 +129,7 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
                         {logoPreview ? (
                             <>
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={logoPreview} alt="Logo" className="w-full h-full object-contain p-2" />
+                                <img src={getBlobUrl(logoPreview)} alt="Logo" className="w-full h-full object-contain p-2" />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <ImageIcon className="w-6 h-6 text-white" />
                                 </div>

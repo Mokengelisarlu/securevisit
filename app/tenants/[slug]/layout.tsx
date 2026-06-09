@@ -1,7 +1,7 @@
 import { use } from "react";
 import { TenantProvider } from "@/lib/tenant-provider";
 import { TenantUserSync } from "@/components/TenantUserSync";
-import { getPublicTenantBySlug } from "@/features/tenants/queries/tenant-data";
+import { getPublicTenantBySlug, getPublicBusinessSettings } from "@/features/tenants/queries/tenant-data";
 
 export default function TenantRootLayout({
   children,
@@ -12,9 +12,14 @@ export default function TenantRootLayout({
 }) {
   const { slug: tenantSlug } = use(params);
   const tenant = use(getPublicTenantBySlug(tenantSlug));
+  const businessSettings = use(getPublicBusinessSettings(tenantSlug));
 
   return (
-    <TenantProvider slug={tenantSlug} name={tenant?.name || null}>
+    <TenantProvider 
+        slug={tenantSlug} 
+        name={businessSettings?.name || tenant?.name || null}
+        logoUrl={businessSettings?.logoUrl || null}
+    >
       <TenantUserSync tenantSlug={tenantSlug} />
       {children}
     </TenantProvider>

@@ -22,7 +22,7 @@ export default async function DashboardLayout({
 
   return (
     <TenantAuthGuard tenantSlug={tenantSlug}>
-      <TenantProvider slug={tenantSlug} name={null}>
+      <TenantProvider slug={tenantSlug} name={null} logoUrl={null}>
         <div className="relative flex flex-col h-screen bg-[#F4F6F8] node-pattern overflow-hidden">
           {/* Grain overlay */}
           <div className="grain-overlay" />

@@ -1,0 +1,74 @@
+Progress Tracker
+
+Update this file after every meaningful implementation change.
+
+## Active Projects
+
+### 1. React Native Expo Kiosk App
+**Status**: Phase 3 (Core Screens) Complete — All app screens built  
+**Tracker**: [KIOSK_PROGRESS_TRACKER.md](../KIOSK_PROGRESS_TRACKER.md)  
+**Summary**: Building React Native app for visitor check-in kiosks with QR-based pairing, offline-first architecture, hybrid WebSocket+REST communication, and TanStack Query caching.  
+**Total Units**: 48 (organized into 6 phases)  
+**Current Phase**: Phase 1 (REST API Foundation) & Phase 4-6 (Offline/Admin/Testing)  
+**Recent Change**: 
+- Completed Unit 0.9 — Pairing Success Reflection. On successful pairing, the `justPaired` flag is set in KioskContext before navigating to `/(kiosk)`, avoiding the auth-layout redirect race. The main menu reads the flag and shows a "Pairing Successful" banner with tenant slug and Dismiss button. Main menu also enhanced with "Connected" badge and tenant slug in header/footer.
+- Completed Unit 0.10 — Pairing API Contract Fixes & UI Redesign. Fixed API mismatches (deviceId query param, response shapes, HTTP methods). Removed emoji icons from all buttons. Fixed WCAG AA color contrast. Unified to teal-only color scheme (dark teal for check-in, lighter teal for check-out).
+- Completed Unit 3.4 — Vehicle Info Screen. Created VisitDraftContext for multi-step check-in flow. New visitor form now saves to draft and navigates to vehicle screen.
+- Completed Unit 3.5 — Photo Capture Screen. Installed expo-camera, built full-screen camera modal with visitor/vehicle photo capture, preview, and retake.
+- Completed Unit 3.7 — Check-in Review Screen. Summary of all collected data with final submit button.
+- Completed Unit 3.9 — Settings Screen. Full device configuration panel with connection info, device info, server URL override, re-pair, and clear data. Added deviceId persistence to ApiContext.
+- Completed Unit 3.6 — Signature Capture Screen. SVG-based signature pad with PanResponder touch tracking, capture to PNG via react-native-view-shot, skip option. Stored as signatureData in VisitDraft.
+- **Phase 3 (Core App Screens) is now COMPLETED (100%).** All check-in flow screens: New/Existing Visitor → Vehicle → Photo → Signature → Review → Submit.  
+
+### 2. SecureVisit Web SaaS
+**Status**: Architecture Planning  
+
+---
+
+## Archive: SecureVisit SaaS Progress
+
+Current Phase
+Architecture & Foundation Planning
+Current Goal
+Define the production-ready architecture, development standards, and implementation workflow for SecureVisit VMS SaaS.
+Completed
+Defined multi-tenant SaaS architecture
+Designed middleware and tenant resolution flow
+Designed authentication and authorization flow
+Defined upload and blob storage architecture
+Defined frontend state management approach
+Defined API route structure
+Defined database-per-tenant strategy
+Created foundational context/spec templates
+In Progress
+Adapting project documentation templates for SecureVisit
+Preparing implementation-ready architecture documentation
+Defining feature boundaries and conventions
+Next Up
+Setup initial Next.js application structure
+Configure Clerk authentication
+Implement middleware subdomain routing
+Setup Neon master database
+Setup Drizzle ORM and migrations
+Build tenant provisioning flow
+Open Questions
+Should realtime updates use polling or WebSockets initially?
+Will tenant databases use Neon branches or separate projects?
+What RBAC granularity is required for MVP?
+Should uploads use signed URLs from the beginning?
+What audit retention policy is required?
+Architecture Decisions
+Database-per-tenant architecture selected for isolation and security
+Subdomain-based tenant routing selected for SaaS UX
+Clerk selected for authentication and session handling
+React Query selected for server-state management
+Vercel Blob selected for media uploads
+Drizzle ORM selected for type-safe SQL access
+Middleware owns tenant resolution responsibilities
+Serverless-first architecture adopted for scalability
+Session Notes
+SecureVisit is designed as a production-grade visitor management SaaS
+Tenant isolation is the highest-priority architectural concern
+All requests must remain tenant-scoped
+Context-driven development workflow established
+Documentation-first implementation strategy adopted

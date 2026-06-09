@@ -25,7 +25,6 @@ import {
 import { useCreatePublicVisit } from "../hooks/useCreatePublicVisit.hook";
 import { useCheckoutPublicVisit } from "../hooks/useCheckoutPublicVisit.hook";
 import { usePingDevice } from "../hooks/useDeviceManagement.hook";
-import { getPublicOnSiteVisitors } from "../queries/tenant-data";
 import {
     useGetPublicDepartments,
     useGetPublicServices,
@@ -64,7 +63,8 @@ import {
 } from "lucide-react";
 import { SignaturePad } from "../components/SignaturePad";
 import { CameraCapture } from "../components/CameraCapture";
-import { uploadToBlob } from "../server/upload";
+import { uploadImageToBlob } from "../client/upload";
+import { getPublicOnSiteVisitors, verifyDeviceToken } from "../client/kiosk-api";
 import { cn } from "@/lib/utils";
 import { KioskPairingScreen } from "../components/KioskPairingScreen";
 import { prefetchKioskData } from "../queries/prefetch";
@@ -131,6 +131,11 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
     const [vehiclePhoto, setVehiclePhoto] = useState<string | null>(null);
     const [hasVehicle, setHasVehicle] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
+    const [pendingVisitPayload, setPendingVisitPayload] = useState<any | null>(null);
+    const [pendingVisitorPhotoData, setPendingVisitorPhotoData] = useState<string | null>(null);
+    const [pendingVehiclePhotoData, setPendingVehiclePhotoData] = useState<string | null>(null);
+    const [uploadError, setUploadError] = useState<string | null>(null);
 
     // Result / success state
     const [isSuccess, setIsSuccess] = useState(false);
@@ -146,8 +151,24 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
     // ── Token bootstrap ──────────────────────────────────────────────
     useEffect(() => {
         const token = localStorage.getItem(`kiosk_token_${tenantSlug}`);
-        setDeviceToken(token);
-        setIsCheckingToken(false);
+
+        if (!token) {
+            setIsCheckingToken(false);
+            return;
+        }
+
+        verifyDeviceToken(tenantSlug, token)
+            .then(() => {
+                setDeviceToken(token);
+            })
+            .catch((error) => {
+                console.warn("Invalid kiosk token, resetting:", error);
+                localStorage.removeItem(`kiosk_token_${tenantSlug}`);
+                setDeviceToken(null);
+            })
+            .finally(() => {
+                setIsCheckingToken(false);
+            });
     }, [tenantSlug]);
 
     const handlePaired = (token: string) => {
@@ -267,6 +288,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
         setVehiclePhoto(null);
         setSignatureData(null);
         setIsUploading(false);
+        setUploadProgress(0);
         form.reset();
     };
 
@@ -288,42 +310,90 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
             return;
         }
 
+        // Prepare payload (photo URLs will be added after successful uploads)
+        const visitPayload: any = {
+            newVisitor: {
+                firstName: values.firstName!,
+                lastName: values.lastName!,
+                phone: values.phone || undefined,
+                company: values.company || undefined,
+                visitorTypeId: values.visitorTypeId!,
+            },
+            hostId: values.hostId || undefined,
+            departmentId: values.departmentId || undefined,
+            serviceId: values.serviceId || undefined,
+            purpose: values.purpose || undefined,
+            signatureData: signatureData || undefined,
+            visitorPhotoUrl: undefined,
+            vehiclePhotoUrl: undefined,
+            vehicle: values.hasVehicle
+                ? {
+                      plateNumber: values.plateNumber!,
+                      type: values.vehicleType!,
+                      brand: values.vehicleBrand || undefined,
+                      color: values.vehicleColor || undefined,
+                  }
+                : undefined,
+            passengerCount: values.passengerCount || 0,
+        };
+
+        setUploadProgress(0);
+        setUploadProgress(0);
+        setUploadProgress(0);
         setIsUploading(true);
-        console.log("Submitting New Visitor Visit...", values);
+        setUploadError(null);
         try {
             let visPhotoUrl = undefined;
             let vehPhotoUrl = undefined;
 
             if (visitorPhoto) {
-                visPhotoUrl = await uploadToBlob(tenantSlug, `visitor-${values.lastName}.jpg`, visitorPhoto, deviceToken || undefined);
-            }
-            if (vehiclePhoto) {
-                vehPhotoUrl = await uploadToBlob(tenantSlug, `vehicle-${values.plateNumber}.jpg`, vehiclePhoto, deviceToken || undefined);
+                try {
+                    const uploaded = await uploadImageToBlob(
+                        tenantSlug,
+                        deviceToken!,
+                        `visitor-${values.lastName}.jpg`,
+                        visitorPhoto,
+                        { onProgress: (p) => setUploadProgress(p) }
+                    );
+                    visPhotoUrl = uploaded.url;
+                } catch (err: any) {
+                    // store pending payload and photos for retry
+                    setPendingVisitPayload(visitPayload);
+                    setPendingVisitorPhotoData(visitorPhoto);
+                    setPendingVehiclePhotoData(vehiclePhoto);
+                    setUploadError(err?.message || "Failed to upload photos");
+                    setIsUploading(false);
+                    toast.error("Photo upload failed — you can retry");
+                    return;
+                }
             }
 
-            await createVisit.mutateAsync({
-                newVisitor: {
-                    firstName: values.firstName!,
-                    lastName: values.lastName!,
-                    phone: values.phone || undefined,
-                    company: values.company || undefined,
-                    visitorTypeId: values.visitorTypeId!,
-                },
-                hostId: values.hostId || undefined,
-                departmentId: values.departmentId || undefined,
-                serviceId: values.serviceId || undefined,
-                purpose: values.purpose || undefined,
-                signatureData: signatureData || undefined,
-                visitorPhotoUrl: visPhotoUrl,
-                vehiclePhotoUrl: vehPhotoUrl,
-                vehicle: values.hasVehicle ? {
-                    plateNumber: values.plateNumber!,
-                    type: values.vehicleType!,
-                    brand: values.vehicleBrand || undefined,
-                    color: values.vehicleColor || undefined,
-                } : undefined,
-                passengerCount: values.passengerCount || 0,
-            });
+            if (vehiclePhoto) {
+                try {
+                    const uploaded = await uploadImageToBlob(
+                        tenantSlug,
+                        deviceToken!,
+                        `vehicle-${values.plateNumber}.jpg`,
+                        vehiclePhoto,
+                        { onProgress: (p) => setUploadProgress(p) }
+                    );
+                    vehPhotoUrl = uploaded.url;
+                } catch (err: any) {
+                    setPendingVisitPayload(visitPayload);
+                    setPendingVisitorPhotoData(visitorPhoto);
+                    setPendingVehiclePhotoData(vehiclePhoto);
+                    setUploadError(err?.message || "Failed to upload photos");
+                    setIsUploading(false);
+                    toast.error("Photo upload failed — you can retry");
+                    return;
+                }
+            }
+
+            // attach uploaded URLs then create visit
+            visitPayload.visitorPhotoUrl = visPhotoUrl;
+            visitPayload.vehiclePhotoUrl = vehPhotoUrl;
+
+            await createVisit.mutateAsync(visitPayload);
             setSuccessType("IN");
             setIsSuccess(true);
             toast.success("Enregistrement réussi !");
@@ -332,6 +402,7 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
             toast.error(error?.message || "Une erreur est survenue");
         } finally {
             setIsUploading(false);
+            setUploadProgress(0);
         }
     }
 
@@ -353,36 +424,79 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
             return;
         }
 
+        // Prepare payload and attempt uploads; store pending if upload fails
+        const visitPayload: any = {
+            visitorId: selectedVisitor.id,
+            hostId: values.hostId || undefined,
+            departmentId: values.departmentId || undefined,
+            serviceId: values.serviceId || undefined,
+            purpose: values.purpose || undefined,
+            signatureData: signatureData || undefined,
+            visitorPhotoUrl: undefined,
+            vehiclePhotoUrl: undefined,
+            vehicle: values.hasVehicle
+                ? {
+                      plateNumber: values.plateNumber!,
+                      type: values.vehicleType!,
+                      brand: values.vehicleBrand || undefined,
+                      color: values.vehicleColor || undefined,
+                  }
+                : undefined,
+            passengerCount: values.passengerCount || 0,
+        };
+
         setIsUploading(true);
-        console.log("Submitting Existing Visitor Visit...", values);
+        setUploadError(null);
         try {
             let visPhotoUrl = undefined;
             let vehPhotoUrl = undefined;
 
             if (visitorPhoto) {
-                visPhotoUrl = await uploadToBlob(tenantSlug, `visitor-${selectedVisitor.id}.jpg`, visitorPhoto, deviceToken || undefined);
-            }
-            if (vehiclePhoto) {
-                vehPhotoUrl = await uploadToBlob(tenantSlug, `vehicle-${values.plateNumber}.jpg`, vehiclePhoto, deviceToken || undefined);
+                try {
+                    const uploaded = await uploadImageToBlob(
+                        tenantSlug,
+                        deviceToken!,
+                        `visitor-${selectedVisitor.id}.jpg`,
+                        visitorPhoto,
+                        { onProgress: (p) => setUploadProgress(p) }
+                    );
+                    visPhotoUrl = uploaded.url;
+                } catch (err: any) {
+                    setPendingVisitPayload(visitPayload);
+                    setPendingVisitorPhotoData(visitorPhoto);
+                    setPendingVehiclePhotoData(vehiclePhoto);
+                    setUploadError(err?.message || "Failed to upload photos");
+                    setIsUploading(false);
+                    toast.error("Photo upload failed — you can retry");
+                    return;
+                }
             }
 
-            await createVisit.mutateAsync({
-                visitorId: selectedVisitor.id,
-                hostId: values.hostId || undefined,
-                departmentId: values.departmentId || undefined,
-                serviceId: values.serviceId || undefined,
-                purpose: values.purpose || undefined,
-                signatureData: signatureData || undefined,
-                visitorPhotoUrl: visPhotoUrl,
-                vehiclePhotoUrl: vehPhotoUrl,
-                vehicle: values.hasVehicle ? {
-                    plateNumber: values.plateNumber!,
-                    type: values.vehicleType!,
-                    brand: values.vehicleBrand || undefined,
-                    color: values.vehicleColor || undefined,
-                } : undefined,
-                passengerCount: values.passengerCount || 0,
-            });
+            if (vehiclePhoto) {
+                try {
+                    const uploaded = await uploadImageToBlob(
+                        tenantSlug,
+                        deviceToken!,
+                        `vehicle-${values.plateNumber}.jpg`,
+                        vehiclePhoto,
+                        { onProgress: (p) => setUploadProgress(p) }
+                    );
+                    vehPhotoUrl = uploaded.url;
+                } catch (err: any) {
+                    setPendingVisitPayload(visitPayload);
+                    setPendingVisitorPhotoData(visitorPhoto);
+                    setPendingVehiclePhotoData(vehiclePhoto);
+                    setUploadError(err?.message || "Failed to upload photos");
+                    setIsUploading(false);
+                    toast.error("Photo upload failed — you can retry");
+                    return;
+                }
+            }
+
+            visitPayload.visitorPhotoUrl = visPhotoUrl;
+            visitPayload.vehiclePhotoUrl = vehPhotoUrl;
+
+            await createVisit.mutateAsync(visitPayload);
             setSuccessType("IN");
             setIsSuccess(true);
             toast.success("Enregistrement réussi !");
@@ -391,6 +505,63 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
             toast.error(error?.message || "Une erreur est survenue");
         } finally {
             setIsUploading(false);
+            setUploadProgress(0);
+        }
+    }
+
+    async function retryUploads() {
+        if (!pendingVisitPayload) return;
+        if (!deviceToken) {
+            setUploadError("Device not paired");
+            return;
+        }
+
+        setIsUploading(true);
+        setUploadError(null);
+
+        try {
+            let visPhotoUrl = undefined;
+            let vehPhotoUrl = undefined;
+
+            if (pendingVisitorPhotoData) {
+                const uploaded = await uploadImageToBlob(
+                    tenantSlug,
+                    deviceToken,
+                    `retry-visitor-${Date.now()}.jpg`,
+                    pendingVisitorPhotoData,
+                    { onProgress: (p) => setUploadProgress(p) }
+                );
+                visPhotoUrl = uploaded.url;
+            }
+            if (pendingVehiclePhotoData) {
+                const uploaded = await uploadImageToBlob(
+                    tenantSlug,
+                    deviceToken,
+                    `retry-vehicle-${Date.now()}.jpg`,
+                    pendingVehiclePhotoData,
+                    { onProgress: (p) => setUploadProgress(p) }
+                );
+                vehPhotoUrl = uploaded.url;
+            }
+
+            pendingVisitPayload.visitorPhotoUrl = visPhotoUrl;
+            pendingVisitPayload.vehiclePhotoUrl = vehPhotoUrl;
+
+            await createVisit.mutateAsync(pendingVisitPayload);
+            setPendingVisitPayload(null);
+            setPendingVisitorPhotoData(null);
+            setPendingVehiclePhotoData(null);
+            setUploadError(null);
+            setSuccessType("IN");
+            setIsSuccess(true);
+            toast.success("Upload retry successful and visit created");
+        } catch (err: any) {
+            console.error("Retry upload failed:", err);
+            setUploadError(err?.message || "Retry failed");
+            toast.error(err?.message || "Retry failed");
+        } finally {
+            setIsUploading(false);
+            setUploadProgress(0);
         }
     }
 
@@ -423,6 +594,21 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
         return <KioskPairingScreen tenantSlug={tenantSlug} onPaired={handlePaired} />;
     }
 
+    // Upload in-progress indicator
+    if (isUploading && uploadProgress > 0) {
+        return (
+            <div className="w-full flex flex-col items-center justify-center p-12">
+                <div className="w-full max-w-md bg-white/5 border border-teal-300/10 rounded-xl p-6 text-center">
+                    <p className="text-sm font-bold text-teal-800 mb-3">Envoi en cours</p>
+                    <div className="w-full bg-teal-100/40 rounded-full h-3 overflow-hidden mb-2">
+                        <div className="bg-teal-600 h-3 rounded-full" style={{ width: `${uploadProgress}%` }} />
+                    </div>
+                    <p className="text-xs text-teal-700">{uploadProgress}%</p>
+                </div>
+            </div>
+        );
+    }
+
     // ③ Success screen
     if (isSuccess) {
         return (
@@ -448,6 +634,31 @@ export function VisitorKioskForm({ tenantSlug }: VisitorKioskFormProps) {
                 >
                     Retour à l'accueil
                 </Button>
+            </div>
+        );
+    }
+
+    // ③.b Upload error (allow retry)
+    if (uploadError && pendingVisitPayload) {
+        return (
+            <div className="w-full flex flex-col items-center justify-center p-8">
+                <div className="max-w-xl w-full bg-red-50 border border-red-200 p-6 rounded-xl text-center">
+                    <p className="text-red-700 font-bold mb-2">Erreur d'envoi d'image</p>
+                    <p className="text-sm text-red-600 mb-4">{uploadError}</p>
+                    <div className="flex gap-3 justify-center">
+                        <Button onClick={retryUploads} disabled={isUploading}>
+                            {isUploading ? "Réessai..." : "Réessayer l'envoi"}
+                        </Button>
+                        <Button variant="ghost" onClick={() => {
+                            setUploadError(null);
+                            setPendingVisitPayload(null);
+                            setPendingVisitorPhotoData(null);
+                            setPendingVehiclePhotoData(null);
+                        }}>
+                            Annuler
+                        </Button>
+                    </div>
+                </div>
             </div>
         );
     }

@@ -14,6 +14,7 @@ import {
     Eye,
 } from "lucide-react";
 import Link from "next/link";
+import { getBlobUrl } from "@/lib/utils";
 import { toast } from "sonner";
 import { useTenant } from "@/lib/tenant-provider";
 import { useGetVisitors } from "../hooks/useGetTenantData";
@@ -131,7 +132,7 @@ export function RegisteredVisitorsList() {
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-teal-50 text-teal-600 border border-teal-100 font-bold shrink-0">
                                                 {visitor.photoUrl ? (
-                                                    <img src={visitor.photoUrl} alt="" className="w-full h-full object-cover" />
+                                                    <img src={getBlobUrl(visitor.photoUrl)} alt="" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <>{visitor.firstName[0]}{visitor.lastName[0]}</>
                                                 )}

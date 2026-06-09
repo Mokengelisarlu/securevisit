@@ -32,6 +32,7 @@ import { Modal } from "@/components/ui/custom-modal";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { HostForm } from "../forms/HostForm";
 import Link from "next/link";
+import { getBlobUrl } from "@/lib/utils";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -143,7 +144,7 @@ export function HostsList() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full overflow-hidden bg-teal-50 flex items-center justify-center text-teal-600 border border-teal-100 shrink-0 font-bold">
                         {host.photoUrl ? (
-                          <img src={host.photoUrl} alt="" className="w-full h-full object-cover" />
+                          <img src={getBlobUrl(host.photoUrl)} alt="" className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-xs">{host.firstName[0]}{host.lastName[0]}</span>
                         )}

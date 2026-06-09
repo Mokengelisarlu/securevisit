@@ -28,10 +28,8 @@ type FormSchema = z.infer<typeof formSchema>;
 export function CreateDepartmentForm() {
   const { slug: tenantSlug } = useTenant();
   const router = useRouter();
-
+  const createDept = useCreateDepartment(tenantSlug ?? "");
   if (!tenantSlug) return null;
-
-  const createDept = useCreateDepartment(tenantSlug);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -40,6 +38,8 @@ export function CreateDepartmentForm() {
       abbreviation: "",
     },
   });
+
+  if (!tenantSlug) return null;
 
   async function onSubmit(values: FormSchema) {
     try {

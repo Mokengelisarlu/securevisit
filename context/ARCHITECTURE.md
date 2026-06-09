@@ -425,3 +425,51 @@ This architecture provides:
 - ✅ **Scalable Design** - Unlimited tenants supported
 - ✅ **Production Ready** - Full error handling and validation
 
+Architecture Context
+Stack
+Layer	Technology	Role
+Framework	Next.js + TypeScript	Full-stack application framework
+UI	Tailwind CSS + shadcn/ui	Design system and UI components
+Authentication	Clerk	Authentication and session management
+Database ORM	Drizzle ORM	Type-safe database access
+Database	Neon PostgreSQL	Master and tenant databases
+State Management	React Query	Server-state caching and synchronization
+Validation	Zod	Runtime validation and schema parsing
+Forms	React Hook Form	Form state management
+File Storage	Vercel Blob	Media and document storage
+Hosting	Vercel	Deployment and serverless runtime
+Icons	Lucide React	Icon system
+System Boundaries
+app/ — Next.js App Router pages, layouts, and route handlers
+components/ — Shared UI and feature components
+features/ — Business-domain logic grouped by feature
+lib/ — Shared infrastructure, database, auth, cache, utilities
+db/ — Database schema, migrations, and connection management
+contexts/ — React providers and app-wide state
+hooks/ — Shared reusable hooks
+types/ — Shared TypeScript types and contracts
+config/ — Centralized application configuration
+Storage Model
+Master Database: Stores platform-level data including users, tenants, tenant metadata, roles, subscription state, and database connection references.
+Tenant Databases: Stores tenant-isolated operational data including: visitors, visits, departments, hosts, vehicles, devices, services, settings, and audit logs.
+Blob Storage: Stores uploaded files and media including: visitor photos, vehicle photos, signatures, exported reports, and future document uploads.
+Auth and Access Model
+Every user authenticates through Clerk
+Every request is scoped to a tenant context
+Tenant context is resolved via subdomain routing
+Only authorized tenant users can access tenant resources
+Platform admins access the admin panel through reserved subdomains
+All mutations require authentication and permission checks
+Frontend never accesses databases directly
+Tenant ownership is verified server-side on every request
+Invariants
+No cross-tenant database access is ever allowed
+Tenant context must always be validated server-side
+API routes must validate input before business logic runs
+Authentication and authorization must happen before mutations
+Route handlers must remain stateless and serverless-safe
+Long-running jobs must not execute inside request handlers
+Frontend components must never expose secret configuration
+All uploads must be validated before storage
+Shared UI components must remain presentation-focused
+All external input must be treated as untrusted

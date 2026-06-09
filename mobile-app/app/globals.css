@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Kiosk-specific global styles */
+@layer base {
+  :root {
+    @apply bg-white text-slate-900;
+  }
+}
+
+@layer components {
+  /* Kiosk button styles */
+  .kiosk-button {
+    @apply px-6 py-3 rounded-lg font-bold;
+  }
+
+  .kiosk-button-primary {
+    @apply kiosk-button bg-teal-600 text-white;
+  }
+
+  .kiosk-button-secondary {
+    @apply kiosk-button bg-teal-100 text-teal-900;
+  }
+
+  /* Kiosk input styles */
+  .kiosk-input {
+    @apply px-4 py-3 text-lg rounded-lg border border-teal-300 bg-white text-slate-900 placeholder-slate-400;
+  }
+
+  /* Kiosk text styles */
+  .kiosk-heading {
+    @apply text-3xl font-bold text-slate-900;
+  }
+
+  .kiosk-subheading {
+    @apply text-xl font-semibold text-slate-700;
+  }
+
+  .kiosk-body {
+    @apply text-base text-slate-600;
+  }
+
+  /* Large touch targets for kiosk */
+  .kiosk-touch-target {
+    @apply min-h-12 min-w-12;
+  }
+}

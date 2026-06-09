@@ -2,7 +2,7 @@
 
 import { getTenantDbBySlug } from "@/db/tenants";
 import { departments, hosts, visitors, users, services, visitorTypes, visits, devices, settings, vehicles, authorizedUsers, businessSettings } from "@/db/tenants/schema";
-import { and, gte, lte, eq, between, desc, or, ilike, asc, isNotNull } from "drizzle-orm";
+import { and, gte, lte, eq, between, desc, or, ilike, asc, isNotNull, inArray } from "drizzle-orm";
 import { format, addMinutes } from "date-fns";
 import { master_db } from "@/db/master";
 import { tenants } from "@/db/master/schema";
@@ -1126,21 +1126,36 @@ export async function searchPublicVisitors(
     limit: 10,
   });
 
-  // Return sanitized data — callers never receive a full last name
-  return (results as typeof results).map((v: (typeof results)[number]) => ({
-    id: v.id,
-    firstName: v.firstName,
-    // Mask last name: show first letter only
-    lastNameMasked: v.lastName ? v.lastName[0].toUpperCase() + "." : "",
-    // Mask phone: show last 4 digits only
-    phoneMasked: v.phone
-      ? "••• " + v.phone.slice(-4)
-      : null,
-    company: v.company,
-    visitorTypeId: v.visitorTypeId,
-    visitorTypeName: (v as any).type?.name ?? null,
-    visitorPhotoUrl: v.photoUrl,
-  }));
+  // Determine which of the matched visitors are currently on-site
+  const visitorIds: string[] = results.map((r: { id: string }) => r.id);
+  let onSiteIds = new Set<string>();
+  if (visitorIds.length > 0) {
+    // Query for active visits using inArray
+    const activeVisits = await db.query.visits.findMany({
+      where: and(eq(visits.status, "IN"), inArray(visits.visitorId, visitorIds)),
+    });
+    activeVisits.forEach((v: { visitorId: string }) => onSiteIds.add(v.visitorId));
+  }
+
+  // Return full visitor details (kiosk needs full names/phones) and include an `isOnSite` flag
+  return (results as typeof results).map((v: (typeof results)[number]) => {
+    const lastNameMasked = v.lastName ? v.lastName[0].toUpperCase() + "." : "";
+    const phoneMasked = v.phone ? "••• " + v.phone.slice(-4) : null;
+
+    return {
+      id: v.id,
+      firstName: v.firstName,
+      lastName: v.lastName,
+      phone: v.phone,
+      company: v.company,
+      visitorTypeId: v.visitorTypeId,
+      visitorTypeName: (v as any).type?.name ?? null,
+      visitorPhotoUrl: v.photoUrl,
+      lastNameMasked,
+      phoneMasked,
+      isOnSite: onSiteIds.has(v.id),
+    };
+  });
 }
 
 export async function getDashboardStats(tenantSlug: string) {
@@ -1470,6 +1485,12 @@ export async function getBusinessSettings(tenantSlug: string) {
   await verifyTenantOwnership(tenantSlug);
   const db = await getTenantDbBySlug(tenantSlug);
 
+  const rows = await db.query.businessSettings.findMany({ limit: 1 });
+  return rows[0] ?? null;
+}
+
+export async function getPublicBusinessSettings(tenantSlug: string) {
+  const db = await getTenantDbBySlug(tenantSlug);
   const rows = await db.query.businessSettings.findMany({ limit: 1 });
   return rows[0] ?? null;
 }

@@ -2,10 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     generatePairingCode,
     checkPairingStatus,
+    pingDevice,
+} from "../client/kiosk-api";
+import {
     pairDevice,
     getDevices,
     deleteDevice,
-    pingDevice,
     updateDevice,
     reconnectDevice,
 } from "../queries/tenant-data";

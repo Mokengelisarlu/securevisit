@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPublicVisit } from "../queries/tenant-data";
+import { createPublicVisit } from "../client/kiosk-api";
 
 export function useCreatePublicVisit(tenantSlug: string, deviceToken: string | null) {
     const queryClient = useQueryClient();

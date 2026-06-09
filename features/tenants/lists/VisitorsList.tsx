@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useTenant } from "@/lib/tenant-provider";
 import { useState, useMemo } from 'react';
 import { Edit2, Trash2 } from "lucide-react";
+import { getBlobUrl } from "@/lib/utils";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -115,7 +116,7 @@ export function VisitorsList() {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-teal-50 text-teal-600 font-black border border-teal-100 shrink-0">
                     {visitor.photoUrl ? (
-                      <img src={visitor.photoUrl} alt="" className="w-full h-full object-cover" />
+                      <img src={getBlobUrl(visitor.photoUrl)} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <>{visitor.firstName[0]}{visitor.lastName[0]}</>
                     )}
