@@ -84,6 +84,55 @@ export async function generatePairingCode(tenantSlug: string) {
 }
 
 /**
+ * [PUBLIC] Generate a pairing code for an EXISTING device (reconnect flow)
+ * Updates the existing device record with a new pairing code instead of creating a new one
+ * Accepts any existing device regardless of pairing state
+ */
+export async function generateReconnectPairingCode(tenantSlug: string, deviceId: string) {
+  console.log('[generateReconnectPairingCode] tenantSlug:', tenantSlug, 'deviceId:', deviceId);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  // Check if device exists at all (any pairing state)
+  const existingDevice = await db.query.devices.findFirst({
+    where: eq(devices.id, deviceId),
+  });
+
+  console.log('[generateReconnectPairingCode] existingDevice found:', existingDevice ? 'yes' : 'no');
+  if (existingDevice) {
+    console.log('[generateReconnectPairingCode] existingDevice:', {
+      id: existingDevice.id,
+      isPaired: existingDevice.isPaired,
+      deviceToken: existingDevice.deviceToken ? 'yes' : 'no',
+      name: existingDevice.name,
+      pairingCode: existingDevice.pairingCode
+    });
+  }
+
+  if (!existingDevice) {
+    console.log('[generateReconnectPairingCode] FAIL: device not found in database');
+    throw new Error('Device not found');
+  }
+
+  // Generate new pairing code
+  const pairingCode = randomBytes(3).toString("hex").toUpperCase();
+  const expiresAt = addMinutes(new Date(), 10);
+
+  // Update the EXISTING device with new pairing code, reset pairing state
+  await db.update(devices).set({
+    pairingCode,
+    pairingCodeExpiresAt: expiresAt,
+    isPaired: 0,
+    deviceToken: null,
+    pairedAt: null,
+  }).where(eq(devices.id, deviceId));
+
+  return {
+    deviceId,
+    pairingCode,
+  };
+}
+
+/**
  * [PUBLIC] Check if a device has been paired yet
  * This is polled by the kiosk after showing the pairing code
  */

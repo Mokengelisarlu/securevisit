@@ -1,15 +1,34 @@
-import { View, Text, Pressable, Alert, Image } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
+import { useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MainMenuScreen() {
   const insets = useSafeAreaInsets();
-  const { clearToken } = useAuth();
-  const { tenantSlug, apiBaseUrl } = useApi();
+  const { deviceToken } = useAuth();
+  const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings } = useApi();
+  const { data: business, isLoading } = useGetPublicBusinessSettings(deviceToken);
   const { setMode, resetState, justPaired, setJustPaired } = useKiosk();
+
+  const effectiveBusiness = cachedBusiness || business;
+  const tenantName = effectiveBusiness?.name || tenantSlug || 'SecureVisit';
+  const logoSrc = effectiveBusiness?.logoUrl
+    ? effectiveBusiness.logoUrl.includes('blob.vercel-storage.com')
+      ? `${apiBaseUrl}/api/blob?url=${encodeURIComponent(effectiveBusiness.logoUrl)}`
+      : effectiveBusiness.logoUrl
+    : null;
+
+  // Cache business settings from API after first successful fetch
+  const { useEffect } = require('react');
+  useEffect(() => {
+    if (business && !cachedBusiness && !isLoading) {
+      saveBusinessSettings(business);
+    }
+  }, [business, cachedBusiness, isLoading, saveBusinessSettings]);
 
   async function handleCheckIn() {
     setJustPaired(false);
@@ -35,22 +54,18 @@ export default function MainMenuScreen() {
 
   return (
     <View
-      className="flex-1 bg-teal-50 px-6 justify-between"
+      className="flex-1 bg-teal-50 px-6"
       style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
     >
       {justPaired ? (
-        <View className="bg-teal-600 rounded-2xl p-5 mt-4">
+        <View className="bg-teal-600 rounded-2xl p-5 mt-4 mb-4">
           <View className="items-center gap-2">
             <Text className="text-lg font-black text-white text-center">
               Pairing Successful
             </Text>
             <Text className="text-sm text-white text-center">
-              This kiosk is now connected to your SecureVisit system.
+              This kiosk is now connected to {tenantName}.
             </Text>
-            <View className="flex-row items-center gap-1.5 mt-1">
-              <View className="w-1.5 h-1.5 rounded-full bg-teal-300" />
-              <Text className="text-xs text-white">{tenantSlug}</Text>
-            </View>
             <Pressable
               onPress={handleDismissSuccess}
               className="bg-teal-700 rounded-xl px-6 py-2 mt-2 active:bg-teal-800"
@@ -61,75 +76,89 @@ export default function MainMenuScreen() {
         </View>
       ) : null}
 
-      <View className="items-center mt-4">
-        <Image
-          source={require('../../assets/images/icon-512x512.png')}
-          className="w-28 h-28 mb-2"
-          resizeMode="contain"
-        />
-        <Text className="text-lg font-semibold text-teal-700">SecureVisit</Text>
-
-        <View className="flex-row items-center gap-1.5 bg-teal-100 rounded-full px-3 py-1 mt-3 mb-3">
-          <View className="w-2 h-2 rounded-full bg-teal-500" />
-          <Text className="text-xs font-bold text-teal-700 uppercase tracking-wider">
-            Connected
-          </Text>
-        </View>
-
-        <Text className="text-4xl font-black text-teal-900 text-center">
-          Welcome
-        </Text>
-
-        <Text className="text-xs text-teal-500 text-center mt-1">
-          {tenantSlug}
-        </Text>
-      </View>
-
-      <View className="gap-6">
-        <Pressable
-          onPress={handleCheckIn}
-          className="bg-slate-700 rounded-2xl p-8 active:bg-slate-600 active:scale-95"
-        >
-          <View className="items-center gap-2">
-            <Text className="text-3xl font-black text-white">Check In</Text>
-            <Text className="text-base text-slate-300 text-center">
-              Register your arrival
+      <View className="flex-1" style={{ flex: 1 }}>
+        <View className="flex-1 justify-center items-center" style={{ flex: 1 }}>
+          <View className="flex-row items-center justify-center gap-2 mb-4">
+            <Image
+              source={require('../../assets/images/icon-512x512.png')}
+              className="w-10 h-10"
+              resizeMode="contain"
+            />
+            <Text className="text-xl font-black text-teal-700">SecureVisit</Text>
+          </View>
+          <View className="items-center gap-3">
+            {logoSrc ? (
+              <Image
+                source={{ uri: logoSrc }}
+                className="w-28 h-28 rounded-xl"
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/icon-512x512.png')}
+                className="w-28 h-28"
+                resizeMode="contain"
+              />
+            )}
+            <Text className="text-4xl font-black text-teal-900 text-center" style={{ maxWidth: '90%' }}>
+              {tenantName}
             </Text>
           </View>
-        </Pressable>
+        </View>
 
-        <Pressable
-          onPress={handleCheckOut}
-          className="rounded-2xl p-8 border-2 border-teal-600 bg-transparent active:bg-teal-50 active:scale-95"
-        >
-          <View className="items-center gap-2">
-            <Text className="text-3xl font-black text-teal-700">Check Out</Text>
-            <Text className="text-base text-teal-600 text-center">
-              Register your departure
+        <View className="flex-1 justify-center items-center" style={{ flex: 1 }}>
+          <View className="w-full items-center gap-6">
+            <Text className="text-xl font-normal text-teal-600 text-center">
+              Welcome
+            </Text>
+            <View className="gap-6 w-full">
+              <Pressable
+                onPress={handleCheckIn}
+                className="bg-teal-700 rounded-2xl p-8 active:bg-teal-800 active:scale-95"
+              >
+                <View className="items-center gap-2">
+                  <Text className="text-3xl font-black text-white">Check In</Text>
+                  <Text className="text-base text-white text-center">
+                    Register your arrival
+                  </Text>
+                </View>
+              </Pressable>
+
+              <Pressable
+                onPress={handleCheckOut}
+                className="rounded-2xl p-8 border-2 border-teal-600 bg-transparent active:bg-teal-50 active:scale-95"
+              >
+                <View className="items-center gap-2">
+                  <Text className="text-3xl font-black text-teal-700">Check Out</Text>
+                  <Text className="text-base text-teal-600 text-center">
+                    Register your departure
+                  </Text>
+                </View>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+
+        <View className="flex-1 justify-center items-center gap-2" style={{ flex: 1 }}>
+          <Pressable
+            onPress={handleSettings}
+            className="active:opacity-60"
+          >
+            <Text className="text-teal-600 text-base font-semibold underline">
+              Settings
+            </Text>
+          </Pressable>
+
+          <View className="flex-row items-center justify-center gap-1.5">
+            <View className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+            <Text className="text-xs text-teal-600 text-center">
+              Kiosk online
             </Text>
           </View>
-        </Pressable>
-      </View>
-
-      <View className="gap-3">
-        <Pressable
-          onPress={handleSettings}
-          className="bg-orange-100 rounded-lg py-3 active:bg-orange-200"
-        >
-          <Text className="text-orange-900 text-center font-bold text-base">
-            Settings
-          </Text>
-        </Pressable>
-
-        <View className="flex-row items-center justify-center gap-1.5">
-          <View className="w-1.5 h-1.5 rounded-full bg-teal-500" />
-          <Text className="text-xs text-teal-600 text-center">
-            Kiosk Ready • {tenantSlug}
+          <Text className="text-[10px] text-teal-400 text-center">
+            Powered by Mokengeli Sarlu
           </Text>
         </View>
-        <Text className="text-[10px] text-teal-400 text-center">
-          {apiBaseUrl}
-        </Text>
       </View>
     </View>
   );

@@ -1,21 +1,26 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { DEFAULT_API_BASE_URL } from '@/src/api/client';
+import { BusinessSettings } from '@/src/types/api';
 
 const SLUG_STORAGE_KEY = 'kiosk_tenant_slug';
 const URL_STORAGE_KEY = 'kiosk_api_base_url';
 const DEVICE_ID_KEY = 'kiosk_device_id';
+const BUSINESS_SETTINGS_KEY = 'kiosk_business_settings';
 
 interface ApiContextType {
   apiBaseUrl: string;
   tenantSlug: string | null;
   deviceId: string | null;
+  businessSettings: BusinessSettings | null;
   isLoadingSlug: boolean;
   saveTenantSlug: (slug: string) => Promise<void>;
   clearTenantSlug: () => Promise<void>;
   saveApiBaseUrl: (url: string) => Promise<void>;
   saveDeviceId: (id: string) => Promise<void>;
   clearDeviceId: () => Promise<void>;
+  saveBusinessSettings: (settings: BusinessSettings) => Promise<void>;
+  clearBusinessSettings: () => Promise<void>;
 }
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -24,6 +29,7 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
   const [tenantSlug, setTenantSlug] = useState<string | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [apiBaseUrl, setApiBaseUrl] = useState<string>(DEFAULT_API_BASE_URL);
+  const [businessSettings, setBusinessSettings] = useState<BusinessSettings | null>(null);
   const [isLoadingSlug, setIsLoadingSlug] = useState(true);
 
   useEffect(() => {
@@ -41,6 +47,14 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
       const storedDeviceId = await SecureStore.getItemAsync(DEVICE_ID_KEY);
       if (storedDeviceId) {
         setDeviceId(storedDeviceId);
+      }
+      const storedBusiness = await SecureStore.getItemAsync(BUSINESS_SETTINGS_KEY);
+      if (storedBusiness) {
+        try {
+          setBusinessSettings(JSON.parse(storedBusiness));
+        } catch {
+          // ignore parse errors
+        }
       }
     } catch (err) {
       console.error('Failed to load config:', err);
@@ -101,18 +115,41 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function saveBusinessSettings(settings: BusinessSettings) {
+    try {
+      await SecureStore.setItemAsync(BUSINESS_SETTINGS_KEY, JSON.stringify(settings));
+      setBusinessSettings(settings);
+    } catch (err) {
+      console.error('Failed to save business settings:', err);
+      throw err;
+    }
+  }
+
+  async function clearBusinessSettings() {
+    try {
+      await SecureStore.deleteItemAsync(BUSINESS_SETTINGS_KEY);
+      setBusinessSettings(null);
+    } catch (err) {
+      console.error('Failed to clear business settings:', err);
+      throw err;
+    }
+  }
+
   return (
     <ApiContext.Provider
       value={{
         apiBaseUrl,
         tenantSlug,
         deviceId,
+        businessSettings,
         isLoadingSlug,
         saveTenantSlug,
         clearTenantSlug,
         saveApiBaseUrl,
         saveDeviceId,
         clearDeviceId,
+        saveBusinessSettings,
+        clearBusinessSettings,
       }}
     >
       {children}

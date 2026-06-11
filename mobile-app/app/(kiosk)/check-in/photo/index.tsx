@@ -46,6 +46,11 @@ export default function PhotoScreen() {
   }
 
   function handleContinue() {
+    // Sync local photo state to draft — explicitly clears any stale URLs from a previous visitor
+    updateDraft({
+      visitorPhotoUrl: visitorPhoto ?? undefined,
+      vehiclePhotoUrl: vehiclePhoto ?? undefined,
+    });
     router.push('/(kiosk)/check-in/signature' as any);
   }
 

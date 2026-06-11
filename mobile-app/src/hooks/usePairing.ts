@@ -33,6 +33,31 @@ export function usePairing() {
     }
   }, [tenantSlug, apiBaseUrl]);
 
+  const generateReconnectPairingCode = useCallback(async (existingDeviceId: string) => {
+    console.log('[usePairing] generateReconnectPairingCode called with:', existingDeviceId);
+    setIsGenerating(true);
+    setPollError(null);
+    try {
+      const response = await apiCall(
+        `/api/tenants/${tenantSlug}/devices/reconnect`,
+        { method: 'POST', baseUrl: apiBaseUrl, body: { deviceId: existingDeviceId } }
+      );
+      console.log('[usePairing] reconnect response:', response);
+      const data = response as PairingCodeResponse;
+      const code = data.pairingCode || (data as any).code;
+      const id = data.deviceId || (data as any).id || '';
+      setPairingCode(code);
+      setDeviceId(id);
+      return { code, deviceId: id };
+    } catch (error: any) {
+      console.error('[usePairing] reconnect error:', error);
+      setPollError(error.message);
+      throw error;
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [tenantSlug, apiBaseUrl]);
+
   const checkPairingStatus = useCallback(
     async (pollDeviceId: string, intervalMs = 2000, maxAttempts = 180) => {
       setIsPolling(true);
@@ -81,6 +106,7 @@ export function usePairing() {
     isPolling,
     pollError,
     generatePairingCode,
+    generateReconnectPairingCode,
     checkPairingStatus,
   };
 }

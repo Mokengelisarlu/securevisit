@@ -18,7 +18,11 @@ export interface SignaturePadHandle {
   isEmpty: boolean;
 }
 
-export const SignaturePad = forwardRef<SignaturePadHandle>((_, ref) => {
+interface SignaturePadProps {
+  onStrokeStart?: () => void;
+}
+
+export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(({ onStrokeStart }, ref) => {
   const { width } = useWindowDimensions();
   const padWidth = width - 48;
   const svgRef = useRef<any>(null);
@@ -33,6 +37,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle>((_, ref) => {
       onPanResponderGrant: (evt) => {
         const { locationX, locationY } = evt.nativeEvent;
         setIsEmpty(false);
+        onStrokeStart?.();
         setCurrentPoints([{ x: locationX, y: locationY }]);
       },
       onPanResponderMove: (evt) => {

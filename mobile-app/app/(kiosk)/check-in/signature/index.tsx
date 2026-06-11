@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { ScreenWrapper, Button, SignaturePad } from '@/src/components/ui';
 import type { SignaturePadHandle } from '@/src/components/ui';
@@ -8,6 +8,12 @@ import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
 export default function SignatureScreen() {
   const { updateDraft } = useVisitDraft();
   const padRef = useRef<SignaturePadHandle>(null);
+  const [hasSignature, setHasSignature] = useState(false);
+
+  function handleClear() {
+    padRef.current?.clear();
+    setHasSignature(false);
+  }
 
   async function handleContinue() {
     if (padRef.current && !padRef.current.isEmpty) {
@@ -15,11 +21,16 @@ export default function SignatureScreen() {
       if (uri) {
         updateDraft({ signatureData: uri });
       }
+    } else {
+      // Ensure any previous visitor's signature is cleared
+      updateDraft({ signatureData: undefined });
     }
     router.push('/(kiosk)/check-in/review' as any);
   }
 
   function handleSkip() {
+    // Explicitly clear any leftover signature from a previous visitor
+    updateDraft({ signatureData: undefined });
     router.push('/(kiosk)/check-in/review' as any);
   }
 
@@ -41,7 +52,26 @@ export default function SignatureScreen() {
         </View>
 
         <View className="flex-1 justify-center">
-          <SignaturePad ref={padRef} />
+          {/* Header row above the pad */}
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              Sign below
+            </Text>
+            {hasSignature && (
+              <Pressable
+                onPress={handleClear}
+                hitSlop={12}
+                className="flex-row items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 active:bg-red-100"
+              >
+                <Text className="text-red-600 text-sm font-semibold">✕ Clear</Text>
+              </Pressable>
+            )}
+          </View>
+
+          <SignaturePad
+            ref={padRef}
+            onStrokeStart={() => setHasSignature(true)}
+          />
         </View>
 
         <View className="pb-6 gap-3">
@@ -56,3 +86,4 @@ export default function SignatureScreen() {
     </ScreenWrapper>
   );
 }
+

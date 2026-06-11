@@ -6,6 +6,7 @@ import {
   getPublicHosts,
   getPublicOnSiteVisitors,
   getPublicSettings,
+  getPublicBusinessSettings,
   searchPublicVisitors,
   createPublicVisit,
   checkoutPublicVisit,
@@ -45,6 +46,8 @@ export async function GET(
         return jsonResponse(await getPublicOnSiteVisitors(slug, deviceToken));
       case "settings":
         return jsonResponse(await getPublicSettings(slug, deviceToken));
+      case "business-settings":
+        return jsonResponse(await getPublicBusinessSettings(slug));
       case "search-visitors": {
         const query = url.searchParams.get("q") || "";
         return jsonResponse(await searchPublicVisitors(slug, deviceToken, query));

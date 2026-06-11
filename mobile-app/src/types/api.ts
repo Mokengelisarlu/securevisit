@@ -39,13 +39,16 @@ export interface VisitorType {
 
 export interface BusinessSettings {
   id: string;
-  tenantId: string;
-  name: string;
-  logo?: string;
-  requireVisitorPhoto?: boolean;
-  requireVehiclePhoto?: boolean;
-  requireSignature?: boolean;
-  requireVehicleInfo?: boolean;
+  name: string | null;
+  logoUrl: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  industry: string | null;
+  taxId: string | null;
 }
 
 export interface Visit {

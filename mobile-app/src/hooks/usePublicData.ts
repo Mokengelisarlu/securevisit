@@ -266,3 +266,34 @@ export function useGetPublicOnSiteVisitors(deviceToken: string | null) {
 
   return { data, isLoading, error };
 }
+
+export function useGetPublicBusinessSettings(deviceToken: string | null) {
+  const [data, setData] = useState<BusinessSettings | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  useEffect(() => {
+    if (!deviceToken) return;
+
+    async function fetch() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/business-settings`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        setData(response);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetch();
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+  return { data, isLoading, error };
+}

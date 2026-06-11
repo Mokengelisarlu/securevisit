@@ -1,6 +1,6 @@
 import { View, Text, Pressable, ActivityIndicator, Image } from 'react-native';
 import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
@@ -12,11 +12,13 @@ import { Button, TextInput } from '@/src/components/ui';
 export default function PairingScreen() {
   const insets = useSafeAreaInsets();
   const { saveToken, isCheckingToken } = useAuth();
-  const { tenantSlug, isLoadingSlug, saveTenantSlug, clearTenantSlug, apiBaseUrl, saveApiBaseUrl, saveDeviceId } = useApi();
+  const { tenantSlug, isLoadingSlug, saveTenantSlug, clearTenantSlug, apiBaseUrl, saveApiBaseUrl, saveDeviceId, deviceId: existingDeviceId } = useApi();
   const { setJustPaired } = useKiosk();
-  const { pairingCode, deviceId, isGenerating, generatePairingCode, checkPairingStatus } =
+  const { pairingCode, deviceId, isGenerating, generatePairingCode, generateReconnectPairingCode, checkPairingStatus } =
     usePairing();
   const { verifyDeviceToken } = useDeviceManagement();
+  const { reconnect } = useLocalSearchParams<{ reconnect?: string }>();
+  const isReconnect = reconnect === 'true';
   const [isPolling, setIsPolling] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [slugInput, setSlugInput] = useState('');
@@ -29,7 +31,7 @@ export default function PairingScreen() {
     if (tenantSlug) {
       generateNewCode();
     }
-  }, [tenantSlug]);
+  }, [tenantSlug, isReconnect]);
 
   async function handleSaveSlug() {
     const trimmed = slugInput.trim().toLowerCase();
@@ -83,13 +85,31 @@ export default function PairingScreen() {
   async function generateNewCode() {
     try {
       setStatusMessage('Generating pairing code...');
-      const { code, deviceId: devId } = await generatePairingCode();
-      if (devId) {
-        await saveDeviceId(devId);
+      console.log('[pairing] generateNewCode:', { isReconnect, existingDeviceId });
+      let devId: string;
+      if (isReconnect && existingDeviceId) {
+        try {
+          const result = await generateReconnectPairingCode(existingDeviceId);
+          devId = result.deviceId;
+        } catch (reconnectErr) {
+          console.warn('[pairing] Reconnect failed, falling back to new pairing:', reconnectErr);
+          const result = await generatePairingCode();
+          devId = result.deviceId;
+          if (devId) {
+            await saveDeviceId(devId);
+          }
+        }
+      } else {
+        const result = await generatePairingCode();
+        devId = result.deviceId;
+        if (devId) {
+          await saveDeviceId(devId);
+        }
       }
       setStatusMessage('Scan this code on your admin panel, then approve the pairing.');
       startPolling(devId);
     } catch (err) {
+      console.error('[pairing] generateNewCode error:', err);
       setStatusMessage('Failed to generate code. Try again.');
     }
   }

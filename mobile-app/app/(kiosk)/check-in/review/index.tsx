@@ -14,7 +14,7 @@ function isLocalFileUri(uri?: string | null) {
 
 export default function ReviewScreen() {
   const { deviceToken } = useAuth();
-  const { draft } = useVisitDraft();
+  const { draft, resetDraft } = useVisitDraft();
   const { tenantSlug, apiBaseUrl } = useApi();
   const { createVisit, isLoading } = useCreatePublicVisit(deviceToken);
   const [error, setError] = useState('');
@@ -91,6 +91,7 @@ export default function ReviewScreen() {
       } as any);
       setSuccess(true);
       setTimeout(() => {
+        resetDraft();
         router.replace('/(kiosk)');
       }, 1800);
     } catch (err: any) {

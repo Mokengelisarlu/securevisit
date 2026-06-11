@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Text, Pressable, ScrollView, Alert, Image as RNImage } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { Platform } from 'react-native';
@@ -44,7 +44,7 @@ export default function SettingsScreen() {
   function handleRePair() {
     Alert.alert(
       'Re-Pair Device',
-      'This will clear the current pairing and take you back to the setup screen.',
+      'This will generate a new pairing code for this device. The existing device record will be updated.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -52,10 +52,9 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             resetState();
-            await clearDeviceId();
-            await clearTenantSlug();
             await clearToken();
-            router.replace('/(auth)/pairing');
+            // Keep deviceId and tenantSlug for reconnect flow
+            router.replace('/(auth)/pairing?reconnect=true');
           },
         },
       ]
@@ -90,7 +89,7 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        <View className="pt-8 pb-6">
+        <View className="pt-8 pb-6 flex-row items-center justify-between">
           <Pressable
             onPress={() => router.back()}
             className="mb-4 self-start"
@@ -98,7 +97,12 @@ export default function SettingsScreen() {
           >
             <Text className="text-teal-700 text-base font-semibold">← Back</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900">Settings</Text>
+          <Text className="text-3xl font-black text-teal-900 flex-1 text-center">Settings</Text>
+          <RNImage
+            source={require('../../../assets/images/icon-512x512.png')}
+            className="w-10 h-10"
+            resizeMode="contain"
+          />
         </View>
 
         <Card className="mb-4">
