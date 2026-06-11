@@ -120,7 +120,7 @@ export default function CheckOutScreen() {
                 </Text>
               ) : null}
               <Text className="text-xs text-teal-700 font-semibold mt-1">
-                Checked in: {new Date(selected.checkedInAt).toLocaleTimeString()}
+                Checked in: {new Date(selected.checkInAt).toLocaleTimeString()}
               </Text>
             </View>
           </Card>
@@ -199,7 +199,7 @@ export default function CheckOutScreen() {
                       ) : null}
                       <Text className="text-xs text-teal-600 mt-0.5">
                         In since{' '}
-                        {new Date(item.checkedInAt).toLocaleTimeString([], {
+                        {new Date(item.checkInAt).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}

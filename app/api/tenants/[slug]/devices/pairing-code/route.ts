@@ -7,7 +7,14 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
-    const result = await generatePairingCode(slug);
+    const body = await request.json();
+    const { diviceId } = body;
+
+    if (!diviceId) {
+      return NextResponse.json({ ok: false, error: "Missing diviceId" }, { status: 400 });
+    }
+
+    const result = await generatePairingCode(slug, diviceId);
 
     return NextResponse.json({
       ok: true,
@@ -21,3 +28,4 @@ export async function POST(
     );
   }
 }
+

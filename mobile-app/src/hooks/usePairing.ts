@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { apiCall } from '@/src/api/client';
 import { useApi } from '@/src/contexts/ApiContext';
 import { PairingCodeResponse, PairingStatusResponse } from '@/src/types/api';
+import { getOrCreateDiviceId } from '@/src/utils/deviceId';
 
 export function usePairing() {
   const { tenantSlug, apiBaseUrl } = useApi();
@@ -15,9 +16,11 @@ export function usePairing() {
     setIsGenerating(true);
     setPollError(null);
     try {
+      const diviceId = await getOrCreateDiviceId();
+
       const response = await apiCall(
         `/api/tenants/${tenantSlug}/devices/pairing-code`,
-        { method: 'POST', baseUrl: apiBaseUrl }
+        { method: 'POST', baseUrl: apiBaseUrl, body: { diviceId } }
       );
       const data = response as PairingCodeResponse;
       const code = data.pairingCode || (data as any).code;
@@ -32,6 +35,7 @@ export function usePairing() {
       setIsGenerating(false);
     }
   }, [tenantSlug, apiBaseUrl]);
+
 
   const generateReconnectPairingCode = useCallback(async (existingDeviceId: string) => {
     console.log('[usePairing] generateReconnectPairingCode called with:', existingDeviceId);

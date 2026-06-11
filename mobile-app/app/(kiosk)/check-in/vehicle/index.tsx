@@ -70,8 +70,7 @@ export default function VehicleScreen() {
               label="Plate Number *"
               placeholder="e.g. ABC 123"
               value={plateNumber}
-              onChangeText={(t) => { setPlateNumber(t); setError(''); }}
-              autoCapitalize="characters"
+              onChangeText={(t) => { setPlateNumber(t.toUpperCase()); setError(''); }}
               error={error}
             />
 

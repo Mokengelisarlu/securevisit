@@ -64,17 +64,42 @@ export async function pingDevice(tenantSlug: string, deviceToken: string) {
 /**
  * [PUBLIC] Generate a pairing code for a new kiosk
  */
-export async function generatePairingCode(tenantSlug: string) {
+export async function generatePairingCode(tenantSlug: string, diviceId: string) {
   const db = await getTenantDbBySlug(tenantSlug);
 
   // Generate a 6-character uppercase code
   const pairingCode = randomBytes(3).toString("hex").toUpperCase();
   const expiresAt = addMinutes(new Date(), 10); // Expires in 10 minutes
 
+  // Idempotency: reuse existing device row for the same physical device.
+  const existingDevice = await db.query.devices.findFirst({
+    where: eq(devices.diviceId, diviceId),
+  });
+
+  if (existingDevice) {
+    const [updatedDevice] = await db.update(devices).set({
+      pairingCode,
+      pairingCodeExpiresAt: expiresAt,
+      isPaired: 0,
+      deviceToken: null,
+      pairedAt: null,
+      lastActiveAt: null,
+    }).where(eq(devices.id, existingDevice.id)).returning();
+
+    return {
+      deviceId: updatedDevice.id,
+      pairingCode,
+    };
+  }
+
   const [device] = await db.insert(devices).values({
+    diviceId,
     pairingCode,
     pairingCodeExpiresAt: expiresAt,
     isPaired: 0,
+    deviceToken: null,
+    pairedAt: null,
+    lastActiveAt: null,
   }).returning();
 
   return {
@@ -82,6 +107,7 @@ export async function generatePairingCode(tenantSlug: string) {
     pairingCode,
   };
 }
+
 
 /**
  * [PUBLIC] Generate a pairing code for an EXISTING device (reconnect flow)

@@ -78,14 +78,6 @@ export default function MainMenuScreen() {
 
       <View className="flex-1" style={{ flex: 1 }}>
         <View className="flex-1 justify-center items-center" style={{ flex: 1 }}>
-          <View className="flex-row items-center justify-center gap-2 mb-4">
-            <Image
-              source={require('../../assets/images/icon-512x512.png')}
-              className="w-10 h-10"
-              resizeMode="contain"
-            />
-            <Text className="text-xl font-black text-teal-700">SecureVisit</Text>
-          </View>
           <View className="items-center gap-3">
             {logoSrc ? (
               <Image
@@ -154,6 +146,14 @@ export default function MainMenuScreen() {
             <Text className="text-xs text-teal-600 text-center">
               Kiosk online
             </Text>
+          </View>
+           <View className="flex-row items-center justify-center gap-2 mb-4">
+            <Image
+              source={require('../../assets/images/icon-512x512.png')}
+              className="w-10 h-10"
+              resizeMode="contain"
+            />
+            <Text className="text-xl font-black text-teal-700">SecureVisit</Text>
           </View>
           <Text className="text-[10px] text-teal-400 text-center">
             Powered by Mokengeli Sarlu

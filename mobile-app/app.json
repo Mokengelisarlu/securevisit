@@ -57,11 +57,11 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "your-eas-project-id"
+        "projectId": "TODO-set-me-in-expo-dev-account"
       }
     },
     "updates": {
-      "url": "https://u.expo.dev/your-eas-project-id",
+      "url": "https://u.expo.dev/TODO-set-me-in-expo-dev-account",
       "fallbackToCacheTimeout": 0
     },
     "runtimeVersion": {

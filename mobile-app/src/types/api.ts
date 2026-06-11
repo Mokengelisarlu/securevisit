@@ -75,8 +75,8 @@ export interface Visit {
     color?: string;
   };
   passengerCount?: number;
-  checkedInAt: string;
-  checkedOutAt?: string;
+  checkInAt: string;
+  checkOutAt?: string;
 }
 
 export interface OnSiteVisitor extends Visit {
@@ -94,7 +94,9 @@ export interface PairingCodeResponse {
   code?: string;
   deviceId?: string;
   expiresAt?: string;
+  diviceId?: string;
 }
+
 
 export interface PairingStatusResponse {
   ok?: boolean;

@@ -5,6 +5,7 @@ import {
   timestamp,
   pgEnum,
   integer,
+  unique,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -204,8 +205,8 @@ export const devices = pgTable(
   "devices",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    name: text("name"),
 
+    name: text("name"),
     description: text("description"),
 
     location: text("location"),
@@ -224,7 +225,11 @@ export const devices = pgTable(
 
   lastActiveAt: timestamp("last_active_at"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+  },
+  (table) => [
+    unique("devices_divice_id_unique").on(table.diviceId),
+  ]
+);
 
 /* =====================================================
    SETTINGS
