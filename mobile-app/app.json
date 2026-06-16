@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SecureVisit Kiosk",
-    "slug": "securevisit-kiosk",
+    "slug": "mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-512x512.png",
@@ -26,7 +26,8 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/icon-128x128.png"
+      "favicon": "./assets/images/icon-128x128.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
@@ -57,11 +58,11 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "TODO-set-me-in-expo-dev-account"
+        "projectId": "0c97d0b0-bcce-4a9f-b1f6-5fa7a18bbce4"
       }
     },
     "updates": {
-      "url": "https://u.expo.dev/TODO-set-me-in-expo-dev-account",
+      "url": "https://u.expo.dev/0c97d0b0-bcce-4a9f-b1f6-5fa7a18bbce4",
       "fallbackToCacheTimeout": 0
     },
     "runtimeVersion": {

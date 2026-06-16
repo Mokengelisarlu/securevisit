@@ -85,7 +85,7 @@ export default function PairingScreen() {
   async function generateNewCode() {
     try {
       setStatusMessage('Generating pairing code...');
-      console.log('[pairing] generateNewCode:', { isReconnect, existingDeviceId });
+      console.log('[pairing] generateNewCode:', { isReconnect, existingDeviceId, apiBaseUrl, tenantSlug });
       let devId: string;
       if (isReconnect && existingDeviceId) {
         try {
