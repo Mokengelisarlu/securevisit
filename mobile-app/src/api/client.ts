@@ -36,9 +36,16 @@ export async function apiCall(
 
   let lastError: any;
 
+  const normalizedBaseUrl = (baseUrl || DEFAULT_API_BASE_URL)
+    .trim()
+    .replace(/\/+$/, '');
+
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const url = `${baseUrl || DEFAULT_API_BASE_URL}${endpoint}`;
+      const url = `${normalizedBaseUrl}${normalizedEndpoint}`;
+
       const options: RequestInit = {
         method,
         headers: {
@@ -61,8 +68,22 @@ export async function apiCall(
       const response = await fetch(url, options);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData?.error || `HTTP ${response.status}`);
+        // Try JSON first; fall back to text for reverse-proxy HTML errors.
+        const contentType = response.headers.get('content-type') || '';
+        let errorMessage = `HTTP ${response.status}`;
+
+        if (contentType.includes('application/json')) {
+          const errorData = await response.json().catch(() => ({}));
+          errorMessage = errorData?.error || errorMessage;
+        } else {
+          const text = await response.text().catch(() => '');
+          const trimmed = text?.trim();
+          if (trimmed) {
+            errorMessage = `${errorMessage} - ${trimmed.slice(0, 300)}`;
+          }
+        }
+
+        throw new Error(errorMessage);
       }
 
       return await response.json();
