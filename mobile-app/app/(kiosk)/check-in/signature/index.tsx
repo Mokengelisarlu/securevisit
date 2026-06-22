@@ -4,9 +4,11 @@ import { router } from 'expo-router';
 import { ScreenWrapper, Button, SignaturePad } from '@/src/components/ui';
 import type { SignaturePadHandle } from '@/src/components/ui';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
+import { useApi } from '@/src/contexts/ApiContext';
 
 export default function SignatureScreen() {
   const { updateDraft } = useVisitDraft();
+  const { kioskSettings } = useApi();
   const padRef = useRef<SignaturePadHandle>(null);
   const [hasSignature, setHasSignature] = useState(false);
 
@@ -78,9 +80,11 @@ export default function SignatureScreen() {
           <Button onPress={handleContinue} size="lg">
             Continue with Signature
           </Button>
-          <Button onPress={handleSkip} variant="ghost" size="md">
-            Skip — No Signature
-          </Button>
+          {kioskSettings?.requireSignature !== 1 ? (
+            <Button onPress={handleSkip} variant="ghost" size="md">
+              Skip — No Signature
+            </Button>
+          ) : null}
         </View>
       </View>
     </ScreenWrapper>

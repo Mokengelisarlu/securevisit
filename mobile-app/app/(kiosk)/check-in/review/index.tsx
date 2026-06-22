@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Pressable, Image } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import Svg, { Path } from 'react-native-svg';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
@@ -106,7 +107,15 @@ export default function ReviewScreen() {
       <ScreenWrapper className="justify-center items-center">
         <View className="items-center gap-4">
           <View className="w-20 h-20 rounded-full bg-teal-100 items-center justify-center">
-            <Text className="text-teal-700 text-4xl font-black">OK</Text>
+            <Svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <Path
+                d="M5 13l4 4L19 7"
+                stroke="#0F766E"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </Svg>
           </View>
           <Text className="text-3xl font-black text-teal-900 text-center">
             Checked In

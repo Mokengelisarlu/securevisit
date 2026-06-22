@@ -116,6 +116,13 @@ export interface DevicePingResponse {
   timestamp: string;
 }
 
+export interface KioskSettings {
+  requireSignature: number;
+  requireVisitorPhoto: number;
+  requireVehiclePhoto: number;
+  ndaPolicyText: string | null;
+}
+
 export interface ErrorResponse {
   error: string;
   message?: string;

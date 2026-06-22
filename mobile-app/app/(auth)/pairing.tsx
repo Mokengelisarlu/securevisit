@@ -251,9 +251,10 @@ export default function PairingScreen() {
         )}
       </View>
 
-      <Text className="text-lg text-teal-800 text-center mb-8 font-medium">
+      <Text className="text-lg text-teal-800 text-center mb-4 font-medium">
         {statusMessage}
       </Text>
+
 
       <View className="gap-3">
         <Pressable

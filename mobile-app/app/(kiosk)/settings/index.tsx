@@ -10,7 +10,7 @@ import { useKiosk } from '@/src/contexts/KioskContext';
 
 export default function SettingsScreen() {
   const { clearToken, deviceToken } = useAuth();
-  const { tenantSlug, apiBaseUrl, deviceId, saveApiBaseUrl, clearTenantSlug, clearDeviceId } = useApi();
+  const { tenantSlug, apiBaseUrl, deviceId, saveApiBaseUrl, clearTenantSlug, clearDeviceId, clearBusinessSettings, clearKioskSettings } = useApi();
   const { resetState } = useKiosk();
   const [urlInput, setUrlInput] = useState('');
   const [urlError, setUrlError] = useState('');
@@ -72,6 +72,8 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             resetState();
+            await clearBusinessSettings();
+            await clearKioskSettings();
             await clearDeviceId();
             await clearTenantSlug();
             await clearToken();

@@ -4,14 +4,15 @@ import { useEffect } from 'react';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
-import { useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
+import { useGetPublicBusinessSettings, useGetPublicSettings } from '@/src/hooks/usePublicData';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MainMenuScreen() {
   const insets = useSafeAreaInsets();
   const { deviceToken } = useAuth();
-  const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings } = useApi();
+  const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings, kioskSettings: cachedKiosk, saveKioskSettings } = useApi();
   const { data: business, isLoading } = useGetPublicBusinessSettings(deviceToken);
+  const { data: kioskSettings } = useGetPublicSettings(deviceToken, 60000);
   const { setMode, resetState, justPaired, setJustPaired } = useKiosk();
 
   const effectiveBusiness = cachedBusiness || business;
@@ -22,13 +23,18 @@ export default function MainMenuScreen() {
       : effectiveBusiness.logoUrl
     : null;
 
-  // Cache business settings from API after first successful fetch
+  // Cache business settings and kiosk settings from API after first successful fetch
   const { useEffect } = require('react');
   useEffect(() => {
     if (business && !cachedBusiness && !isLoading) {
       saveBusinessSettings(business);
     }
   }, [business, cachedBusiness, isLoading, saveBusinessSettings]);
+  useEffect(() => {
+    if (kioskSettings) {
+      saveKioskSettings(kioskSettings);
+    }
+  }, [kioskSettings, saveKioskSettings]);
 
   async function handleCheckIn() {
     setJustPaired(false);

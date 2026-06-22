@@ -2,12 +2,14 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { ScreenWrapper, Card, Button, TextInput } from '@/src/components/ui';
+import { useApi } from '@/src/contexts/ApiContext';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
 
 const VEHICLE_TYPES = ['CAR', 'TRUCK', 'MOTORCYCLE', 'OTHER'] as const;
 
 export default function VehicleScreen() {
   const { draft, setVehicle } = useVisitDraft();
+  const { kioskSettings } = useApi();
 
   const [plateNumber, setPlateNumber] = useState('');
   const [type, setType] = useState<'CAR' | 'TRUCK' | 'MOTORCYCLE' | 'OTHER'>('CAR');
@@ -30,12 +32,26 @@ export default function VehicleScreen() {
       passengerCount: passengerCount ? parseInt(passengerCount, 10) : undefined,
     });
 
-    router.push('/(kiosk)/check-in/photo' as any);
+    navigateNext(true);
   }
 
   function handleSkip() {
     setVehicle(null);
-    router.push('/(kiosk)/check-in/photo' as any);
+    navigateNext(false);
+  }
+
+  function navigateNext(hasVehicle: boolean) {
+    const requireVisitorPhoto = kioskSettings?.requireVisitorPhoto === 1;
+    const requireVehiclePhoto = kioskSettings?.requireVehiclePhoto === 1 && hasVehicle;
+    const requireSignature = kioskSettings?.requireSignature === 1;
+
+    if (requireVisitorPhoto || requireVehiclePhoto) {
+      router.push('/(kiosk)/check-in/photo' as any);
+    } else if (requireSignature) {
+      router.push('/(kiosk)/check-in/signature' as any);
+    } else {
+      router.push('/(kiosk)/check-in/review' as any);
+    }
   }
 
   return (

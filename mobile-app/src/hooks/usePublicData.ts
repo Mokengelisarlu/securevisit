@@ -8,6 +8,7 @@ import {
   Service,
   VisitorType,
   BusinessSettings,
+  KioskSettings,
   OnSiteVisitor,
 } from '@/src/types/api';
 
@@ -205,14 +206,16 @@ export function useGetPublicVisitorTypes(deviceToken: string | null) {
   return { data, isLoading, error };
 }
 
-export function useGetPublicSettings(deviceToken: string | null) {
-  const [data, setData] = useState<BusinessSettings | null>(null);
+export function useGetPublicSettings(deviceToken: string | null, pollIntervalMs?: number) {
+  const [data, setData] = useState<KioskSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { tenantSlug, apiBaseUrl } = useApi();
 
   useEffect(() => {
     if (!deviceToken) return;
+
+    let cancelled = false;
 
     async function fetch() {
       setIsLoading(true);
@@ -222,16 +225,26 @@ export function useGetPublicSettings(deviceToken: string | null) {
           `/api/tenants/${tenantSlug}/public/settings`,
           { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
         );
-        setData(response);
+        if (!cancelled) setData(response as KioskSettings);
       } catch (err: any) {
-        setError(err.message);
+        if (!cancelled) setError(err.message);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
 
     fetch();
-  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (pollIntervalMs) {
+      interval = setInterval(fetch, pollIntervalMs);
+    }
+
+    return () => {
+      cancelled = true;
+      if (interval) clearInterval(interval);
+    };
+  }, [deviceToken, tenantSlug, apiBaseUrl, pollIntervalMs]);
 
   return { data, isLoading, error };
 }

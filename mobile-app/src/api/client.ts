@@ -2,7 +2,7 @@
 
 import type { UploadResponse } from '@/src/types/api';
 
-const DEFAULT_API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://192.168.11.102:3000';
+const DEFAULT_API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://securevisitapp.com';
 
 export { DEFAULT_API_BASE_URL };
 
@@ -36,9 +36,16 @@ export async function apiCall(
 
   let lastError: any;
 
-  const normalizedBaseUrl = (baseUrl || DEFAULT_API_BASE_URL)
+  let normalizedBaseUrl = (baseUrl || DEFAULT_API_BASE_URL)
     .trim()
     .replace(/\/+$/, '');
+
+  // Auto-correct missing slashes from typoed manual inputs (e.g. "https:securevisitapp.com")
+  if (normalizedBaseUrl.startsWith('https:') && !normalizedBaseUrl.startsWith('https://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('https:', 'https://');
+  } else if (normalizedBaseUrl.startsWith('http:') && !normalizedBaseUrl.startsWith('http://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('http:', 'http://');
+  }
 
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
@@ -98,6 +105,7 @@ export async function apiCall(
     }
   }
 
+
   throw lastError;
 }
 
@@ -119,7 +127,14 @@ export async function uploadFile(
     ? 'image/svg+xml'
     : 'image/jpeg';
 
-  const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  let normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, '');
+  if (normalizedBaseUrl.startsWith('https:') && !normalizedBaseUrl.startsWith('https://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('https:', 'https://');
+  } else if (normalizedBaseUrl.startsWith('http:') && !normalizedBaseUrl.startsWith('http://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('http:', 'http://');
+  }
+
+  const url = `${normalizedBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   let lastError: any;
 

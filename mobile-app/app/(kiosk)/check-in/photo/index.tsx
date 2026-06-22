@@ -4,9 +4,11 @@ import { router } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
+import { useApi } from '@/src/contexts/ApiContext';
 
 export default function PhotoScreen() {
   const { draft, updateDraft } = useVisitDraft();
+  const { kioskSettings } = useApi();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
 
@@ -51,7 +53,11 @@ export default function PhotoScreen() {
       visitorPhotoUrl: visitorPhoto ?? undefined,
       vehiclePhotoUrl: vehiclePhoto ?? undefined,
     });
-    router.push('/(kiosk)/check-in/signature' as any);
+    if (kioskSettings?.requireSignature === 1) {
+      router.push('/(kiosk)/check-in/signature' as any);
+    } else {
+      router.push('/(kiosk)/check-in/review' as any);
+    }
   }
 
   if (!permission) {
@@ -101,37 +107,39 @@ export default function PhotoScreen() {
         </View>
 
         <View className="gap-4 flex-1">
-          <Card>
-            <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-              Visitor Photo
-            </Text>
-            {visitorPhoto ? (
-              <View className="gap-3">
-                <Image
-                  source={{ uri: visitorPhoto }}
-                  className="w-full h-48 rounded-xl bg-slate-200"
-                  resizeMode="cover"
-                />
+          {kioskSettings?.requireVisitorPhoto === 1 ? (
+            <Card>
+              <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
+                Visitor Photo
+              </Text>
+              {visitorPhoto ? (
+                <View className="gap-3">
+                  <Image
+                    source={{ uri: visitorPhoto }}
+                    className="w-full h-48 rounded-xl bg-slate-200"
+                    resizeMode="cover"
+                  />
+                  <Button
+                    onPress={() => openCamera('visitor')}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    Retake
+                  </Button>
+                </View>
+              ) : (
                 <Button
                   onPress={() => openCamera('visitor')}
-                  variant="ghost"
-                  size="sm"
+                  variant="secondary"
+                  size="md"
                 >
-                  Retake
+                  Take Visitor Photo
                 </Button>
-              </View>
-            ) : (
-              <Button
-                onPress={() => openCamera('visitor')}
-                variant="secondary"
-                size="md"
-              >
-                Take Visitor Photo
-              </Button>
-            )}
-          </Card>
+              )}
+            </Card>
+          ) : null}
 
-          {draft.vehicle ? (
+          {draft.vehicle && kioskSettings?.requireVehiclePhoto === 1 ? (
             <Card>
               <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
                 Vehicle Photo
@@ -150,15 +158,15 @@ export default function PhotoScreen() {
                   >
                     Retake
                   </Button>
-              </View>
-            ) : (
-              <Button
-                onPress={() => openCamera('vehicle')}
-                variant="secondary"
-                size="md"
-              >
-                Take Vehicle Photo
-              </Button>
+                </View>
+              ) : (
+                <Button
+                  onPress={() => openCamera('vehicle')}
+                  variant="secondary"
+                  size="md"
+                >
+                  Take Vehicle Photo
+                </Button>
               )}
             </Card>
           ) : null}
