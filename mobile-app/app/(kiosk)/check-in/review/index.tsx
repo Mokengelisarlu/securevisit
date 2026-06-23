@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, Pressable, Image } from 'react-native';
-import { useState } from 'react';
+import { View, Text, ScrollView, Pressable, Image, ActivityIndicator } from 'react-native';
+import { useState, useRef } from 'react';
 import { router } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
@@ -21,48 +21,49 @@ export default function ReviewScreen() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-
-  async function uploadMediaIfNeeded(
-    mediaUri: string | undefined,
-    filename: string
-  ): Promise<string | undefined> {
-    if (!mediaUri || !isLocalFileUri(mediaUri)) {
-      return mediaUri;
-    }
-
-    if (!deviceToken) {
-      throw new Error('Device not paired');
-    }
-
-    const response = await uploadFile(
-      `/api/tenants/${tenantSlug}/upload?filename=${encodeURIComponent(filename)}`,
-      mediaUri,
-      filename,
-      deviceToken,
-      (progress) => setUploadProgress(progress),
-      apiBaseUrl
-    );
-
-    return response?.url || mediaUri;
-  }
+  const progressRef = useRef<number[]>([]);
 
   async function handleSubmit() {
+    if (!deviceToken) {
+      setError('Device not paired');
+      return;
+    }
+
     setError('');
     setUploadProgress(0);
 
+    const files = [
+      { uri: draft.visitorPhotoUrl, filename: `visitor-${Date.now()}.jpg`, key: 'visitor' as const },
+      { uri: draft.vehiclePhotoUrl, filename: `vehicle-${Date.now()}.jpg`, key: 'vehicle' as const },
+      { uri: draft.signatureData, filename: `signature-${Date.now()}.png`, key: 'signature' as const },
+    ].filter((f) => f.uri && isLocalFileUri(f.uri));
+
+    const total = files.length;
+    progressRef.current = new Array(total).fill(0);
+    let visitorPhotoUrl = draft.visitorPhotoUrl;
+    let vehiclePhotoUrl = draft.vehiclePhotoUrl;
+    let signatureData = draft.signatureData;
+
     try {
-      const visitorPhotoUrl = await uploadMediaIfNeeded(
-        draft.visitorPhotoUrl,
-        `visitor-${Date.now()}.jpg`
-      );
-      const vehiclePhotoUrl = await uploadMediaIfNeeded(
-        draft.vehiclePhotoUrl,
-        `vehicle-${Date.now()}.jpg`
-      );
-      const signatureData = await uploadMediaIfNeeded(
-        draft.signatureData,
-        `signature-${Date.now()}.png`
-      );
+      for (let i = 0; i < total; i++) {
+        const { uri, filename, key } = files[i];
+        const response = await uploadFile(
+          `/api/tenants/${tenantSlug}/upload?filename=${encodeURIComponent(filename)}`,
+          uri!,
+          filename,
+          deviceToken,
+          (p) => {
+            progressRef.current[i] = p < 0 ? 0 : p;
+            const sum = progressRef.current.reduce((a, b) => a + b, 0);
+            setUploadProgress(Math.round(sum / total));
+          },
+          apiBaseUrl
+        );
+        const uploadedUrl = response?.url || uri;
+        if (key === 'visitor') visitorPhotoUrl = uploadedUrl;
+        else if (key === 'vehicle') vehiclePhotoUrl = uploadedUrl;
+        else signatureData = uploadedUrl;
+      }
 
       await createVisit({
         newVisitor: {
@@ -234,10 +235,21 @@ export default function ReviewScreen() {
         ) : null}
 
         {uploadProgress !== null ? (
-          <View className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-4">
-            <Text className="text-slate-700 text-sm text-center">
-              Uploading media: {uploadProgress}%
-            </Text>
+          <View className="bg-white border border-slate-200 rounded-xl px-4 py-4 mb-4">
+            <View className="flex-row items-center gap-3 mb-2">
+              {uploadProgress < 0 ? (
+                <ActivityIndicator size="small" color="#0D9488" />
+              ) : null}
+              <Text className="text-sm font-semibold text-slate-700">
+                {uploadProgress < 0 ? 'Preparing upload...' : `Uploading... ${uploadProgress}%`}
+              </Text>
+            </View>
+            <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <View
+                style={{ width: uploadProgress >= 0 ? `${uploadProgress}%` : '30%' }}
+                className={`h-full rounded-full ${uploadProgress >= 0 ? 'bg-teal-500' : 'bg-teal-300'}`}
+              />
+            </View>
           </View>
         ) : null}
 

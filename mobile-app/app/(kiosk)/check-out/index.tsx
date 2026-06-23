@@ -4,18 +4,29 @@ import {
   FlatList,
   Pressable,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { ScreenWrapper, Card, Button, TextInput } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useApi } from '@/src/contexts/ApiContext';
 import { useGetPublicOnSiteVisitors } from '@/src/hooks/usePublicData';
 import { useCheckoutPublicVisit } from '@/src/hooks/useVisits';
 import type { OnSiteVisitor } from '@/src/types/api';
 
+function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
+  if (!url) return undefined;
+  if (url.includes('blob.vercel-storage.com')) {
+    return `${baseUrl}/api/blob?url=${encodeURIComponent(url)}`;
+  }
+  return url;
+}
+
 export default function CheckOutScreen() {
   const { deviceToken } = useAuth();
+  const { apiBaseUrl } = useApi();
   const {
     data: onSiteVisitors,
     isLoading,
@@ -51,6 +62,29 @@ export default function CheckOutScreen() {
     } catch (err: any) {
       setSubmitError(err?.message || 'Check-out failed. Please try again.');
     }
+  }
+
+  function formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    let day: string;
+    if (checkDate.getTime() === today.getTime()) {
+      day = 'Today';
+    } else if (checkDate.getTime() === yesterday.getTime()) {
+      day = 'Yesterday';
+    } else {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      day = `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${String(date.getFullYear()).slice(-2)}`;
+    }
+
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${day} - ${time}`;
   }
 
   if (success) {
@@ -111,26 +145,51 @@ export default function CheckOutScreen() {
       </View>
 
       {selected ? (
-        <View className="px-6 pb-4 gap-4">
-          <Card className="bg-teal-50 border-2 border-teal-400">
-            <View className="items-center gap-2">
-              <View className="w-16 h-16 rounded-full bg-teal-100 items-center justify-center mb-1">
-                <Text className="text-teal-600 text-2xl font-black">
-                  {selected.visitor.firstName[0]}
-                  {selected.visitor.lastName[0]}
-                </Text>
+        <View className="px-6 pb-4 gap-4 flex-1 justify-center">
+          <Card className="bg-white border-2 border-teal-400 overflow-hidden">
+            <View className="flex-row">
+              {/* Left half: photo / avatar */}
+              <View className="w-1/2 bg-teal-50 items-center justify-center py-8 px-4">
+                {selected.visitor.photoUrl ? (
+                  <Image
+                    source={{ uri: photoSrc(selected.visitor.photoUrl, apiBaseUrl) }}
+                    className="w-40 h-40 rounded-full bg-slate-200"
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View className="w-40 h-40 rounded-full bg-teal-100 items-center justify-center">
+                    <Text className="text-teal-600 text-5xl font-black">
+                      {selected.visitor.firstName[0]}
+                      {selected.visitor.lastName[0]}
+                    </Text>
+                  </View>
+                )}
               </View>
-              <Text className="text-xl font-black text-slate-900">
-                {selected.visitor.firstName} {selected.visitor.lastName}
-              </Text>
-              {selected.visitor.company ? (
-                <Text className="text-sm text-slate-600">
-                  {selected.visitor.company}
+              {/* Right half: details */}
+              <View className="w-1/2 justify-center py-8 px-5 gap-2.5">
+                <Text className="text-2xl font-black text-slate-900 leading-tight">
+                  {selected.visitor.firstName}{'\n'}
+                  {selected.visitor.lastName}
                 </Text>
-              ) : null}
-              <Text className="text-xs text-teal-700 font-semibold mt-1">
-                Checked in: {new Date(selected.checkInAt).toLocaleTimeString()}
-              </Text>
+                {selected.visitor.phone ? (
+                  <Text className="text-base text-slate-600">
+                    {selected.visitor.phone}
+                  </Text>
+                ) : null}
+                {selected.visitor.company ? (
+                  <Text className="text-sm text-slate-500">
+                    {selected.visitor.company}
+                  </Text>
+                ) : null}
+                <View className="mt-2">
+                  <Text className="text-xs font-bold text-teal-700 uppercase tracking-wide">
+                    Checked in
+                  </Text>
+                  <Text className="text-sm font-semibold text-slate-800 mt-0.5">
+                    {formatDate(selected.checkInAt)}
+                  </Text>
+                </View>
+              </View>
             </View>
           </Card>
 

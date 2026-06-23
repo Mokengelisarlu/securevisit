@@ -1,10 +1,15 @@
-import { View, Text, Pressable, Image, Modal, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, Image, Modal, ActivityIndicator, Dimensions } from 'react-native';
 import { useState, useRef } from 'react';
 import { router } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
 import { useApi } from '@/src/contexts/ApiContext';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const CAMERA_SIZE = SCREEN_WIDTH - 48;
+const GUIDE_WIDTH = CAMERA_SIZE * 0.5;
+const GUIDE_HEIGHT = CAMERA_SIZE * 0.65;
 
 export default function PhotoScreen() {
   const { draft, updateDraft } = useVisitDraft();
@@ -13,6 +18,7 @@ export default function PhotoScreen() {
   const cameraRef = useRef<CameraView>(null);
 
   const [activeMode, setActiveMode] = useState<'visitor' | 'vehicle' | null>(null);
+  const [facing, setFacing] = useState<'front' | 'back'>('front');
   const [capturing, setCapturing] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -45,10 +51,10 @@ export default function PhotoScreen() {
     setCameraReady(false);
     setCameraError(null);
     setActiveMode(mode);
+    setFacing(mode === 'visitor' ? 'front' : 'back');
   }
 
   function handleContinue() {
-    // Sync local photo state to draft — explicitly clears any stale URLs from a previous visitor
     updateDraft({
       visitorPhotoUrl: visitorPhoto ?? undefined,
       vehiclePhotoUrl: vehiclePhoto ?? undefined,
@@ -116,7 +122,7 @@ export default function PhotoScreen() {
                 <View className="gap-3">
                   <Image
                     source={{ uri: visitorPhoto }}
-                    className="w-full h-48 rounded-xl bg-slate-200"
+                    className="w-full aspect-square rounded-xl bg-slate-200"
                     resizeMode="cover"
                   />
                   <Button
@@ -185,70 +191,98 @@ export default function PhotoScreen() {
         onRequestClose={() => setActiveMode(null)}
       >
         <View style={{ flex: 1, backgroundColor: '#000' }}>
-          <CameraView
-            ref={cameraRef}
-            style={{ flex: 1 }}
-            facing="back"
-            mode="picture"
-            onCameraReady={() => setCameraReady(true)}
-            onMountError={(e) => setCameraError(e.message)}
-          >
-            <View style={{ flex: 1, justifyContent: 'space-between', paddingHorizontal: 24, paddingVertical: 64 }}>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>
-                  {activeMode === 'visitor' ? 'Visitor Photo' : 'Vehicle Photo'}
-                </Text>
-                {cameraError ? (
-                  <Text style={{ color: '#f87171', fontSize: 14, marginTop: 8, textAlign: 'center' }}>
-                    {cameraError}
-                  </Text>
-                ) : null}
-              </View>
-
-              {!cameraReady && !cameraError ? (
-                <View style={{ alignItems: 'center' }}>
-                  <ActivityIndicator size="large" color="#fff" />
-                  <Text style={{ color: '#fff', fontSize: 14, marginTop: 12 }}>Initializing camera...</Text>
-                </View>
-              ) : (
-                <View style={{ alignItems: 'center', gap: 24 }}>
-                  <Pressable
-                    onPress={handleCapture}
-                    disabled={capturing}
-                    style={({ pressed }: any) => ({
-                      width: 80,
-                      height: 80,
-                      borderRadius: 40,
-                      borderWidth: 4,
-                      borderColor: '#fff',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: pressed ? 0.7 : 1,
-                    })}
-                  >
-                    {capturing ? (
-                      <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(255,255,255,0.3)' }} />
-                    ) : (
-                      <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#fff' }} />
-                    )}
-                  </Pressable>
-                </View>
-              )}
-
-              <Pressable
-                onPress={() => setActiveMode(null)}
-                style={({ pressed }: any) => ({
-                  alignSelf: 'center',
-                  backgroundColor: pressed ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.2)',
-                  borderRadius: 12,
-                  paddingHorizontal: 24,
-                  paddingVertical: 12,
-                })}
+          {/* Camera area */}
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ width: CAMERA_SIZE, height: CAMERA_SIZE }}>
+              <CameraView
+                ref={cameraRef}
+                style={{ width: '100%', height: '100%' }}
+                facing={facing}
+                mode="picture"
+                onCameraReady={() => setCameraReady(true)}
+                onMountError={(e) => setCameraError(e.message)}
+              />
+              {/* Head positioning guide */}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0, left: 0, right: 0, bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                pointerEvents="none"
               >
-                <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Cancel</Text>
-              </Pressable>
+                <View
+                  style={{
+                    width: GUIDE_WIDTH,
+                    height: GUIDE_HEIGHT,
+                    borderWidth: 2,
+                    borderColor: 'rgba(255,255,255,0.5)',
+                    borderRadius: 12,
+                  }}
+                />
+              </View>
             </View>
-          </CameraView>
+          </View>
+
+          {/* Controls section */}
+          <View style={{ paddingVertical: 32, paddingHorizontal: 24, alignItems: 'center', gap: 20 }}>
+            <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>
+              {activeMode === 'visitor' ? 'Visitor Photo' : 'Vehicle Photo'}
+            </Text>
+
+            {cameraError ? (
+              <Text style={{ color: '#f87171', fontSize: 14, textAlign: 'center' }}>{cameraError}</Text>
+            ) : null}
+
+            {!cameraReady && !cameraError ? (
+              <View style={{ alignItems: 'center', gap: 12 }}>
+                <ActivityIndicator size="large" color="#fff" />
+                <Text style={{ color: '#fff', fontSize: 14 }}>Initializing camera...</Text>
+              </View>
+            ) : (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 40 }}>
+                <Pressable
+                  onPress={() => setFacing((f) => (f === 'front' ? 'back' : 'front'))}
+                  style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.2)' }}
+                >
+                  <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>Flip</Text>
+                </Pressable>
+                <Pressable
+                  onPress={handleCapture}
+                  disabled={capturing}
+                  style={({ pressed }: any) => ({
+                    width: 76,
+                    height: 76,
+                    borderRadius: 38,
+                    borderWidth: 4,
+                    borderColor: '#fff',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: pressed ? 0.7 : 1,
+                  })}
+                >
+                  {capturing ? (
+                    <ActivityIndicator size="small" color="rgba(255,255,255,0.5)" />
+                  ) : (
+                    <View style={{ width: 62, height: 62, borderRadius: 31, backgroundColor: '#fff' }} />
+                  )}
+                </Pressable>
+              </View>
+            )}
+
+            <Pressable
+              onPress={() => setActiveMode(null)}
+              style={({ pressed }: any) => ({
+                backgroundColor: pressed ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.2)',
+                borderRadius: 12,
+                paddingHorizontal: 24,
+                paddingVertical: 12,
+              })}
+            >
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Cancel</Text>
+            </Pressable>
+          </View>
         </View>
       </Modal>
     </ScreenWrapper>

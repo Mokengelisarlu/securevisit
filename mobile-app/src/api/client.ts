@@ -161,44 +161,20 @@ export async function uploadFile(
               xhr.setRequestHeader('Authorization', `Bearer ${deviceToken}`);
             }
 
-            let fallbackTimer: ReturnType<typeof setInterval> | null = null;
-            let currentFallback = 0;
-
-            const startFallback = () => {
-              if (fallbackTimer) return;
-              currentFallback = 2;
-              onProgress?.(currentFallback);
-              fallbackTimer = setInterval(() => {
-                // increase slowly up to 90
-                const inc = Math.floor(Math.random() * 6) + 2; // 2-7
-                currentFallback = Math.min(90, currentFallback + inc);
-                onProgress?.(currentFallback);
-              }, 500);
-            };
-
-            const stopFallback = () => {
-              if (fallbackTimer) {
-                clearInterval(fallbackTimer);
-                fallbackTimer = null;
-              }
-            };
-
-            let sawLengthComputable = false;
+            let reportedRealProgress = false;
 
             xhr.upload.onprogress = (event: ProgressEvent) => {
-              if (event.lengthComputable) {
-                sawLengthComputable = true;
-                const percent = Math.round((event.loaded / event.total) * 100);
+              if (event.lengthComputable && event.total > 0) {
+                reportedRealProgress = true;
+                const percent = Math.min(100, Math.round((event.loaded / event.total) * 100));
                 onProgress?.(percent);
-              } else {
-                // start a fallback incremental progress if we don't get computable length
-                startFallback();
+              } else if (!reportedRealProgress) {
+                onProgress?.(-1);
               }
             };
 
             xhr.onload = () => {
               try {
-                stopFallback();
                 const status = xhr.status;
                 const text = xhr.responseText;
                 const json = text ? JSON.parse(text) : null;
@@ -223,18 +199,11 @@ export async function uploadFile(
             };
 
             xhr.onerror = () => {
-              stopFallback();
               reject(new Error('Upload failed: network error'));
             };
             xhr.onabort = () => {
-              stopFallback();
               reject(new Error('Upload aborted'));
             };
-
-            // Start a short timeout: if we don't receive a progress event in 200ms, start fallback
-            const progressWait = setTimeout(() => {
-              if (!sawLengthComputable) startFallback();
-            }, 200);
 
             xhr.send(formData as any);
           } catch (err) {

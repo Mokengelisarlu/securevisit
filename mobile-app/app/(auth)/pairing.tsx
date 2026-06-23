@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ActivityIndicator, Image } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, Image, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -26,6 +26,7 @@ export default function PairingScreen() {
   const [isSavingSlug, setIsSavingSlug] = useState(false);
   const [urlInput, setUrlInput] = useState('');
   const [urlError, setUrlError] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
 
   useEffect(() => {
     if (tenantSlug) {
@@ -66,6 +67,7 @@ export default function PairingScreen() {
 
   async function handleChangeTenant() {
     setStatusMessage('');
+    setShowUrlInput(false);
     setSlugInput('');
     setSlugError('');
     setUrlInput('');
@@ -74,12 +76,30 @@ export default function PairingScreen() {
   }
 
   async function handleChangeServerUrl() {
-    setStatusMessage('');
-    setSlugInput(tenantSlug ?? '');
-    setSlugError('');
+    setShowUrlInput(true);
     setUrlInput('');
     setUrlError('');
-    await clearTenantSlug();
+  }
+
+  async function handleSaveUrl() {
+    const trimmed = urlInput.trim().replace(/\/+$/, '');
+    if (!trimmed) {
+      setUrlError('Please enter a server URL');
+      return;
+    }
+    if (!/^https?:\/\/.+/.test(trimmed)) {
+      setUrlError('URL must start with http:// or https://');
+      return;
+    }
+    setUrlError('');
+    try {
+      await saveApiBaseUrl(trimmed.replace(/\/+$/, ''));
+      setShowUrlInput(false);
+      setUrlInput('');
+      setStatusMessage('Server URL updated.');
+    } catch {
+      setUrlError('Failed to save URL.');
+    }
   }
 
   async function generateNewCode() {
@@ -148,77 +168,84 @@ export default function PairingScreen() {
   // ─── First-launch: no slug stored yet ───────────────────────────────────────
   if (!tenantSlug) {
     return (
-      <View className="flex-1 bg-teal-50 px-6 justify-center" style={{ paddingBottom: insets.bottom }}>
-        {/* Header */}
-        <View className="items-center mb-10">
-          <Image
-            source={require('../../assets/images/icon-512x512.png')}
-            className="w-16 h-16 mb-4"
-            resizeMode="contain"
-          />
-          <Text className="text-3xl font-black text-teal-900 text-center">
-            Welcome to SecureVisit
-          </Text>
-          <Text className="text-base text-teal-700 text-center mt-2">
-            Enter your organization slug to get started.{'\n'}This is a one-time setup.
-          </Text>
-        </View>
-
-        {/* Input card */}
-        <View className="bg-white rounded-2xl p-6 shadow-sm mb-4">
-          <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
-            Organization Slug
-          </Text>
-          <TextInput
-            placeholder="e.g. acme-corp"
-            value={slugInput}
-            onChangeText={(v) => {
-              setSlugInput(v);
-              if (slugError) setSlugError('');
-            }}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="default"
-            returnKeyType="next"
-            onSubmitEditing={handleSaveSlug}
-            error={slugError}
-          />
-          <Text className="text-xs text-teal-500 mt-3">
-            You can find your slug in the SecureVisit admin panel under Settings → Organization.
-          </Text>
-
-          <View className="h-px bg-teal-100 my-4" />
-
-          <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
-            Server URL
-          </Text>
-          <TextInput
-            placeholder={apiBaseUrl}
-            value={urlInput}
-            onChangeText={(v) => {
-              setUrlInput(v);
-              if (urlError) setUrlError('');
-            }}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-            returnKeyType="done"
-            onSubmitEditing={handleSaveSlug}
-            error={urlError}
-          />
-          <Text className="text-xs text-teal-500 mt-3">
-            Leave empty to use the default. Change this if the server URL changes.
-          </Text>
-        </View>
-
-        <Button
-          onPress={handleSaveSlug}
-          loading={isSavingSlug}
-          disabled={!slugInput.trim()}
-          size="lg"
+      <View className="flex-1 bg-teal-50" style={{ paddingBottom: insets.bottom }}>
+        <ScrollView
+          className="flex-1 px-6"
+          keyboardShouldPersistTaps="always"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
         >
-          Save & Continue
-        </Button>
+          {/* Header */}
+          <View className="items-center mb-10">
+            <Image
+              source={require('../../assets/images/icon-512x512.png')}
+              className="w-16 h-16 mb-4"
+              resizeMode="contain"
+            />
+            <Text className="text-3xl font-black text-teal-900 text-center">
+              Welcome to SecureVisit
+            </Text>
+            <Text className="text-base text-teal-700 text-center mt-2">
+              Enter your organization slug to get started.{'\n'}This is a one-time setup.
+            </Text>
+          </View>
+
+          {/* Input card */}
+          <View className="bg-white rounded-2xl p-6 mb-4">
+            <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
+              Organization Slug
+            </Text>
+            <TextInput
+              placeholder="e.g. acme-corp"
+              value={slugInput}
+              onChangeText={(v) => {
+                setSlugInput(v);
+                if (slugError) setSlugError('');
+              }}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="default"
+              returnKeyType="next"
+              onSubmitEditing={handleSaveSlug}
+              error={slugError}
+            />
+            <Text className="text-xs text-teal-500 mt-3">
+              You can find your slug in the SecureVisit admin panel under Settings → Organization.
+            </Text>
+
+            <View className="h-px bg-teal-100 my-4" />
+
+            <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
+              Server URL
+            </Text>
+            <TextInput
+              placeholder={apiBaseUrl}
+              value={urlInput}
+              onChangeText={(v) => {
+                setUrlInput(v);
+                if (urlError) setUrlError('');
+              }}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+              returnKeyType="done"
+              onSubmitEditing={handleSaveSlug}
+              error={urlError}
+            />
+            <Text className="text-xs text-teal-500 mt-3">
+              Leave empty to use the default. Change this if the server URL changes.
+            </Text>
+          </View>
+
+          <Button
+            onPress={handleSaveSlug}
+            loading={isSavingSlug}
+            disabled={!slugInput.trim()}
+            size="lg"
+          >
+            Save & Continue
+          </Button>
+        </ScrollView>
       </View>
     );
   }
@@ -255,6 +282,37 @@ export default function PairingScreen() {
         {statusMessage}
       </Text>
 
+      {showUrlInput ? (
+        <View className="bg-white rounded-2xl p-6 mb-4">
+          <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
+            Server URL
+          </Text>
+          <TextInput
+            placeholder={apiBaseUrl}
+            value={urlInput}
+            onChangeText={(v) => { setUrlInput(v); if (urlError) setUrlError(''); }}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="url"
+            returnKeyType="done"
+            onSubmitEditing={handleSaveUrl}
+            error={urlError}
+          />
+          <View className="flex-row gap-3 mt-3">
+            <Button onPress={handleSaveUrl} size="sm" className="flex-1">
+              Save URL
+            </Button>
+            <Button
+              onPress={() => { setShowUrlInput(false); setUrlInput(''); setUrlError(''); }}
+              variant="ghost"
+              size="sm"
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </View>
+        </View>
+      ) : null}
 
       <View className="gap-3">
         <Pressable
