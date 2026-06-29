@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { ScreenWrapper, Card, Button, TextInput } from '@/src/components/ui';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
+import { useTranslation } from 'react-i18next';
 
 const VEHICLE_TYPES = ['CAR', 'TRUCK', 'MOTORCYCLE', 'OTHER'] as const;
 
@@ -17,6 +18,7 @@ export default function VehicleScreen() {
   const [color, setColor] = useState('');
   const [passengerCount, setPassengerCount] = useState('');
   const [error, setError] = useState('');
+  const { t } = useTranslation();
 
   function handleContinue() {
     if (!plateNumber.trim()) {
@@ -68,9 +70,9 @@ export default function VehicleScreen() {
             className="mb-4 self-start"
             hitSlop={12}
           >
-            <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+            <Text className="text-teal-700 text-base font-semibold">{t('common.back')}</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900">Vehicle Info</Text>
+          <Text className="text-3xl font-black text-teal-900">{t('vehicle.title')}</Text>
           <Text className="text-base text-teal-600 mt-1">
             Fill in vehicle details or skip if not applicable
           </Text>
@@ -78,13 +80,13 @@ export default function VehicleScreen() {
 
         <Card className="mb-6">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
-            Vehicle Details
+            {t('vehicle.title')}
           </Text>
 
           <View className="gap-4">
             <TextInput
-              label="Plate Number *"
-              placeholder="e.g. ABC 123"
+              label={`${t('vehicle.plateNumber')} *`}
+              placeholder={t('vehicle.plateNumberPlaceholder')}
               value={plateNumber}
               onChangeText={(t) => { setPlateNumber(t.toUpperCase()); setError(''); }}
               error={error}
@@ -118,7 +120,7 @@ export default function VehicleScreen() {
             </View>
 
             <TextInput
-              label="Brand"
+              label={t('vehicle.make')}
               placeholder="e.g. Toyota, Ford"
               value={brand}
               onChangeText={setBrand}
@@ -126,7 +128,7 @@ export default function VehicleScreen() {
             />
 
             <TextInput
-              label="Color"
+              label={t('vehicle.color')}
               placeholder="e.g. White, Black"
               value={color}
               onChangeText={setColor}
@@ -151,10 +153,10 @@ export default function VehicleScreen() {
 
         <View className="gap-3">
           <Button onPress={handleContinue} size="lg">
-            Continue with Vehicle
+            {t('common.continue')}
           </Button>
           <Button onPress={handleSkip} variant="ghost" size="md">
-            Skip — No Vehicle
+            {t('vehicle.skipVehicle')}
           </Button>
         </View>
       </ScrollView>

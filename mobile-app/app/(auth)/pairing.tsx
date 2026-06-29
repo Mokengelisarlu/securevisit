@@ -8,6 +8,7 @@ import { usePairing } from '@/src/hooks/usePairing';
 import { useDeviceManagement } from '@/src/hooks/useDeviceManagement';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, TextInput } from '@/src/components/ui';
+import { useTranslation } from 'react-i18next';
 
 export default function PairingScreen() {
   const insets = useSafeAreaInsets();
@@ -17,6 +18,7 @@ export default function PairingScreen() {
   const { pairingCode, deviceId, isGenerating, generatePairingCode, generateReconnectPairingCode, checkPairingStatus } =
     usePairing();
   const { verifyDeviceToken } = useDeviceManagement();
+  const { t } = useTranslation();
   const { reconnect } = useLocalSearchParams<{ reconnect?: string }>();
   const isReconnect = reconnect === 'true';
   const [isPolling, setIsPolling] = useState(false);
@@ -37,7 +39,7 @@ export default function PairingScreen() {
   async function handleSaveSlug() {
     const trimmed = slugInput.trim().toLowerCase();
     if (!trimmed) {
-      setSlugError('Please enter your organization slug');
+      setSlugError(t('pairing.errorInvalidCode'));
       return;
     }
     if (!/^[a-z0-9-]+$/.test(trimmed)) {
@@ -51,7 +53,7 @@ export default function PairingScreen() {
       if (urlInput.trim()) {
         const urlTrimmed = urlInput.trim().replace(/\/+$/, '');
         if (!/^https?:\/\/.+/.test(urlTrimmed)) {
-          setUrlError('URL must start with http:// or https://');
+          setUrlError(t('pairing.errorServerUrl'));
           setIsSavingSlug(false);
           return;
         }
@@ -59,7 +61,7 @@ export default function PairingScreen() {
       }
       await saveTenantSlug(trimmed);
     } catch (err) {
-      setSlugError('Failed to save. Please try again.');
+      setSlugError(t('errors.generic'));
     } finally {
       setIsSavingSlug(false);
     }
@@ -88,7 +90,7 @@ export default function PairingScreen() {
       return;
     }
     if (!/^https?:\/\/.+/.test(trimmed)) {
-      setUrlError('URL must start with http:// or https://');
+      setUrlError(t('pairing.errorServerUrl'));
       return;
     }
     setUrlError('');
@@ -98,13 +100,13 @@ export default function PairingScreen() {
       setUrlInput('');
       setStatusMessage('Server URL updated.');
     } catch {
-      setUrlError('Failed to save URL.');
+      setUrlError(t('errors.generic'));
     }
   }
 
   async function generateNewCode() {
     try {
-      setStatusMessage('Generating pairing code...');
+      setStatusMessage(t('common.loading'));
       console.log('[pairing] generateNewCode:', { isReconnect, existingDeviceId, apiBaseUrl, tenantSlug });
       let devId: string;
       if (isReconnect && existingDeviceId) {
@@ -126,11 +128,11 @@ export default function PairingScreen() {
           await saveDeviceId(devId);
         }
       }
-      setStatusMessage('Scan this code on your admin panel, then approve the pairing.');
+      setStatusMessage(t('pairing.pairingInProgress'));
       startPolling(devId);
     } catch (err) {
       console.error('[pairing] generateNewCode error:', err);
-      setStatusMessage('Failed to generate code. Try again.');
+      setStatusMessage(t('pairing.errorGeneric'));
     }
   }
 
@@ -143,14 +145,14 @@ export default function PairingScreen() {
         if (isValid) {
           await saveToken(token);
           setJustPaired(true);
-          setStatusMessage('Pairing successful! Redirecting...');
+          setStatusMessage(t('pairing.successTitle'));
           router.replace('/(kiosk)');
         } else {
-          setStatusMessage('Token verification failed. Try again.');
+          setStatusMessage(t('pairing.errorInvalidCode'));
         }
       }
     } catch (err) {
-      setStatusMessage('Pairing failed or timed out. Try again.');
+      setStatusMessage(t('pairing.errorGeneric'));
     } finally {
       setIsPolling(false);
     }
@@ -160,7 +162,7 @@ export default function PairingScreen() {
     return (
       <View className="flex-1 bg-teal-50 justify-center items-center" style={{ paddingBottom: insets.bottom }}>
         <ActivityIndicator size="large" color="#14B8A6" />
-        <Text className="mt-4 text-teal-800">Checking device status...</Text>
+            <Text className="mt-4 text-teal-800">{t('common.loading')}</Text>
       </View>
     );
   }
@@ -254,14 +256,14 @@ export default function PairingScreen() {
   return (
     <View className="flex-1 bg-teal-50 px-6 justify-center" style={{ paddingBottom: insets.bottom }}>
       <Text className="text-4xl font-bold text-teal-900 text-center mb-8">
-        Kiosk Pairing
+        {t('pairing.welcomeTitle')}
       </Text>
 
       <View className="bg-white rounded-xl p-8 mb-6 shadow-sm">
         {pairingCode ? (
           <View className="items-center">
             <Text className="text-sm font-semibold text-teal-600 mb-4 uppercase tracking-wide">
-              Pairing Code
+              {t('pairing.pairingCodeLabel')}
             </Text>
             <Text className="text-6xl font-black text-teal-900 tracking-widest">
               {pairingCode}
@@ -273,7 +275,7 @@ export default function PairingScreen() {
         ) : (
           <View className="items-center">
             <ActivityIndicator size="large" color="#14B8A6" />
-            <Text className="mt-4 text-teal-800">Generating code...</Text>
+            <Text className="mt-4 text-teal-800">{t('common.loading')}</Text>
           </View>
         )}
       </View>
@@ -285,7 +287,7 @@ export default function PairingScreen() {
       {showUrlInput ? (
         <View className="bg-white rounded-2xl p-6 mb-4">
           <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
-            Server URL
+            {t('pairing.serverUrlLabel')}
           </Text>
           <TextInput
             placeholder={apiBaseUrl}
@@ -300,7 +302,7 @@ export default function PairingScreen() {
           />
           <View className="flex-row gap-3 mt-3">
             <Button onPress={handleSaveUrl} size="sm" className="flex-1">
-              Save URL
+              {t('common.save')}
             </Button>
             <Button
               onPress={() => { setShowUrlInput(false); setUrlInput(''); setUrlError(''); }}
@@ -308,7 +310,7 @@ export default function PairingScreen() {
               size="sm"
               className="flex-1"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </View>
         </View>
@@ -321,7 +323,7 @@ export default function PairingScreen() {
           className="bg-teal-600 rounded-lg py-4 active:bg-teal-700 disabled:bg-teal-400"
         >
           <Text className="text-white text-center font-bold text-lg">
-            {isPolling ? 'Polling...' : 'Check Status'}
+            {isPolling ? t('common.loading') : t('common.retry')}
           </Text>
         </Pressable>
 
@@ -331,7 +333,7 @@ export default function PairingScreen() {
           className="bg-teal-100 rounded-lg py-4 active:bg-teal-200"
         >
           <Text className="text-teal-900 text-center font-bold text-lg">
-            {isGenerating ? 'Generating...' : 'New Code'}
+            {isGenerating ? t('common.loading') : 'New Code'}
           </Text>
         </Pressable>
       </View>

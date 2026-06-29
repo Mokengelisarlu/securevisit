@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Pressable, Image, ActivityIndicator } from 'react-native';
 import { useState, useRef } from 'react';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import Svg, { Path } from 'react-native-svg';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -14,6 +15,7 @@ function isLocalFileUri(uri?: string | null) {
 }
 
 export default function ReviewScreen() {
+  const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { draft, resetDraft } = useVisitDraft();
   const { tenantSlug, apiBaseUrl } = useApi();
@@ -97,7 +99,7 @@ export default function ReviewScreen() {
         router.replace('/(kiosk)');
       }, 1800);
     } catch (err: any) {
-      setError(err?.message || 'Check-in failed. Please try again.');
+      setError(err?.message || t('review.errorSubmit'));
     } finally {
       setUploadProgress(null);
     }
@@ -119,10 +121,10 @@ export default function ReviewScreen() {
             </Svg>
           </View>
           <Text className="text-3xl font-black text-teal-900 text-center">
-            Checked In
+            {t('success.checkInTitle')}
           </Text>
           <Text className="text-lg text-teal-600 text-center">
-            {draft.firstName} {draft.lastName} has been checked in successfully.
+            {t('success.checkInMessage', { visitorName: `${draft.firstName} ${draft.lastName}` })}
           </Text>
         </View>
       </ScreenWrapper>
@@ -143,9 +145,9 @@ export default function ReviewScreen() {
             className="mb-4 self-start"
             hitSlop={12}
           >
-            <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+            <Text className="text-teal-700 text-base font-semibold">← {t('common.back')}</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900">Review</Text>
+          <Text className="text-3xl font-black text-teal-900">{t('review.title')}</Text>
           <Text className="text-base text-teal-600 mt-1">
             Confirm the details before check-in
           </Text>
@@ -153,7 +155,7 @@ export default function ReviewScreen() {
 
         <Card className="mb-4">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-            Visitor
+            {t('review.visitorInfo')}
           </Text>
           <Text className="text-lg font-bold text-slate-900">
             {draft.firstName} {draft.lastName}
@@ -169,7 +171,7 @@ export default function ReviewScreen() {
         {draft.vehicle ? (
           <Card className="mb-4">
             <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-              Vehicle
+              {t('review.vehicleInfo')}
             </Text>
             <Text className="text-base font-bold text-slate-900">
               {draft.vehicle.plateNumber}
@@ -188,12 +190,12 @@ export default function ReviewScreen() {
         {draft.visitorPhotoUrl || draft.vehiclePhotoUrl ? (
           <Card className="mb-4">
             <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-              Photos
+              {t('review.photosLabel')}
             </Text>
             <View className="gap-3">
               {draft.visitorPhotoUrl ? (
                 <View>
-                  <Text className="text-xs font-semibold text-slate-500 mb-1">Visitor</Text>
+                  <Text className="text-xs font-semibold text-slate-500 mb-1">{t('review.visitorPhoto')}</Text>
                   <Image
                     source={{ uri: draft.visitorPhotoUrl }}
                     className="w-full h-40 rounded-xl bg-slate-200"
@@ -203,7 +205,7 @@ export default function ReviewScreen() {
               ) : null}
               {draft.vehiclePhotoUrl ? (
                 <View>
-                  <Text className="text-xs font-semibold text-slate-500 mb-1">Vehicle</Text>
+                  <Text className="text-xs font-semibold text-slate-500 mb-1">{t('review.vehiclePhoto')}</Text>
                   <Image
                     source={{ uri: draft.vehiclePhotoUrl }}
                     className="w-full h-40 rounded-xl bg-slate-200"
@@ -218,7 +220,7 @@ export default function ReviewScreen() {
         {draft.signatureData ? (
           <Card className="mb-4">
             <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-              Signature
+              {t('review.signatureLabel')}
             </Text>
             <Image
               source={{ uri: draft.signatureData }}
@@ -241,7 +243,7 @@ export default function ReviewScreen() {
                 <ActivityIndicator size="small" color="#0D9488" />
               ) : null}
               <Text className="text-sm font-semibold text-slate-700">
-                {uploadProgress < 0 ? 'Preparing upload...' : `Uploading... ${uploadProgress}%`}
+                {uploadProgress < 0 ? t('common.loading') : t('review.uploadProgress', { progress: uploadProgress })}
               </Text>
             </View>
             <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -259,7 +261,7 @@ export default function ReviewScreen() {
           disabled={isLoading}
           size="lg"
         >
-          Complete Check-In
+          {t('review.submit')}
         </Button>
       </ScrollView>
     </ScreenWrapper>

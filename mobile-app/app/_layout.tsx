@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import './globals.css';
+import '@/src/i18n';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';

@@ -5,6 +5,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
 import { useApi } from '@/src/contexts/ApiContext';
+import { useTranslation } from 'react-i18next';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CAMERA_SIZE = SCREEN_WIDTH - 48;
@@ -22,6 +23,7 @@ export default function PhotoScreen() {
   const [capturing, setCapturing] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const { t } = useTranslation();
   const [visitorPhoto, setVisitorPhoto] = useState<string | null>(null);
   const [vehiclePhoto, setVehiclePhoto] = useState<string | null>(null);
 
@@ -69,7 +71,7 @@ export default function PhotoScreen() {
   if (!permission) {
     return (
       <ScreenWrapper className="justify-center items-center">
-        <Text className="text-slate-600 text-lg">Requesting camera permission...</Text>
+        <Text className="text-slate-600 text-lg">{t('common.loading')}</Text>
       </ScreenWrapper>
     );
   }
@@ -78,17 +80,17 @@ export default function PhotoScreen() {
     return (
       <ScreenWrapper className="justify-center items-center px-6">
         <Text className="text-lg text-teal-900 font-bold text-center mb-4">
-          Camera Access Required
+          {t('photo.titleVisitor')}
         </Text>
         <Text className="text-base text-slate-600 text-center mb-6">
           Photos are optional. You can skip this step.
         </Text>
         <View className="gap-3">
           <Button onPress={requestPermission} size="lg">
-            Grant Permission
+            {t('common.continue')}
           </Button>
           <Button onPress={handleContinue} variant="ghost" size="md">
-            Skip Photos
+            {t('common.skip')}
           </Button>
         </View>
       </ScreenWrapper>
@@ -104,9 +106,9 @@ export default function PhotoScreen() {
             className="mb-4 self-start"
             hitSlop={12}
           >
-            <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+            <Text className="text-teal-700 text-base font-semibold">{t('common.back')}</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900">Photos</Text>
+          <Text className="text-3xl font-black text-teal-900">{t('photo.titleVisitor')}</Text>
           <Text className="text-base text-teal-600 mt-1">
             Capture visitor and vehicle photos
           </Text>
@@ -116,7 +118,7 @@ export default function PhotoScreen() {
           {kioskSettings?.requireVisitorPhoto === 1 ? (
             <Card>
               <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-                Visitor Photo
+                {t('photo.titleVisitor')}
               </Text>
               {visitorPhoto ? (
                 <View className="gap-3">
@@ -130,7 +132,7 @@ export default function PhotoScreen() {
                     variant="ghost"
                     size="sm"
                   >
-                    Retake
+                    {t('photo.retakePhoto')}
                   </Button>
                 </View>
               ) : (
@@ -139,7 +141,7 @@ export default function PhotoScreen() {
                   variant="secondary"
                   size="md"
                 >
-                  Take Visitor Photo
+                  {t('photo.titleVisitor')}
                 </Button>
               )}
             </Card>
@@ -148,7 +150,7 @@ export default function PhotoScreen() {
           {draft.vehicle && kioskSettings?.requireVehiclePhoto === 1 ? (
             <Card>
               <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-3">
-                Vehicle Photo
+                {t('photo.titleVehicle')}
               </Text>
               {vehiclePhoto ? (
                 <View className="gap-3">
@@ -162,7 +164,7 @@ export default function PhotoScreen() {
                     variant="ghost"
                     size="sm"
                   >
-                    Retake
+                    {t('photo.retakePhoto')}
                   </Button>
                 </View>
               ) : (
@@ -171,7 +173,7 @@ export default function PhotoScreen() {
                   variant="secondary"
                   size="md"
                 >
-                  Take Vehicle Photo
+                  {t('photo.titleVehicle')}
                 </Button>
               )}
             </Card>
@@ -180,7 +182,7 @@ export default function PhotoScreen() {
 
         <View className="pb-6">
           <Button onPress={handleContinue} size="lg">
-            Continue
+            {t('common.continue')}
           </Button>
         </View>
       </View>
@@ -228,7 +230,7 @@ export default function PhotoScreen() {
           {/* Controls section */}
           <View style={{ paddingVertical: 32, paddingHorizontal: 24, alignItems: 'center', gap: 20 }}>
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>
-              {activeMode === 'visitor' ? 'Visitor Photo' : 'Vehicle Photo'}
+              {activeMode === 'visitor' ? t('photo.titleVisitor') : t('photo.titleVehicle')}
             </Text>
 
             {cameraError ? (
@@ -238,7 +240,7 @@ export default function PhotoScreen() {
             {!cameraReady && !cameraError ? (
               <View style={{ alignItems: 'center', gap: 12 }}>
                 <ActivityIndicator size="large" color="#fff" />
-                <Text style={{ color: '#fff', fontSize: 14 }}>Initializing camera...</Text>
+                <Text style={{ color: '#fff', fontSize: 14 }}>{t('common.loading')}</Text>
               </View>
             ) : (
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 40 }}>
@@ -246,7 +248,7 @@ export default function PhotoScreen() {
                   onPress={() => setFacing((f) => (f === 'front' ? 'back' : 'front'))}
                   style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.2)' }}
                 >
-                  <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>Flip</Text>
+                  <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>{t('photo.flipCamera')}</Text>
                 </Pressable>
                 <Pressable
                   onPress={handleCapture}
@@ -280,7 +282,7 @@ export default function PhotoScreen() {
                 paddingVertical: 12,
               })}
             >
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Cancel</Text>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>{t('photo.cancel')}</Text>
             </Pressable>
           </View>
         </View>

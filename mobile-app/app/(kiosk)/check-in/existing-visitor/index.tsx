@@ -8,6 +8,7 @@ import {
 import { useState, useCallback, useRef } from 'react';
 import { router } from 'expo-router';
 import { ScreenWrapper, Card, Button, TextInput, Select } from '@/src/components/ui';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import {
   useSearchPublicVisitors,
@@ -18,6 +19,7 @@ import { useCreatePublicVisit } from '@/src/hooks/useVisits';
 import type { Visitor } from '@/src/types/api';
 
 export default function ExistingVisitorScreen() {
+  const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { results, isSearching, search } = useSearchPublicVisitors(deviceToken);
   const { createVisit, isLoading: isCheckinLoading } = useCreatePublicVisit(deviceToken);
@@ -77,7 +79,7 @@ export default function ExistingVisitorScreen() {
       });
       router.replace('/(kiosk)');
     } catch (err: any) {
-      setSubmitError(err?.message || 'Check-in failed. Please try again.');
+      setSubmitError(err?.message || t('review.errorSubmit'));
     }
   }
 
@@ -89,9 +91,9 @@ export default function ExistingVisitorScreen() {
           className="mb-4 self-start"
           hitSlop={12}
         >
-          <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+          <Text className="text-teal-700 text-base font-semibold">← {t('common.back')}</Text>
         </Pressable>
-        <Text className="text-3xl font-black text-teal-900">Find Visitor</Text>
+        <Text className="text-3xl font-black text-teal-900">{t('visitorSearch.title')}</Text>
         <Text className="text-base text-teal-600 mt-1">
           Search by name or company
         </Text>
@@ -99,7 +101,7 @@ export default function ExistingVisitorScreen() {
 
       <View className="px-6 pb-4">
         <TextInput
-          placeholder="Search visitors..."
+          placeholder={t('visitorSearch.searchPlaceholder')}
           value={query}
           onChangeText={handleQueryChange}
           autoFocus
@@ -139,13 +141,13 @@ export default function ExistingVisitorScreen() {
           {isSearching ? (
             <View className="items-center py-8">
               <ActivityIndicator color="#0F766E" size="large" />
-              <Text className="text-teal-700 mt-3">Searching...</Text>
+              <Text className="text-teal-700 mt-3">{t('common.loading')}</Text>
             </View>
           ) : query.length > 0 && !isSearchPending && !isSearching && results.length === 0 && lastSearchedQuery === query ? (
             <View className="items-center py-12">
               <Text className="text-4xl font-black text-teal-400 mb-3">?</Text>
               <Text className="text-slate-600 text-center">
-                {`No visitors found for "${query}"`}
+                {t('visitorSearch.noResults')}
               </Text>
               <Pressable
                 onPress={() => {

@@ -3,18 +3,22 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, Card, TextInput, Button } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
+import { changeLanguage, getCurrentLanguage } from '@/src/i18n';
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const { clearToken, deviceToken } = useAuth();
   const { tenantSlug, apiBaseUrl, deviceId, saveApiBaseUrl, clearTenantSlug, clearDeviceId, clearBusinessSettings, clearKioskSettings } = useApi();
   const { resetState } = useKiosk();
   const [urlInput, setUrlInput] = useState('');
   const [urlError, setUrlError] = useState('');
   const [isSavingUrl, setIsSavingUrl] = useState(false);
+  const [currentLang, setCurrentLang] = useState<'fr' | 'en'>(getCurrentLanguage());
 
   function tokenPreview() {
     if (!deviceToken) return 'None';
@@ -26,7 +30,7 @@ export default function SettingsScreen() {
     if (!urlInput.trim()) return;
     const trimmed = urlInput.trim().replace(/\/+$/, '');
     if (!/^https?:\/\/.+/.test(trimmed)) {
-      setUrlError('URL must start with http:// or https://');
+      setUrlError(t('pairing.errorServerUrl'));
       return;
     }
     setUrlError('');
@@ -35,25 +39,29 @@ export default function SettingsScreen() {
       await saveApiBaseUrl(trimmed);
       setUrlInput('');
     } catch (err) {
-      setUrlError('Failed to save URL.');
+      setUrlError(t('errors.generic'));
     } finally {
       setIsSavingUrl(false);
     }
   }
 
+  function handleLanguageSwitch(lang: 'fr' | 'en') {
+    changeLanguage(lang);
+    setCurrentLang(lang);
+  }
+
   function handleRePair() {
     Alert.alert(
-      'Re-Pair Device',
-      'This will generate a new pairing code for this device. The existing device record will be updated.',
+      t('settings.reconnectConfirmTitle'),
+      t('settings.reconnectConfirmMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Re-Pair',
+          text: t('settings.reconnect'),
           style: 'destructive',
           onPress: async () => {
             resetState();
             await clearToken();
-            // Keep deviceId and tenantSlug for reconnect flow
             router.replace('/(auth)/pairing?reconnect=true');
           },
         },
@@ -63,12 +71,12 @@ export default function SettingsScreen() {
 
   function handleClearData() {
     Alert.alert(
-      'Clear Local Data',
-      'This will wipe all stored data including pairing info and cached visits.',
+      t('settings.clearDataConfirmTitle'),
+      t('settings.clearDataConfirmMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Clear',
+          text: t('common.confirm'),
           style: 'destructive',
           onPress: async () => {
             resetState();
@@ -97,9 +105,9 @@ export default function SettingsScreen() {
             className="mb-4 self-start"
             hitSlop={12}
           >
-            <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+            <Text className="text-teal-700 text-base font-semibold">← {t('common.back')}</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900 flex-1 text-center">Settings</Text>
+          <Text className="text-3xl font-black text-teal-900 flex-1 text-center">{t('settings.title')}</Text>
           <RNImage
             source={require('../../../assets/images/icon-512x512.png')}
             className="w-10 h-10"
@@ -109,22 +117,46 @@ export default function SettingsScreen() {
 
         <Card className="mb-4">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
-            Connection
+            {t('settings.connection')}
           </Text>
-          <InfoRow label="Server URL" value={apiBaseUrl} />
-          <InfoRow label="Tenant Slug" value={tenantSlug || 'None'} />
-          <InfoRow label="Device ID" value={deviceId || 'Unknown'} />
+          <InfoRow label={t('settings.serverUrl')} value={apiBaseUrl} />
+          <InfoRow label={t('settings.tenantSlug')} value={tenantSlug || t('common.no')} />
+          <InfoRow label={t('settings.deviceId')} value={deviceId || 'Unknown'} />
           <InfoRow label="Device Token" value={tokenPreview()} last />
         </Card>
 
         <Card className="mb-4">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
-            Device
+            {t('settings.deviceInfo')}
           </Text>
-          <InfoRow label="App Version" value={Constants.expoConfig?.version || '1.0.0'} />
+          <InfoRow label={t('settings.appVersion')} value={Constants.expoConfig?.version || '1.0.0'} />
           <InfoRow label="Platform" value={Platform.OS + ' ' + (Platform.Version?.toString() || '')} />
           <InfoRow label="Runtime Version" value={Constants.executionEnvironment || 'Unknown'} />
-          <InfoRow label="Device Name" value={Constants.deviceName || 'Unknown'} last />
+          <InfoRow label={t('settings.deviceName')} value={Constants.deviceName || 'Unknown'} last />
+        </Card>
+
+        <Card className="mb-4">
+          <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
+            {t('settings.language')}
+          </Text>
+          <View className="flex-row gap-2">
+            <Pressable
+              onPress={() => handleLanguageSwitch('fr')}
+              className={`flex-1 rounded-xl py-3 active:opacity-80 ${currentLang === 'fr' ? 'bg-teal-600' : 'bg-teal-100'}`}
+            >
+              <Text className={`text-center font-bold text-base ${currentLang === 'fr' ? 'text-white' : 'text-teal-700'}`}>
+                {t('settings.languageFrench')}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => handleLanguageSwitch('en')}
+              className={`flex-1 rounded-xl py-3 active:opacity-80 ${currentLang === 'en' ? 'bg-teal-600' : 'bg-teal-100'}`}
+            >
+              <Text className={`text-center font-bold text-base ${currentLang === 'en' ? 'text-white' : 'text-teal-700'}`}>
+                {t('settings.languageEnglish')}
+              </Text>
+            </Pressable>
+          </View>
         </Card>
 
         <Card className="mb-6">
@@ -132,7 +164,7 @@ export default function SettingsScreen() {
             Server URL Override
           </Text>
           <Text className="text-xs text-teal-500 mb-3">
-            Change the server URL this kiosk connects to. Useful if your server address changes.
+            {t('settings.reconnectDescription')}
           </Text>
           <TextInput
             placeholder="https://your-server.com"
@@ -155,7 +187,7 @@ export default function SettingsScreen() {
               disabled={!urlInput.trim() || isSavingUrl}
               size="sm"
             >
-              Save URL
+              {t('common.save')}
             </Button>
           </View>
         </Card>
@@ -166,7 +198,7 @@ export default function SettingsScreen() {
             className="bg-teal-600 rounded-xl py-4 active:bg-teal-700"
           >
             <Text className="text-white text-center font-bold text-lg">
-              Re-Pair Device
+              {t('settings.reconnect')}
             </Text>
           </Pressable>
 
@@ -175,7 +207,7 @@ export default function SettingsScreen() {
             className="bg-red-100 rounded-xl py-4 active:bg-red-200"
           >
             <Text className="text-red-700 text-center font-bold text-lg">
-              Clear Local Data
+              {t('settings.clearData')}
             </Text>
           </Pressable>
         </View>

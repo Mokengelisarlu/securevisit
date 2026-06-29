@@ -1,6 +1,7 @@
 import { View, Text, Pressable, Image } from 'react-native';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
@@ -8,6 +9,7 @@ import { useGetPublicBusinessSettings, useGetPublicSettings } from '@/src/hooks/
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MainMenuScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { deviceToken } = useAuth();
   const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings, kioskSettings: cachedKiosk, saveKioskSettings } = useApi();
@@ -24,7 +26,6 @@ export default function MainMenuScreen() {
     : null;
 
   // Cache business settings and kiosk settings from API after first successful fetch
-  const { useEffect } = require('react');
   useEffect(() => {
     if (business && !cachedBusiness && !isLoading) {
       saveBusinessSettings(business);
@@ -64,19 +65,19 @@ export default function MainMenuScreen() {
       style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
     >
       {justPaired ? (
-        <View className="bg-teal-600 rounded-2xl p-5 mt-4 mb-4">
+          <View className="bg-teal-600 rounded-2xl p-5 mt-4 mb-4">
           <View className="items-center gap-2">
             <Text className="text-lg font-black text-white text-center">
-              Pairing Successful
+              {t('pairing.successTitle')}
             </Text>
             <Text className="text-sm text-white text-center">
-              This kiosk is now connected to {tenantName}.
+              {t('pairing.successSubtitle', { tenantName })}
             </Text>
             <Pressable
               onPress={handleDismissSuccess}
               className="bg-teal-700 rounded-xl px-6 py-2 mt-2 active:bg-teal-800"
             >
-              <Text className="text-white text-sm font-bold">Dismiss</Text>
+              <Text className="text-white text-sm font-bold">{t('common.done')}</Text>
             </Pressable>
           </View>
         </View>
@@ -107,7 +108,7 @@ export default function MainMenuScreen() {
         <View className="flex-1 justify-center items-center" style={{ flex: 1 }}>
           <View className="w-full items-center gap-6">
             <Text className="text-xl font-normal text-teal-600 text-center">
-              Welcome
+              {t('pairing.welcomeTitle')}
             </Text>
             <View className="gap-6 w-full">
               <Pressable
@@ -115,9 +116,9 @@ export default function MainMenuScreen() {
                 className="bg-teal-700 rounded-2xl p-8 active:bg-teal-800 active:scale-95"
               >
                 <View className="items-center gap-2">
-                  <Text className="text-3xl font-black text-white">Check In</Text>
+                  <Text className="text-3xl font-black text-white">{t('mainMenu.checkIn')}</Text>
                   <Text className="text-base text-white text-center">
-                    Register your arrival
+                    {t('mainMenu.checkInSubtitle')}
                   </Text>
                 </View>
               </Pressable>
@@ -127,9 +128,9 @@ export default function MainMenuScreen() {
                 className="rounded-2xl p-8 border-2 border-teal-600 bg-transparent active:bg-teal-50 active:scale-95"
               >
                 <View className="items-center gap-2">
-                  <Text className="text-3xl font-black text-teal-700">Check Out</Text>
+                  <Text className="text-3xl font-black text-teal-700">{t('mainMenu.checkOut')}</Text>
                   <Text className="text-base text-teal-600 text-center">
-                    Register your departure
+                    {t('mainMenu.checkOutSubtitle')}
                   </Text>
                 </View>
               </Pressable>
@@ -143,14 +144,14 @@ export default function MainMenuScreen() {
             className="active:opacity-60"
           >
             <Text className="text-teal-600 text-base font-semibold underline">
-              Settings
+              {t('mainMenu.settings')}
             </Text>
           </Pressable>
 
           <View className="flex-row items-center justify-center gap-1.5">
             <View className="w-1.5 h-1.5 rounded-full bg-teal-500" />
             <Text className="text-xs text-teal-600 text-center">
-              Kiosk online
+              {t('mainMenu.kioskOnline')}
             </Text>
           </View>
            <View className="flex-row items-center justify-center gap-2 mb-4">
@@ -162,7 +163,7 @@ export default function MainMenuScreen() {
             <Text className="text-xl font-black text-teal-700">SecureVisit</Text>
           </View>
           <Text className="text-[10px] text-teal-400 text-center">
-            Powered by Mokengeli Sarlu
+            {t('mainMenu.poweredBy')}
           </Text>
         </View>
       </View>
