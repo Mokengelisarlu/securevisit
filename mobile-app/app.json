@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SecureVisit Kiosk",
-    "slug": "mobile-app",
+    "name": "SecureVisit",
+    "slug": "securevisit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-512x512.png",
