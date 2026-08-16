@@ -7,10 +7,13 @@ import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
 import { KioskProvider } from '@/src/contexts/KioskContext';
 import { ApiProvider, useApi } from '@/src/contexts/ApiContext';
 import { VisitDraftProvider } from '@/src/contexts/VisitDraftContext';
+import { useKioskHeartbeat } from '@/src/hooks/useHeartbeat';
 
 function RootContent() {
   const { isCheckingToken } = useAuth();
   const { isLoadingSlug } = useApi();
+
+  useKioskHeartbeat();
 
   if (isCheckingToken || isLoadingSlug) {
     return (

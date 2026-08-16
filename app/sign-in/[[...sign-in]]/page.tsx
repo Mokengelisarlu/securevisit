@@ -4,9 +4,9 @@ import { useSignIn } from "@clerk/nextjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from 'next/image';
 import {
   ArrowLeft,
-  ShieldCheck,
   Zap,
   Lock,
   Mail,
@@ -76,9 +76,8 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 flex flex-col lg:flex-row relative overflow-hidden">
-      {/* Background decorations */}
-
+    <main className="min-h-screen relative bg-[#f8fafc] overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(13,189,181,0.16),_transparent_25%),radial-gradient(circle_at_top_right,_rgba(15,23,42,0.10),_transparent_20%)]" />
 
       {/* Back Button - Responsive Positioning */}
       <div className="absolute top-6 left-6 lg:top-8 lg:left-8 z-50">
@@ -111,11 +110,11 @@ export default function SignInPage() {
           </div>
 
           <div className="space-y-6 pt-8">
-            {[
-              { icon: ShieldCheck, title: "Sécurité Maximale", desc: "Isolation des données et protocoles chiffrés." },
+            {([
+              { icon: ({ className = "" }: { className?: string }) => <Image src="/icon-96x96.png" alt="logo" width={20} height={20} className={`object-contain ${className}`} />, title: "Sécurité Maximale", desc: "Isolation des données et protocoles chiffrés." },
               { icon: Zap, title: "Rapidité d'Exécution", desc: "Kiosque intuitif pour un check-in en moins de 30s." },
               { icon: Lock, title: "Contrôle Total", desc: "Gérez vos permissions et vos historiques avec précision." }
-            ].map((item, i) => (
+            ] as { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }[]).map((item, i) => (
               <div key={i} className="flex items-start gap-4 group">
                 <div className="mt-1 w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 group-hover:bg-teal-100 transition-colors">
                   <item.icon className="w-5 h-5" />

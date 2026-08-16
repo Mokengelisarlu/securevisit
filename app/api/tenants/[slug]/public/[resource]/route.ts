@@ -5,6 +5,7 @@ import {
   getPublicVisitorTypes,
   getPublicHosts,
   getPublicOnSiteVisitors,
+  getPublicDashboard,
   getPublicSettings,
   getPublicBusinessSettings,
   searchPublicVisitors,
@@ -44,6 +45,8 @@ export async function GET(
         return jsonResponse(await getPublicHosts(slug, deviceToken));
       case "on-site-visitors":
         return jsonResponse(await getPublicOnSiteVisitors(slug, deviceToken));
+      case "dashboard":
+        return jsonResponse(await getPublicDashboard(slug, deviceToken));
       case "settings":
         return jsonResponse(await getPublicSettings(slug, deviceToken));
       case "business-settings":

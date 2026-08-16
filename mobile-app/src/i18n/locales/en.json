@@ -49,6 +49,26 @@
     "kioskOffline": "Kiosk offline",
     "poweredBy": "Powered by Mokengeli"
   },
+  "tabs": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Live activity",
+    "kpiOnSite": "On site",
+    "kpiCheckedIn": "Checked in",
+    "kpiCheckedOut": "Checked out",
+    "kpiToday": "Today's visits",
+    "onSiteTitle": "Currently On Site",
+    "recentTitle": "Recent Visits",
+    "emptyOnSite": "No visitors currently on site",
+    "emptyRecent": "No recent activity yet",
+    "host": "Host:",
+    "checkIn": "Check In",
+    "checkOut": "Check Out"
+  },
   "visitorSearch": {
     "title": "Who is visiting?",
     "titleCheckOut": "Who is leaving?",

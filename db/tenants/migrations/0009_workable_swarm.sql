@@ -5,6 +5,7 @@ CREATE TABLE "devices" (
 	"pairing_code" text,
 	"pairing_code_expires_at" timestamp,
 	"device_token" text,
+	"device_id" text,
 	"is_paired" integer DEFAULT 0,
 	"paired_at" timestamp,
 	"last_active_at" timestamp,

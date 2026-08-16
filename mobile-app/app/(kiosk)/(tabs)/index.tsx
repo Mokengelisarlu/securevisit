@@ -12,7 +12,7 @@ export default function MainMenuScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { deviceToken } = useAuth();
-  const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings, kioskSettings: cachedKiosk, saveKioskSettings } = useApi();
+  const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings, saveKioskSettings } = useApi();
   const { data: business, isLoading } = useGetPublicBusinessSettings(deviceToken);
   const { data: kioskSettings } = useGetPublicSettings(deviceToken, 60000);
   const { setMode, resetState, justPaired, setJustPaired } = useKiosk();
@@ -56,7 +56,7 @@ export default function MainMenuScreen() {
   }
 
   function handleSettings() {
-    (router as any).push('/(kiosk)/settings');
+    router.navigate('/(kiosk)/settings');
   }
 
   return (
@@ -94,7 +94,7 @@ export default function MainMenuScreen() {
               />
             ) : (
               <Image
-                source={require('../../assets/images/icon-512x512.png')}
+                source={require('../../../assets/images/icon-512x512.png')}
                 className="w-28 h-28"
                 resizeMode="contain"
               />
@@ -156,7 +156,7 @@ export default function MainMenuScreen() {
           </View>
            <View className="flex-row items-center justify-center gap-2 mb-4">
             <Image
-              source={require('../../assets/images/icon-512x512.png')}
+              source={require('../../../assets/images/icon-512x512.png')}
               className="w-10 h-10"
               resizeMode="contain"
             />

@@ -1,7 +1,6 @@
-import { View, Text, Pressable, ScrollView, Alert, Image as RNImage } from 'react-native';
+import { View, Text, Pressable, ScrollView, Alert, Image as RNImage, Platform } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, Card, TextInput, Button } from '@/src/components/ui';
@@ -100,13 +99,7 @@ export default function SettingsScreen() {
         contentContainerStyle={{ paddingBottom: 40 }}
       >
         <View className="pt-8 pb-6 flex-row items-center justify-between">
-          <Pressable
-            onPress={() => router.back()}
-            className="mb-4 self-start"
-            hitSlop={12}
-          >
-            <Text className="text-teal-700 text-base font-semibold">← {t('common.back')}</Text>
-          </Pressable>
+          <View className="w-10" />
           <Text className="text-3xl font-black text-teal-900 flex-1 text-center">{t('settings.title')}</Text>
           <RNImage
             source={require('../../../assets/images/icon-512x512.png')}

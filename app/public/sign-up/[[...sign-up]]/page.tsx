@@ -1,10 +1,26 @@
 'use client';
 
-import { SignUp } from '@clerk/nextjs';
+import { SignUp, useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function SignUpPage() {
+    const router = useRouter();
+    const params = useSearchParams();
+    const after = params?.get('after');
+    const { isLoaded, isSignedIn } = useUser();
+
+    // If user becomes signed in and the `after=setup` flag is present, navigate to setup flow
+    useEffect(() => {
+        if (!isLoaded) return;
+        if (isSignedIn && after === 'setup') {
+            // clear search param then redirect
+            router.push('/setup-tenant');
+        }
+    }, [isLoaded, isSignedIn, after, router]);
+
     return (
         <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F0FDFA] px-6">
 
@@ -43,7 +59,7 @@ export default function SignUpPage() {
                                 headerTitle: 'text-2xl font-semibold text-[#0E1116] text-center w-full',
                                 headerSubtitle: 'text-[#6B7280] text-center w-full',
                                 socialButtonsBlockButton: 'border-[#E5E7EB] hover:bg-gray-50 rounded-xl transition-colors',
-                                socialButtonsBlockButtonText: 'font-medium text-[#0E1116]',
+                                socialButtonsBlockButtonText: 'font-medium text-[#0E1116] ',
                                 dividerLine: 'bg-[#E5E7EB]',
                                 dividerText: 'text-[#9CA3AF]',
                                 formFieldLabel: 'text-[#374151] font-medium mb-1.5',

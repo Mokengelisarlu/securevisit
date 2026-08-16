@@ -8,13 +8,14 @@ export async function POST(
   try {
     const { slug } = await params;
     const body = await request.json();
-    const { diviceId } = body;
+    // Accept either new `deviceId` or legacy `diviceId` key from older clients
+    const deviceId = body.deviceId || body.diviceId;
 
-    if (!diviceId) {
-      return NextResponse.json({ ok: false, error: "Missing diviceId" }, { status: 400 });
+    if (!deviceId) {
+      return NextResponse.json({ ok: false, error: "Missing deviceId" }, { status: 400 });
     }
 
-    const result = await generatePairingCode(slug, diviceId);
+    const result = await generatePairingCode(slug, deviceId);
 
     return NextResponse.json({
       ok: true,

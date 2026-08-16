@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import Image from 'next/image';
 import { CreateTenantForm } from "@/features/tenants/forms/createTenant.form";
 import { getTenantUrl } from "@/lib/subdomain-utils";
 
@@ -18,9 +18,8 @@ export default function CreateTenantPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F6F8] node-pattern px-6 py-12">
-      {/* Grain overlay */}
-      <div className="grain-overlay" />
+    <main className="min-h-screen relative bg-[#f8fafc] overflow-hidden flex items-center justify-center px-6 py-12">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(13,189,181,0.16),_transparent_25%),radial-gradient(circle_at_top_right,_rgba(15,23,42,0.10),_transparent_20%)]" />
 
       {/* Centered Content Stack */}
       <div className="relative z-10 w-full max-w-[520px] flex flex-col items-center">
@@ -29,7 +28,9 @@ export default function CreateTenantPage() {
           href="/"
           className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity"
         >
-          <Shield className="w-8 h-8 text-[#0DBDB5]" />
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+            <Image src="/icon-96x96.png" alt="SecureVisit" width={36} height={36} className="object-contain" />
+          </div>
           <span
             className="font-semibold text-2xl text-[#0E1116] tracking-tight"
             style={{ fontFamily: 'Sora, sans-serif' }}
@@ -70,6 +71,6 @@ export default function CreateTenantPage() {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

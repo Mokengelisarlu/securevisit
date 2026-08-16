@@ -4,6 +4,7 @@ import { useSignIn } from "@clerk/nextjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from 'next/image';
 import {
     ArrowLeft,
     Mail,
@@ -71,10 +72,8 @@ export default function SignInPage() {
     }
 
     return (
-        <main className="h-screen w-full bg-slate-950 flex flex-col lg:flex-row relative overflow-hidden">
-            {/* Background accents */}
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-teal-600/5 blur-[120px] rounded-full" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/5 blur-[120px] rounded-full" />
+        <main className="min-h-screen relative bg-[#f8fafc] overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(13,189,181,0.16),_transparent_25%),radial-gradient(circle_at_top_right,_rgba(15,23,42,0.10),_transparent_20%)]" />
 
             {/* Floating Back Button */}
             <Link
@@ -89,8 +88,8 @@ export default function SignInPage() {
             <div className="hidden lg:flex flex-col justify-center items-center lg:w-[45%] p-12 lg:p-24 relative z-10 border-r border-white/5 bg-white/[0.01]">
                 <div className="max-w-sm w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                     <div className="flex flex-col items-center lg:items-start gap-4">
-                        <div className="w-16 h-16 bg-gradient-to-br from-teal-600 to-teal-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-teal-500/20 mb-4 items-center">
-                            <span className="text-white font-black text-4xl">V</span>
+                        <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-2xl shadow-teal-500/20 mb-4 items-center bg-white">
+                            <Image src="/icon-96x96.png" alt="SecureVisit" width={48} height={48} className="object-contain" />
                         </div>
                         <h1 className="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tighter">
                             Secure<span className="text-teal-500">Visit</span>.

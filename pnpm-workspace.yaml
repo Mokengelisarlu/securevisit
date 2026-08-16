@@ -6,4 +6,8 @@ packages:
   - 'lib/**'
   - 'components/**'
   - 'mobile-app/**'
-
+allowBuilds:
+  '@clerk/shared': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

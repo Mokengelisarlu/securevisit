@@ -216,7 +216,7 @@ export const devices = pgTable(
   pairingCodeExpiresAt: timestamp("pairing_code_expires_at"),
   deviceToken: text("device_token"), // Secret token stored on device after pairing
   /** Stable per-physical device identifier coming from the mobile app. */
-  diviceId: text("divice_id"),
+  deviceId: text("device_id"),
   // Ensure the same physical device doesn't create multiple rows per tenant.
   // (Composite unique is added via table config below; keeping column here.)
 
@@ -227,7 +227,7 @@ export const devices = pgTable(
   createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [
-    unique("devices_divice_id_unique").on(table.diviceId),
+    unique("devices_device_id_unique").on(table.deviceId),
   ]
 );
 

@@ -83,6 +83,31 @@ export interface OnSiteVisitor extends Visit {
   visitor: Visitor;
 }
 
+export interface RecentActivity {
+  id: string;
+  visitorName: string;
+  hostName: string;
+  type: 'CHECK_IN' | 'CHECK_OUT';
+  time: string;
+  visitorPhotoUrl?: string | null;
+}
+
+export interface DashboardKpiStats {
+  arrivedToday: number;
+  onSite: number;
+  departedToday: number;
+  monthlyVisits: number;
+  weeklyAverage: number;
+  weeklyTrend: { day: string; count: number }[];
+  vehiclesOnSite: number;
+  visitsToday: number;
+  recentActivities: RecentActivity[];
+}
+
+export interface DashboardData extends DashboardKpiStats {
+  onSiteVisitors: OnSiteVisitor[];
+}
+
 export interface UploadResponse {
   url: string;
   size: number;

@@ -1,95 +1,58 @@
-'use client';
-
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Toaster } from '@/components/ui/sonner';
-
-// Cloned Sections
-import Navigation from '@/features/landing/sections/Navigation';
-import HeroSection from '@/features/landing/sections/HeroSection';
-import FeaturesSection from '@/features/landing/sections/FeaturesSection';
-import HowItWorksSection from '@/features/landing/sections/HowItWorksSection';
-import SecuritySection from '@/features/landing/sections/SecuritySection';
-import IntegrationsSection from '@/features/landing/sections/IntegrationsSection';
-import UseCasesSection from '@/features/landing/sections/UseCasesSection';
-import TestimonialSection from '@/features/landing/sections/TestimonialSection';
-import AccountCTASection from '@/features/landing/sections/AccountCTASection';
-import ContactSection from '@/features/landing/sections/ContactSection';
-import Footer from '@/features/landing/sections/Footer';
-
-// Register GSAP plugins
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+﻿import Image from 'next/image';
+import Link from 'next/link';
 
 export default function HomePage() {
-  const mainRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Wait for all sections to mount before setting up global snap
-    const timer = setTimeout(() => {
-      const pinned = ScrollTrigger.getAll()
-        .filter(st => st.vars.pin)
-        .sort((a, b) => a.start - b.start);
-
-      const maxScroll = ScrollTrigger.maxScroll(window);
-      if (!maxScroll || pinned.length === 0) return;
-
-      const pinnedRanges = pinned.map(st => ({
-        start: st.start / maxScroll,
-        end: (st.end ?? st.start) / maxScroll,
-        center: (st.start + ((st.end ?? st.start) - st.start) * 0.5) / maxScroll,
-      }));
-
-      ScrollTrigger.create({
-        snap: {
-          snapTo: (value: number) => {
-            const inPinned = pinnedRanges.some(
-              r => value >= r.start - 0.02 && value <= r.end + 0.02
-            );
-            if (!inPinned) return value;
-
-            const target = pinnedRanges.reduce(
-              (closest, r) =>
-                Math.abs(r.center - value) < Math.abs(closest - value)
-                  ? r.center
-                  : closest,
-              pinnedRanges[0]?.center ?? 0
-            );
-            return target;
-          },
-          duration: { min: 0.15, max: 0.35 },
-          delay: 0,
-          ease: 'power2.out',
-        },
-      });
-    }, 500);
-
-    return () => {
-      clearTimeout(timer);
-      ScrollTrigger.getAll().forEach(st => st.kill());
-    };
-  }, []);
-
   return (
-    <div ref={mainRef} className="relative">
-      {/* Grain overlay */}
-      <div className="grain-overlay" />
+    <main className="relative h-screen min-h-screen overflow-hidden bg-[#f8fafc] text-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(13,189,181,0.16),_transparent_25%),radial-gradient(circle_at_top_right,_rgba(15,23,42,0.10),_transparent_20%)]" />
+      <div className="relative z-10 mx-auto flex h-full max-w-[1600px] flex-col px-6 py-6 lg:px-12">
+        <header className="flex items-center justify-between">
+          <div className="flex items-center gap-3 px-4 py-2">
+            <Image src="/icon-96x96.png" alt="SecureVisit logo" width={36} height={36} className="rounded-xl object-contain" />
+            <div className="leading-tight">
+              <p className="font-bold  text-slate-950">SecureVisit</p>
+            </div>
+          </div>
+        </header>
 
-      {/* Toast notifications */}
-      <Toaster position="top-center" />
+        <section className="mt-8 grid flex-1 grid-cols-1 items-center gap-12 overflow-hidden lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="flex h-full min-h-[calc(100vh-96px)] flex-col justify-center gap-8">
+            <div className="max-w-2xl space-y-6">
+              <h1 className=" font-semibold leading-[0.95] tracking-[-0.03em] text-slate-950 sm:text-2xl lg:text-[3rem]">
+                Votre plateforme de gestion des visiteurs.
+              </h1>
 
-      {/* Navigation */}
-      <Navigation />
+              <p className="max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
+                Gérez les entrées, les sorties et les rendez-vous de vos visiteurs en toute facilité.
+              </p>
+            </div>
 
-      {/* Main content */}
-      <main className="relative">
-        <HeroSection className="z-10" />
-      </main>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/sign-up?after=setup"
+                className="inline-flex items-center justify-center rounded-full bg-[#0DBDB5] px-8 py-4 text-base font-semibold text-white shadow-[0_24px_64px_-32px_rgba(13,189,181,0.9)] transition hover:bg-[#0ab7aa]"
+              >
+                Créer un compte
+              </Link>
+            </div>
+          </div>
 
-      {/* Footer */}
-      <Footer />
-    </div>
-  );
+          <div className="relative flex h-full min-h-[calc(100vh-96px)] items-center justify-center">
+            <div className="absolute -left-8 top-14 h-40 w-40 rounded-full bg-[#0DBDB5]/10 blur-3xl" />
+            <div className="absolute bottom-10 right-8 h-44 w-44 rounded-full bg-slate-900/5 blur-3xl" />
+            <div className="relative h-full w-full max-w-4xl overflow-hidden rounded-[40px] border border-slate-200 bg-white shadow-[0_40px_90px_-40px_rgba(15,23,42,0.25)] dashboard-loop">
+              <Image
+                src="/dashboard.png"
+                alt="Tableau de bord SecureVisit"
+                width={1600}
+                height={1000}
+                className="w-full h-auto object-contain"
+                priority
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  )
 }

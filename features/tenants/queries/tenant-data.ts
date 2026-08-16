@@ -64,7 +64,7 @@ export async function pingDevice(tenantSlug: string, deviceToken: string) {
 /**
  * [PUBLIC] Generate a pairing code for a new kiosk
  */
-export async function generatePairingCode(tenantSlug: string, diviceId: string) {
+export async function generatePairingCode(tenantSlug: string, deviceId: string) {
   const db = await getTenantDbBySlug(tenantSlug);
 
   // Generate a 6-character uppercase code
@@ -73,7 +73,7 @@ export async function generatePairingCode(tenantSlug: string, diviceId: string) 
 
   // Idempotency: reuse existing device row for the same physical device.
   const existingDevice = await db.query.devices.findFirst({
-    where: eq(devices.diviceId, diviceId),
+    where: eq(devices.deviceId, deviceId),
   });
 
   if (existingDevice) {
@@ -93,7 +93,7 @@ export async function generatePairingCode(tenantSlug: string, diviceId: string) 
   }
 
   const [device] = await db.insert(devices).values({
-    diviceId,
+    deviceId,
     pairingCode,
     pairingCodeExpiresAt: expiresAt,
     isPaired: 0,
@@ -165,7 +165,8 @@ export async function generateReconnectPairingCode(tenantSlug: string, deviceId:
 export async function checkPairingStatus(tenantSlug: string, deviceId: string) {
   const db = await getTenantDbBySlug(tenantSlug);
   const device = await db.query.devices.findFirst({
-    where: eq(devices.id, deviceId),
+    // Support checking by either the DB row id or the stable physical device id
+    where: or(eq(devices.id, deviceId), eq(devices.deviceId, deviceId)),
   });
 
   if (device?.isPaired === 1 && device.deviceToken) {
@@ -1233,10 +1234,7 @@ export async function searchPublicVisitors(
   });
 }
 
-export async function getDashboardStats(tenantSlug: string) {
-  await verifyTenantOwnership(tenantSlug);
-  const db = await getTenantDbBySlug(tenantSlug);
-
+async function computeDashboardStats(db: any) {
   const now = new Date();
   const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
@@ -1305,13 +1303,48 @@ export async function getDashboardStats(tenantSlug: string) {
     weeklyAverage: weeklyAverage,
     weeklyTrend: weeklyTrend,
     vehiclesOnSite: vehiclesOnSite.length,
+    visitsToday: arrivedToday.length + departedToday.length,
     recentActivities: recentActivities.map((v: any) => ({
       id: v.id,
       visitorName: `${v.visitor.firstName} ${v.visitor.lastName}`,
       hostName: v.host?.firstName ? `${v.host.firstName} ${v.host.lastName}` : "N/A",
       type: v.status === "IN" ? "CHECK_IN" : "CHECK_OUT",
       time: v.status === "IN" ? v.checkInAt : v.checkOutAt,
+      visitorPhotoUrl: v.visitorPhotoUrl || v.visitor?.photoUrl || null,
     }))
+  };
+}
+
+/**
+ * [ADMIN] Dashboard stats for the tenant dashboard
+ */
+export async function getDashboardStats(tenantSlug: string) {
+  await verifyTenantOwnership(tenantSlug);
+  const db = await getTenantDbBySlug(tenantSlug);
+  return await computeDashboardStats(db);
+}
+
+/**
+ * [PUBLIC/SECURE] Kiosk mini dashboard — KPI stats plus the visitors
+ * currently on-site. Requires a valid paired device token.
+ */
+export async function getPublicDashboard(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const stats = await computeDashboardStats(db);
+  const onSiteVisitors = await db.query.visits.findMany({
+    where: eq(visits.status, "IN"),
+    with: {
+      visitor: true,
+    },
+    orderBy: [desc(visits.checkInAt)],
+    limit: 10,
+  });
+
+  return {
+    ...stats,
+    onSiteVisitors,
   };
 }
 

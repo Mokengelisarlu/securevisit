@@ -49,6 +49,26 @@
     "kioskOffline": "Borne hors ligne",
     "poweredBy": "Propulsé par Mokengeli"
   },
+  "tabs": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "settings": "Paramètres"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Activité en direct",
+    "kpiOnSite": "Sur place",
+    "kpiCheckedIn": "Enregistrés",
+    "kpiCheckedOut": "Libérés",
+    "kpiToday": "Visites du jour",
+    "onSiteTitle": "Présents sur place",
+    "recentTitle": "Visites récentes",
+    "emptyOnSite": "Aucun visiteur présent",
+    "emptyRecent": "Aucune activité récente",
+    "host": "Hôte :",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ"
+  },
   "visitorSearch": {
     "title": "Qui vient visiter ?",
     "titleCheckOut": "Qui repart ?",

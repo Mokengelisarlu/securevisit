@@ -1,7 +1,6 @@
--- Adds stable device identifier column uniqueness per tenant DB
--- and ensures pairing is idempotent.
+-- Repair migration: ensure the devices table has device_id for all tenants.
+-- This fixes tenant DBs where the legacy column was missing or the previous migration did not create it.
 
--- Ensure the current device_id column exists, migrating legacy divice_id if needed.
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -19,8 +18,6 @@ BEGIN
   END IF;
 END $$;
 
--- Enforce tenant-scoped uniqueness for the stable physical device identifier.
--- (Tenant DB is isolated per tenant; no tenant_id column exists in this schema.)
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -39,4 +36,3 @@ BEGIN
     END IF;
   END IF;
 END $$;
-
