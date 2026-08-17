@@ -22,7 +22,7 @@ export default function KioskTabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="dashboard"
+        name="index"
         options={{
           title: t('tabs.home'),
           tabBarIcon: ({ color, size, focused }) => (
