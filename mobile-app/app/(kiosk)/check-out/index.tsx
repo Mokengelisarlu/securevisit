@@ -30,10 +30,12 @@ export default function CheckOutScreen() {
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const {
-    data: onSiteVisitors,
+    data: siteData,
     isLoading,
     error,
   } = useGetPublicOnSiteVisitors(deviceToken);
+
+  const onSiteVisitors = siteData?.visitors ?? [];
   const { checkoutVisit, isLoading: isCheckingOut } =
     useCheckoutPublicVisit(deviceToken);
 

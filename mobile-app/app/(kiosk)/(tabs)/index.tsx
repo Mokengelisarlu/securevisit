@@ -6,7 +6,6 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
 import { useGetPublicOnSiteVisitors, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
-import { useGetDashboard } from '@/src/hooks/useDashboard';
 import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
 import type { OnSiteVisitor } from '@/src/types/api';
 
@@ -31,8 +30,7 @@ export default function DashboardScreen() {
   const { setMode, resetState, setJustPaired } = useKiosk();
   const router = useRouter();
   const { data: business } = useGetPublicBusinessSettings(deviceToken);
-  const { data: onSiteVisitors, isLoading: isLoadingVisitors, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
-  const { data: dashboard, isLoading: isLoadingDashboard, refetch: refetchDashboard } = useGetDashboard(deviceToken);
+  const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
 
@@ -53,9 +51,11 @@ export default function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       refetch();
-      refetchDashboard();
-    }, [refetch, refetchDashboard])
+    }, [refetch])
   );
+
+  const onSiteVisitors = siteData?.visitors ?? [];
+  const stats = siteData?.stats ?? { onSite: 0, arrivedToday: 0, departedToday: 0 };
 
   const sortedVisitors = useMemo(() => {
     return [...onSiteVisitors].sort(
@@ -63,13 +63,11 @@ export default function DashboardScreen() {
     );
   }, [onSiteVisitors]);
 
-  const kpis = useMemo(() => {
-    return [
-      { label: 'On Site', value: dashboard?.onSite ?? 0 },
-      { label: 'Checked In Today', value: dashboard?.arrivedToday ?? 0 },
-      { label: 'Checked Out', value: dashboard?.departedToday ?? 0 },
-    ];
-  }, [dashboard]);
+  const kpis = [
+    { label: 'On Site', value: stats.onSite },
+    { label: 'Checked In Today', value: stats.arrivedToday },
+    { label: 'Checked Out', value: stats.departedToday },
+  ];
 
   function handleCheckIn() {
     setJustPaired(false);
@@ -127,7 +125,7 @@ export default function DashboardScreen() {
 
         {/* KPI Cards */}
         <View className="flex-row gap-3 px-6 mb-5">
-          {isLoadingDashboard ? (
+          {isLoading ? (
             <View className="flex-1 items-center py-6">
               <ActivityIndicator color="#0F766E" size="small" />
             </View>
@@ -146,7 +144,7 @@ export default function DashboardScreen() {
         {/* Currently In */}
         <Text className="text-lg font-black text-teal-900 mb-3 px-6">Currently In</Text>
 
-        {isLoadingVisitors ? (
+        {isLoading ? (
           <View className="items-center py-12">
             <ActivityIndicator color="#0F766E" size="large" />
           </View>
@@ -202,7 +200,7 @@ export default function DashboardScreen() {
         visible={selectedVisitor !== null}
         visitor={selectedVisitor}
         onClose={() => setSelectedVisitor(null)}
-        onCheckoutComplete={() => { refetch(); refetchDashboard(); }}
+        onCheckoutComplete={() => refetch()}
       />
     </ScreenWrapper>
   );

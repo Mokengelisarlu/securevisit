@@ -1121,7 +1121,8 @@ async function checkoutVisitInternal(tenantSlug: string, visitId: string) {
 export async function getPublicOnSiteVisitors(tenantSlug: string, deviceToken: string) {
   await verifyDeviceToken(tenantSlug, deviceToken);
   const db = await getTenantDbBySlug(tenantSlug);
-  return await db.query.visits.findMany({
+
+  const onSite = await db.query.visits.findMany({
     where: eq(visits.status, "IN"),
     with: {
       visitor: true,
@@ -1129,6 +1130,29 @@ export async function getPublicOnSiteVisitors(tenantSlug: string, deviceToken: s
     },
     orderBy: [desc(visits.checkInAt)],
   });
+
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkInAt), gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
+    columns: { id: true },
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkOutAt), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
+    columns: { id: true },
+  });
+
+  return {
+    visitors: onSite,
+    stats: {
+      onSite: onSite.length,
+      arrivedToday: arrivedToday.length,
+      departedToday: departedToday.length,
+    },
+  };
 }
 
 /**

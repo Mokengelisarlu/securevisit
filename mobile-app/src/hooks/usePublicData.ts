@@ -253,7 +253,7 @@ export function useGetPublicSettings(deviceToken: string | null, pollIntervalMs?
 }
 
 export function useGetPublicOnSiteVisitors(deviceToken: string | null) {
-  const [data, setData] = useState<OnSiteVisitor[]>([]);
+  const [data, setData] = useState<{ visitors: OnSiteVisitor[]; stats: { onSite: number; arrivedToday: number; departedToday: number } }>({ visitors: [], stats: { onSite: 0, arrivedToday: 0, departedToday: 0 } });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { tenantSlug, apiBaseUrl } = useApi();
