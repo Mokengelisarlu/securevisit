@@ -6,6 +6,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
 import { useGetPublicOnSiteVisitors, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
+import { useGetDashboard } from '@/src/hooks/useDashboard';
 import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
 import type { OnSiteVisitor } from '@/src/types/api';
 
@@ -24,23 +25,14 @@ function formatTime(dateStr?: string | null): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function isToday(dateStr: string): boolean {
-  const d = new Date(dateStr);
-  const now = new Date();
-  return (
-    d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate()
-  );
-}
-
 export default function DashboardScreen() {
   const { deviceToken } = useAuth();
   const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings } = useApi();
   const { setMode, resetState, setJustPaired } = useKiosk();
   const router = useRouter();
   const { data: business } = useGetPublicBusinessSettings(deviceToken);
-  const { data: onSiteVisitors, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+  const { data: onSiteVisitors, isLoading: isLoadingVisitors, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+  const { data: dashboard, isLoading: isLoadingDashboard, refetch: refetchDashboard } = useGetDashboard(deviceToken);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
 
@@ -61,7 +53,8 @@ export default function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [refetch])
+      refetchDashboard();
+    }, [refetch, refetchDashboard])
   );
 
   const sortedVisitors = useMemo(() => {
@@ -71,13 +64,12 @@ export default function DashboardScreen() {
   }, [onSiteVisitors]);
 
   const kpis = useMemo(() => {
-    const checkedInToday = onSiteVisitors.filter((v) => isToday(v.checkInAt)).length;
     return [
-      { label: 'On Site', value: onSiteVisitors.length },
-      { label: 'Checked In Today', value: checkedInToday },
-      { label: 'Checked Out', value: 0 },
+      { label: 'On Site', value: dashboard?.onSite ?? 0 },
+      { label: 'Checked In Today', value: dashboard?.arrivedToday ?? 0 },
+      { label: 'Checked Out', value: dashboard?.departedToday ?? 0 },
     ];
-  }, [onSiteVisitors]);
+  }, [dashboard]);
 
   function handleCheckIn() {
     setJustPaired(false);
@@ -135,7 +127,7 @@ export default function DashboardScreen() {
 
         {/* KPI Cards */}
         <View className="flex-row gap-3 px-6 mb-5">
-          {isLoading ? (
+          {isLoadingDashboard ? (
             <View className="flex-1 items-center py-6">
               <ActivityIndicator color="#0F766E" size="small" />
             </View>
@@ -154,7 +146,7 @@ export default function DashboardScreen() {
         {/* Currently In */}
         <Text className="text-lg font-black text-teal-900 mb-3 px-6">Currently In</Text>
 
-        {isLoading ? (
+        {isLoadingVisitors ? (
           <View className="items-center py-12">
             <ActivityIndicator color="#0F766E" size="large" />
           </View>
@@ -210,7 +202,7 @@ export default function DashboardScreen() {
         visible={selectedVisitor !== null}
         visitor={selectedVisitor}
         onClose={() => setSelectedVisitor(null)}
-        onCheckoutComplete={() => refetch()}
+        onCheckoutComplete={() => { refetch(); refetchDashboard(); }}
       />
     </ScreenWrapper>
   );
