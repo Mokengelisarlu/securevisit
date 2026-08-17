@@ -408,7 +408,10 @@ export function useGetPublicRecentVisits(deviceToken: string | null) {
   const { tenantSlug, apiBaseUrl } = useApi();
 
   useEffect(() => {
-    if (!deviceToken) return;
+    if (!deviceToken) {
+      setIsLoading(false);
+      return;
+    }
 
     let cancelled = false;
 

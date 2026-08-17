@@ -10,7 +10,10 @@ export function useGetDashboard(deviceToken: string | null, pollIntervalMs?: num
   const { tenantSlug, apiBaseUrl } = useApi();
 
   const fetchDashboard = useCallback(async () => {
-    if (!deviceToken) return;
+    if (!deviceToken) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const response = await apiCall(

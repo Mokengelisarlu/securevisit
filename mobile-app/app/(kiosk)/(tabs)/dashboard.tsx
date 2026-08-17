@@ -68,7 +68,7 @@ export default function DashboardScreen() {
   const { apiBaseUrl } = useApi();
   const router = useRouter();
   const { data, isLoading, error, refetch } = useGetDashboard(deviceToken, 20000);
-  const { data: recentVisits, isLoading: isLoadingVisits } = useGetPublicRecentVisits(deviceToken);
+  const { data: recentVisits, isLoading: isLoadingVisits, error: visitsError } = useGetPublicRecentVisits(deviceToken);
 
   useFocusEffect(
     useCallback(() => {
@@ -191,6 +191,10 @@ export default function DashboardScreen() {
                 <View className="items-center py-8">
                   <ActivityIndicator color="#0F766E" size="small" />
                 </View>
+              ) : visitsError ? (
+                <Card className="items-center py-6">
+                  <Text className="text-red-500 text-center text-sm">{visitsError}</Text>
+                </Card>
               ) : recentVisits && recentVisits.length > 0 ? (
                 recentVisits.map((visit: VisitHistoryEntry) => (
                   <Pressable
