@@ -4,6 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
+import { useGetDashboard } from '@/src/hooks/useDashboard';
 import { useGetPublicOnSiteVisitors } from '@/src/hooks/usePublicData';
 import type { OnSiteVisitor } from '@/src/types/api';
 
@@ -26,12 +27,14 @@ export default function DashboardScreen() {
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const router = useRouter();
-  const { data: onSiteVisitors, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+  const { data: dashboard, isLoading: isLoadingDashboard, refetch: refetchDashboard } = useGetDashboard(deviceToken);
+  const { data: onSiteVisitors, isLoading: isLoadingVisitors, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
 
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [refetch])
+      refetchDashboard();
+    }, [refetch, refetchDashboard])
   );
 
   const topVisitors = useMemo(() => {
@@ -39,6 +42,14 @@ export default function DashboardScreen() {
       .sort((a, b) => new Date(b.checkInAt).getTime() - new Date(a.checkInAt).getTime())
       .slice(0, 5);
   }, [onSiteVisitors]);
+
+  const kpis = dashboard
+    ? [
+        { label: 'On Site', value: dashboard.onSite },
+        { label: 'Checked In', value: dashboard.arrivedToday },
+        { label: 'Checked Out', value: dashboard.departedToday },
+      ]
+    : [];
 
   return (
     <ScreenWrapper padX={false}>
@@ -66,9 +77,28 @@ export default function DashboardScreen() {
           </View>
         ) : null}
 
+        {/* KPI Cards */}
+        <View className="flex-row gap-3 mb-6">
+          {isLoadingDashboard ? (
+            <View className="flex-1 items-center py-6">
+              <ActivityIndicator color="#0F766E" size="small" />
+            </View>
+          ) : kpis.length > 0 ? (
+            kpis.map((kpi, idx) => (
+              <View key={idx} className="flex-1 bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+                <Text className="text-3xl font-black text-teal-700">{kpi.value}</Text>
+                <Text className="text-xs font-bold text-teal-600 uppercase tracking-wide mt-1">
+                  {kpi.label}
+                </Text>
+              </View>
+            ))
+          ) : null}
+        </View>
+
+        {/* Currently In */}
         <Text className="text-lg font-black text-teal-900 mb-3">Currently In</Text>
 
-        {isLoading ? (
+        {isLoadingVisitors ? (
           <View className="items-center py-12">
             <ActivityIndicator color="#0F766E" size="large" />
           </View>
