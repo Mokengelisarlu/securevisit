@@ -79,6 +79,61 @@ export interface Visit {
   checkOutAt?: string;
 }
 
+export interface VisitorDetail extends Visitor {
+  isOnSite: boolean;
+}
+
+export interface VisitDetail {
+  id: string;
+  visitNumber: string | null;
+  visitorId: string;
+  hostId: string | null;
+  departmentId: string | null;
+  serviceId: string | null;
+  vehicleId: string | null;
+  passengerCount: number | null;
+  visitType: string;
+  visitDate: string;
+  purpose: string | null;
+  checkInAt: string | null;
+  checkOutAt: string | null;
+  durationMinutes: number | null;
+  status: 'IN' | 'OUT' | 'CANCELLED' | 'SCHEDULED';
+  visitorPhotoUrl: string | null;
+  vehiclePhotoUrl: string | null;
+  visitor: Visitor;
+  host: Host | null;
+  department: Department | null;
+  service: Service | null;
+  vehicle: {
+    id: string;
+    plateNumber: string;
+    type: string;
+    brand: string | null;
+    color: string | null;
+  } | null;
+}
+
+export interface VisitHistoryEntry {
+  id: string;
+  visitNumber: string | null;
+  visitDate: string;
+  purpose: string | null;
+  checkInAt: string | null;
+  checkOutAt: string | null;
+  durationMinutes: number | null;
+  status: 'IN' | 'OUT' | 'CANCELLED' | 'SCHEDULED';
+  visitor: Visitor;
+  host: Host | null;
+  department: Department | null;
+  service: Service | null;
+  vehicle: {
+    id: string;
+    plateNumber: string;
+    type: string;
+  } | null;
+}
+
 export interface OnSiteVisitor extends Visit {
   visitor: Visitor;
 }

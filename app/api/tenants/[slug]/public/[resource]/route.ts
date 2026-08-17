@@ -11,6 +11,11 @@ import {
   searchPublicVisitors,
   createPublicVisit,
   checkoutPublicVisit,
+  getPublicVisitors,
+  getPublicVisitorById,
+  getPublicVisitById,
+  getPublicVisitHistory,
+  getPublicRecentVisits,
 } from "@/features/tenants/queries/tenant-data";
 
 function getBearerToken(request: NextRequest) {
@@ -54,6 +59,31 @@ export async function GET(
       case "search-visitors": {
         const query = url.searchParams.get("q") || "";
         return jsonResponse(await searchPublicVisitors(slug, deviceToken, query));
+      }
+      case "visitors":
+        return jsonResponse(await getPublicVisitors(slug, deviceToken));
+      case "visitor-detail": {
+        const visitorId = url.searchParams.get("id");
+        if (!visitorId) {
+          return jsonResponse({ error: "Missing id query parameter" }, 400);
+        }
+        return jsonResponse(await getPublicVisitorById(slug, deviceToken, visitorId));
+      }
+      case "visit-detail": {
+        const visitId = url.searchParams.get("id");
+        if (!visitId) {
+          return jsonResponse({ error: "Missing id query parameter" }, 400);
+        }
+        return jsonResponse(await getPublicVisitById(slug, deviceToken, visitId));
+      }
+      case "recent-visits":
+        return jsonResponse(await getPublicRecentVisits(slug, deviceToken));
+      case "visitor-history": {
+        const visitorId = url.searchParams.get("visitorId");
+        if (!visitorId) {
+          return jsonResponse({ error: "Missing visitorId query parameter" }, 400);
+        }
+        return jsonResponse(await getPublicVisitHistory(slug, deviceToken, visitorId));
       }
       default:
         return jsonResponse({ error: "Not found" }, 404);

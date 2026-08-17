@@ -1234,6 +1234,128 @@ export async function searchPublicVisitors(
   });
 }
 
+/**
+ * [PUBLIC/SECURE] Get all visitors with their type, ordered by createdAt desc
+ */
+export async function getPublicVisitors(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  return await db.query.visitors.findMany({
+    with: {
+      type: true,
+    },
+    orderBy: [desc(visitors.createdAt)],
+  });
+}
+
+/**
+ * [PUBLIC/SECURE] Get single visitor by ID with type, plus an isOnSite boolean
+ */
+export async function getPublicVisitorById(
+  tenantSlug: string,
+  deviceToken: string,
+  visitorId: string
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const visitor = await db.query.visitors.findFirst({
+    where: eq(visitors.id, visitorId),
+    with: {
+      type: true,
+    },
+  });
+
+  if (!visitor) {
+    throw new Error("Visitor not found");
+  }
+
+  const activeVisit = await db.query.visits.findFirst({
+    where: and(eq(visits.visitorId, visitorId), eq(visits.status, "IN")),
+  });
+
+  return {
+    ...visitor,
+    isOnSite: !!activeVisit,
+  };
+}
+
+/**
+ * [PUBLIC/SECURE] Get single visit by ID with visitor, host, department, service, vehicle
+ */
+export async function getPublicVisitById(
+  tenantSlug: string,
+  deviceToken: string,
+  visitId: string
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const visit = await db.query.visits.findFirst({
+    where: eq(visits.id, visitId),
+    with: {
+      visitor: {
+        with: {
+          type: true,
+        },
+      },
+      host: true,
+      department: true,
+      service: true,
+      vehicle: true,
+    },
+  });
+
+  if (!visit) {
+    throw new Error("Visit not found");
+  }
+
+  return visit;
+}
+
+/**
+ * [PUBLIC/SECURE] Get all visits for a specific visitor with relations, ordered by visitDate desc
+ */
+export async function getPublicVisitHistory(
+  tenantSlug: string,
+  deviceToken: string,
+  visitorId: string
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  return await db.query.visits.findMany({
+    where: eq(visits.visitorId, visitorId),
+    with: {
+      host: true,
+      department: true,
+      service: true,
+      vehicle: true,
+    },
+    orderBy: [desc(visits.visitDate)],
+  });
+}
+
+/**
+ * [PUBLIC/SECURE] Get recent visits across all visitors for dashboard
+ */
+export async function getPublicRecentVisits(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  return await db.query.visits.findMany({
+    limit: 20,
+    with: {
+      visitor: true,
+      host: true,
+      department: true,
+      service: true,
+    },
+    orderBy: [desc(visits.checkInAt)],
+  });
+}
+
 async function computeDashboardStats(db: any) {
   const now = new Date();
   const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());

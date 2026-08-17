@@ -1,12 +1,13 @@
 import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useCallback } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, Card } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useGetDashboard } from '@/src/hooks/useDashboard';
-import type { RecentActivity } from '@/src/types/api';
+import { useGetPublicRecentVisits } from '@/src/hooks/usePublicData';
+import type { VisitHistoryEntry } from '@/src/types/api';
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
   if (!url) return undefined;
@@ -23,11 +24,51 @@ function formatTime(dateStr?: string | null): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function getStatusBadgeClasses(status: string) {
+  switch (status) {
+    case 'IN':
+      return 'bg-teal-100';
+    case 'OUT':
+      return 'bg-slate-100';
+    case 'SCHEDULED':
+      return 'bg-blue-100';
+    case 'CANCELLED':
+      return 'bg-red-100';
+    default:
+      return 'bg-slate-100';
+  }
+}
+
+function getStatusTextClasses(status: string) {
+  switch (status) {
+    case 'IN':
+      return 'text-teal-700';
+    case 'OUT':
+      return 'text-slate-700';
+    case 'SCHEDULED':
+      return 'text-blue-700';
+    case 'CANCELLED':
+      return 'text-red-700';
+    default:
+      return 'text-slate-700';
+  }
+}
+
 export default function DashboardScreen() {
   const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
+  const router = useRouter();
   const { data, isLoading, error, refetch } = useGetDashboard(deviceToken, 20000);
+  const { data: recentVisits, isLoading: isLoadingVisits } = useGetPublicRecentVisits(deviceToken);
 
   useFocusEffect(
     useCallback(() => {
@@ -75,6 +116,7 @@ export default function DashboardScreen() {
           </View>
         ) : (
           <>
+            {/* KPI Cards */}
             <View className="flex-row gap-3 mb-6">
               {kpis.map((kpi, idx) => (
                 <View key={idx} className="flex-1 bg-white rounded-2xl p-4 shadow-sm">
@@ -86,15 +128,22 @@ export default function DashboardScreen() {
               ))}
             </View>
 
+            {/* On-Site Visitors */}
             <Text className="text-lg font-black text-teal-900 mb-3">
               {t('dashboard.onSiteTitle')}
             </Text>
             <View className="mb-6">
               {data && data.onSiteVisitors.length > 0 ? (
                 data.onSiteVisitors.map((v) => (
-                  <View
+                  <Pressable
                     key={v.id}
-                    className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4"
+                    onPress={() =>
+                      router.push({
+                        pathname: '/(kiosk)/visitor-detail',
+                        params: { visitorId: v.visitor.id },
+                      })
+                    }
+                    className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4 active:bg-teal-50 active:border-teal-400"
                   >
                     {v.visitor.photoUrl ? (
                       <Image
@@ -124,7 +173,7 @@ export default function DashboardScreen() {
                     <View className="bg-teal-100 rounded-full px-3 py-1">
                       <Text className="text-teal-700 text-xs font-bold">{t('checkOut.checkOutButton')}</Text>
                     </View>
-                  </View>
+                  </Pressable>
                 ))
               ) : (
                 <Card className="items-center py-6">
@@ -133,56 +182,59 @@ export default function DashboardScreen() {
               )}
             </View>
 
+            {/* Recent Visit History */}
             <Text className="text-lg font-black text-teal-900 mb-3">
-              {t('dashboard.recentTitle')}
+              {t('dashboard.recentVisitsTitle', 'Recent Visits')}
             </Text>
             <View>
-              {data && data.recentActivities.length > 0 ? (
-                data.recentActivities.map((a: RecentActivity) => (
-                  <View
-                    key={a.id}
-                    className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4"
+              {isLoadingVisits ? (
+                <View className="items-center py-8">
+                  <ActivityIndicator color="#0F766E" size="small" />
+                </View>
+              ) : recentVisits && recentVisits.length > 0 ? (
+                recentVisits.map((visit: VisitHistoryEntry) => (
+                  <Pressable
+                    key={visit.id}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/(kiosk)/visit-detail',
+                        params: { visitId: visit.id },
+                      })
+                    }
+                    className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 active:bg-teal-50 active:border-teal-400"
                   >
-                    {a.visitorPhotoUrl ? (
-                      <Image
-                        source={{ uri: photoSrc(a.visitorPhotoUrl, apiBaseUrl) }}
-                        className="w-12 h-12 rounded-full bg-slate-200"
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View className="w-12 h-12 rounded-full bg-teal-100 items-center justify-center">
-                        <Text className="text-teal-600 text-lg font-black">
-                          {a.visitorName.charAt(0)}
+                    <View className="flex-row items-center justify-between mb-2">
+                      <Text className="text-sm font-bold text-slate-900">
+                        {visit.visitor?.firstName} {visit.visitor?.lastName}
+                      </Text>
+                      <View className={`rounded-full px-3 py-1 ${getStatusBadgeClasses(visit.status)}`}>
+                        <Text className={`text-xs font-bold ${getStatusTextClasses(visit.status)}`}>
+                          {visit.status}
                         </Text>
                       </View>
-                    )}
-                    <View className="flex-1">
-                      <Text className="text-base font-bold text-slate-900">{a.visitorName}</Text>
-                      <Text className="text-sm text-slate-500">
-                        {a.hostName !== 'N/A' ? `${t('dashboard.host')} ${a.hostName}` : a.hostName}
-                      </Text>
                     </View>
-                    <View
-                      className={`rounded-full px-3 py-1 ${
-                        a.type === 'CHECK_IN' ? 'bg-teal-100' : 'bg-orange-100'
-                      }`}
-                    >
-                      <Text
-                        className={`text-xs font-bold ${
-                          a.type === 'CHECK_IN' ? 'text-teal-700' : 'text-orange-700'
-                        }`}
-                      >
-                        {a.type === 'CHECK_IN' ? t('dashboard.checkIn') : t('dashboard.checkOut')}
+                    <View className="flex-row items-center gap-3">
+                      <Text className="text-xs text-slate-500">
+                        {formatDate(visit.visitDate)}
                       </Text>
+                      {visit.host ? (
+                        <Text className="text-xs text-slate-500">
+                          {visit.host.firstName} {visit.host.lastName}
+                        </Text>
+                      ) : null}
                     </View>
-                    <Text className="text-xs text-slate-500 w-16 text-right">
-                      {formatTime(a.time)}
-                    </Text>
-                  </View>
+                    {visit.purpose ? (
+                      <Text className="text-xs text-slate-400 mt-1" numberOfLines={1}>
+                        {visit.purpose}
+                      </Text>
+                    ) : null}
+                  </Pressable>
                 ))
               ) : (
                 <Card className="items-center py-6">
-                  <Text className="text-slate-500 text-center">{t('dashboard.emptyRecent')}</Text>
+                  <Text className="text-slate-500 text-center">
+                    {t('dashboard.emptyRecent', 'No recent visits')}
+                  </Text>
                 </Card>
               )}
             </View>

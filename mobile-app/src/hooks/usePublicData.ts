@@ -10,6 +10,9 @@ import {
   BusinessSettings,
   KioskSettings,
   OnSiteVisitor,
+  VisitorDetail,
+  VisitDetail,
+  VisitHistoryEntry,
 } from '@/src/types/api';
 
 interface UseFetchOptions {
@@ -306,6 +309,127 @@ export function useGetPublicBusinessSettings(deviceToken: string | null) {
     }
 
     fetch();
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+  return { data, isLoading, error };
+}
+
+export function useGetPublicVisitorDetail(deviceToken: string | null) {
+  const [data, setData] = useState<VisitorDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const fetchVisitor = useCallback(
+    async (visitorId: string) => {
+      if (!deviceToken) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visitor-detail?id=${visitorId}`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        setData(response);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { data, isLoading, error, fetchVisitor };
+}
+
+export function useGetPublicVisitDetail(deviceToken: string | null) {
+  const [data, setData] = useState<VisitDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const fetchVisit = useCallback(
+    async (visitId: string) => {
+      if (!deviceToken) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visit-detail?id=${visitId}`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        setData(response);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { data, isLoading, error, fetchVisit };
+}
+
+export function useGetPublicVisitHistory(deviceToken: string | null) {
+  const [data, setData] = useState<VisitHistoryEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const fetchHistory = useCallback(
+    async (visitorId: string) => {
+      if (!deviceToken) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visit-history?visitorId=${visitorId}`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        setData(response);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { data, isLoading, error, fetchHistory };
+}
+
+export function useGetPublicRecentVisits(deviceToken: string | null) {
+  const [data, setData] = useState<VisitHistoryEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  useEffect(() => {
+    if (!deviceToken) return;
+
+    let cancelled = false;
+
+    async function fetch() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/recent-visits`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        if (!cancelled) setData(response);
+      } catch (err: any) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    fetch();
+    return () => { cancelled = true; };
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
   return { data, isLoading, error };
