@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, ActivityIndicator, Image, Pressable, FlatList } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { ScreenWrapper } from '@/src/components/ui';
@@ -160,13 +160,10 @@ export default function DashboardScreen() {
           </View>
         ) : sortedVisitors.length > 0 ? (
           <View className="px-6" style={{ maxHeight: 400 }}>
-            <FlatList
-              data={sortedVisitors}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={true}
-              nestedScrollEnabled
-              renderItem={({ item: v }: { item: OnSiteVisitor }) => (
+            <ScrollView nestedScrollEnabled showsVerticalScrollIndicator>
+              {sortedVisitors.map((v: OnSiteVisitor) => (
                 <Pressable
+                  key={v.id}
                   onPress={() => setSelectedVisitor(v)}
                   className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4 active:bg-teal-50 active:border-teal-400"
                 >
@@ -199,8 +196,8 @@ export default function DashboardScreen() {
                     <Text className="text-teal-700 text-xs font-bold">IN</Text>
                   </View>
                 </Pressable>
-              )}
-            />
+              ))}
+            </ScrollView>
           </View>
         ) : (
           <View className="bg-white rounded-2xl p-6 items-center border border-slate-200 mx-6">
