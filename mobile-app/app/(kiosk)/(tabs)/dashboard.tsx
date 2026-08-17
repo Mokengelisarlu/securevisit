@@ -1,10 +1,11 @@
 import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
-import { useCallback, useMemo } from 'react';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useGetPublicOnSiteVisitors } from '@/src/hooks/usePublicData';
+import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
 import type { OnSiteVisitor } from '@/src/types/api';
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
@@ -35,8 +36,9 @@ function isToday(dateStr: string): boolean {
 export default function DashboardScreen() {
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
-  const router = useRouter();
   const { data: onSiteVisitors, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+
+  const [selectedVisitorId, setSelectedVisitorId] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -116,12 +118,7 @@ export default function DashboardScreen() {
           topVisitors.map((v: OnSiteVisitor) => (
             <Pressable
               key={v.id}
-              onPress={() =>
-                router.push({
-                  pathname: '/(kiosk)/visitor-detail',
-                  params: { visitorId: v.visitor.id },
-                })
-              }
+              onPress={() => setSelectedVisitorId(v.visitor.id)}
               className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4 active:bg-teal-50 active:border-teal-400"
             >
               {v.visitor.photoUrl ? (
@@ -160,6 +157,12 @@ export default function DashboardScreen() {
           </View>
         )}
       </ScrollView>
+
+      <VisitorBottomSheet
+        visible={selectedVisitorId !== null}
+        visitorId={selectedVisitorId}
+        onClose={() => setSelectedVisitorId(null)}
+      />
     </ScreenWrapper>
   );
 }
