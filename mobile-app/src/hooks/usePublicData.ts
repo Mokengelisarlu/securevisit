@@ -258,29 +258,32 @@ export function useGetPublicOnSiteVisitors(deviceToken: string | null) {
   const [error, setError] = useState<string | null>(null);
   const { tenantSlug, apiBaseUrl } = useApi();
 
-  useEffect(() => {
-    if (!deviceToken) return;
-
-    async function fetch() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await apiCall(
-          `/api/tenants/${tenantSlug}/public/on-site-visitors`,
-          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
-        );
-        setData(response);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
+  const fetchVisitors = useCallback(async () => {
+    if (!deviceToken) {
+      setIsLoading(false);
+      return;
     }
 
-    fetch();
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await apiCall(
+        `/api/tenants/${tenantSlug}/public/on-site-visitors`,
+        { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+      );
+      setData(response);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
-  return { data, isLoading, error };
+  useEffect(() => {
+    fetchVisitors();
+  }, [fetchVisitors]);
+
+  return { data, isLoading, error, refetch: fetchVisitors };
 }
 
 export function useGetPublicBusinessSettings(deviceToken: string | null) {
