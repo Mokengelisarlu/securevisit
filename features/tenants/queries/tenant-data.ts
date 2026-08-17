@@ -1454,19 +1454,26 @@ export async function getPublicDashboard(tenantSlug: string, deviceToken: string
   await verifyDeviceToken(tenantSlug, deviceToken);
   const db = await getTenantDbBySlug(tenantSlug);
 
-  const stats = await computeDashboardStats(db);
-  const onSiteVisitors = await db.query.visits.findMany({
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkInAt), gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(eq(visits.status, "OUT"), isNotNull(visits.checkOutAt), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
+  });
+
+  const onSite = await db.query.visits.findMany({
     where: eq(visits.status, "IN"),
-    with: {
-      visitor: true,
-    },
-    orderBy: [desc(visits.checkInAt)],
-    limit: 10,
   });
 
   return {
-    ...stats,
-    onSiteVisitors,
+    arrivedToday: arrivedToday.length,
+    departedToday: departedToday.length,
+    onSite: onSite.length,
   };
 }
 
