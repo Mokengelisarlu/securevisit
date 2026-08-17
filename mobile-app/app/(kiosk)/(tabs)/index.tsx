@@ -55,10 +55,6 @@ export default function MainMenuScreen() {
     setJustPaired(false);
   }
 
-  function handleSettings() {
-    router.navigate('/(kiosk)/settings');
-  }
-
   return (
     <View
       className="flex-1 bg-teal-50 px-6"
@@ -99,7 +95,7 @@ export default function MainMenuScreen() {
                 resizeMode="contain"
               />
             )}
-            <Text className="text-4xl font-black text-teal-900 text-center" style={{ maxWidth: '90%' }}>
+            <Text className="text-2xl font-black text-teal-900 text-center" numberOfLines={1}>
               {tenantName}
             </Text>
           </View>
@@ -139,15 +135,6 @@ export default function MainMenuScreen() {
         </View>
 
         <View className="flex-1 justify-center items-center gap-2" style={{ flex: 1 }}>
-          <Pressable
-            onPress={handleSettings}
-            className="active:opacity-60"
-          >
-            <Text className="text-teal-600 text-base font-semibold underline">
-              {t('mainMenu.settings')}
-            </Text>
-          </Pressable>
-
           <View className="flex-row items-center justify-center gap-1.5">
             <View className="w-1.5 h-1.5 rounded-full bg-teal-500" />
             <Text className="text-xs text-teal-600 text-center">
