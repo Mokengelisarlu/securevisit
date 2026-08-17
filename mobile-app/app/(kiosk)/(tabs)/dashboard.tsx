@@ -4,7 +4,6 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
-import { useGetDashboard } from '@/src/hooks/useDashboard';
 import { useGetPublicOnSiteVisitors } from '@/src/hooks/usePublicData';
 import type { OnSiteVisitor } from '@/src/types/api';
 
@@ -23,18 +22,26 @@ function formatTime(dateStr?: string | null): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function isToday(dateStr: string): boolean {
+  const d = new Date(dateStr);
+  const now = new Date();
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
+}
+
 export default function DashboardScreen() {
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const router = useRouter();
-  const { data: dashboard, isLoading: isLoadingDashboard, refetch: refetchDashboard } = useGetDashboard(deviceToken);
-  const { data: onSiteVisitors, isLoading: isLoadingVisitors, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+  const { data: onSiteVisitors, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
 
   useFocusEffect(
     useCallback(() => {
       refetch();
-      refetchDashboard();
-    }, [refetch, refetchDashboard])
+    }, [refetch])
   );
 
   const topVisitors = useMemo(() => {
@@ -43,13 +50,14 @@ export default function DashboardScreen() {
       .slice(0, 5);
   }, [onSiteVisitors]);
 
-  const kpis = dashboard
-    ? [
-        { label: 'On Site', value: dashboard.onSite },
-        { label: 'Checked In', value: dashboard.arrivedToday },
-        { label: 'Checked Out', value: dashboard.departedToday },
-      ]
-    : [];
+  const kpis = useMemo(() => {
+    const checkedInToday = onSiteVisitors.filter((v) => isToday(v.checkInAt)).length;
+    return [
+      { label: 'On Site', value: onSiteVisitors.length },
+      { label: 'Checked In Today', value: checkedInToday },
+      { label: 'Checked Out', value: 0 },
+    ];
+  }, [onSiteVisitors]);
 
   return (
     <ScreenWrapper padX={false}>
@@ -79,11 +87,11 @@ export default function DashboardScreen() {
 
         {/* KPI Cards */}
         <View className="flex-row gap-3 mb-6">
-          {isLoadingDashboard ? (
+          {isLoading ? (
             <View className="flex-1 items-center py-6">
               <ActivityIndicator color="#0F766E" size="small" />
             </View>
-          ) : kpis.length > 0 ? (
+          ) : (
             kpis.map((kpi, idx) => (
               <View key={idx} className="flex-1 bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
                 <Text className="text-3xl font-black text-teal-700">{kpi.value}</Text>
@@ -92,13 +100,13 @@ export default function DashboardScreen() {
                 </Text>
               </View>
             ))
-          ) : null}
+          )}
         </View>
 
         {/* Currently In */}
         <Text className="text-lg font-black text-teal-900 mb-3">Currently In</Text>
 
-        {isLoadingVisitors ? (
+        {isLoading ? (
           <View className="items-center py-12">
             <ActivityIndicator color="#0F766E" size="large" />
           </View>
