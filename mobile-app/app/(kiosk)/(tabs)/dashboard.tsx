@@ -66,11 +66,13 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        <View className="pt-8 pb-6">
-          <Text className="text-2xl font-black text-teal-900">Coming Soon</Text>
-          <Text className="text-sm text-teal-600 mt-1">
-            Dashboard features are under development.
-          </Text>
+        <View className="pt-8 pb-6 items-center">
+          <Image
+            source={require('../../../assets/images/icon-512x512.png')}
+            className="w-20 h-20"
+            resizeMode="contain"
+          />
+          <Text className="text-2xl font-black text-teal-900 mt-3">SecureVisit</Text>
         </View>
 
         {error ? (
