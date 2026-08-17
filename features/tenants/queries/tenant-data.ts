@@ -1125,6 +1125,7 @@ export async function getPublicOnSiteVisitors(tenantSlug: string, deviceToken: s
     where: eq(visits.status, "IN"),
     with: {
       visitor: true,
+      host: true,
     },
     orderBy: [desc(visits.checkInAt)],
   });

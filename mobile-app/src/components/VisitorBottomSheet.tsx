@@ -8,8 +8,12 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import Svg, { Path } from 'react-native-svg';
+import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
+import { useCheckoutPublicVisit } from '@/src/hooks/useVisits';
 import type { OnSiteVisitor } from '@/src/types/api';
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
@@ -27,23 +31,36 @@ function formatTime(dateStr?: string | null): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-}
-
 interface VisitorBottomSheetProps {
   visible: boolean;
   visitor: OnSiteVisitor | null;
   onClose: () => void;
+  onCheckoutComplete?: () => void;
 }
 
-export default function VisitorBottomSheet({ visible, visitor, onClose }: VisitorBottomSheetProps) {
+export default function VisitorBottomSheet({ visible, visitor, onClose, onCheckoutComplete }: VisitorBottomSheetProps) {
+  const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
+  const { checkoutVisit, isLoading: isCheckingOut } = useCheckoutPublicVisit(deviceToken);
+  const [submitError, setSubmitError] = useState('');
+  const [success, setSuccess] = useState(false);
   const screenHeight = Dimensions.get('window').height;
+
+  async function handleCheckOut() {
+    if (!visitor) return;
+    setSubmitError('');
+    try {
+      await checkoutVisit(visitor.id);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        onClose();
+        onCheckoutComplete?.();
+      }, 1800);
+    } catch (err: any) {
+      setSubmitError(err?.message || 'Checkout failed');
+    }
+  }
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -52,7 +69,7 @@ export default function VisitorBottomSheet({ visible, visitor, onClose }: Visito
           <TouchableWithoutFeedback>
             <View
               className="bg-white rounded-t-3xl"
-              style={{ maxHeight: screenHeight * 0.6 }}
+              style={{ maxHeight: screenHeight * 0.7 }}
             >
               {/* Handle bar */}
               <View className="items-center pt-3 pb-2">
@@ -66,7 +83,27 @@ export default function VisitorBottomSheet({ visible, visitor, onClose }: Visito
                 </Pressable>
               </View>
 
-              {visitor ? (
+              {success ? (
+                <View className="items-center px-6 py-10">
+                  <View className="w-16 h-16 rounded-full bg-teal-100 items-center justify-center mb-4">
+                    <Svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                      <Path
+                        d="M5 13l4 4L19 7"
+                        stroke="#0F766E"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </Svg>
+                  </View>
+                  <Text className="text-2xl font-black text-teal-900 text-center">
+                    Checked Out
+                  </Text>
+                  <Text className="text-sm text-teal-600 mt-2 text-center">
+                    {visitor?.visitor.firstName} {visitor?.visitor.lastName} has been checked out.
+                  </Text>
+                </View>
+              ) : visitor ? (
                 <View className="px-6 pb-8">
                   {/* Visitor photo / avatar */}
                   <View className="items-center mb-5">
@@ -100,6 +137,14 @@ export default function VisitorBottomSheet({ visible, visitor, onClose }: Visito
                         <Text className="text-sm text-slate-700">{visitor.visitor.phone}</Text>
                       </View>
                     ) : null}
+                    {visitor.host ? (
+                      <View className="flex-row items-center gap-3 bg-slate-50 rounded-xl px-4 py-3">
+                        <Ionicons name="person-outline" size={16} color="#0F766E" />
+                        <Text className="text-sm text-slate-700">
+                          Host: {visitor.host.firstName} {visitor.host.lastName}
+                        </Text>
+                      </View>
+                    ) : null}
                     <View className="flex-row items-center gap-3 bg-slate-50 rounded-xl px-4 py-3">
                       <Ionicons name="time-outline" size={16} color="#0F766E" />
                       <Text className="text-sm text-slate-700">
@@ -116,12 +161,25 @@ export default function VisitorBottomSheet({ visible, visitor, onClose }: Visito
                     ) : null}
                   </View>
 
-                  {/* Status badge */}
-                  <View className="items-center">
-                    <View className="bg-teal-100 rounded-full px-5 py-2">
-                      <Text className="text-teal-700 text-sm font-bold">Currently On-Site</Text>
+                  {/* Error */}
+                  {submitError ? (
+                    <View className="bg-red-50 border border-red-300 rounded-xl px-4 py-3 mb-4">
+                      <Text className="text-red-700 text-sm text-center">{submitError}</Text>
                     </View>
-                  </View>
+                  ) : null}
+
+                  {/* Checkout button */}
+                  <Pressable
+                    onPress={handleCheckOut}
+                    disabled={isCheckingOut}
+                    className="bg-teal-700 rounded-2xl py-4 active:bg-teal-800 items-center"
+                  >
+                    {isCheckingOut ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Text className="text-white text-lg font-black">Check Out</Text>
+                    )}
+                  </Pressable>
                 </View>
               ) : null}
             </View>

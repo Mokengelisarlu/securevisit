@@ -162,6 +162,7 @@ export default function DashboardScreen() {
         visible={selectedVisitor !== null}
         visitor={selectedVisitor}
         onClose={() => setSelectedVisitor(null)}
+        onCheckoutComplete={() => refetch()}
       />
     </ScreenWrapper>
   );

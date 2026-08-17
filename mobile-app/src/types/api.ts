@@ -136,6 +136,7 @@ export interface VisitHistoryEntry {
 
 export interface OnSiteVisitor extends Visit {
   visitor: Visitor;
+  host: Host | null;
 }
 
 export interface RecentActivity {
