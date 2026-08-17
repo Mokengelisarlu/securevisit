@@ -1276,7 +1276,14 @@ export async function getPublicVisitorById(
   });
 
   return {
-    ...visitor,
+    id: visitor.id,
+    firstName: visitor.firstName,
+    lastName: visitor.lastName,
+    phone: visitor.phone,
+    company: visitor.company,
+    visitorTypeId: visitor.visitorTypeId,
+    visitorTypeName: (visitor as any).type?.name ?? null,
+    photoUrl: visitor.photoUrl,
     isOnSite: !!activeVisit,
   };
 }
@@ -1328,6 +1335,7 @@ export async function getPublicVisitHistory(
   return await db.query.visits.findMany({
     where: eq(visits.visitorId, visitorId),
     with: {
+      visitor: true,
       host: true,
       department: true,
       service: true,
