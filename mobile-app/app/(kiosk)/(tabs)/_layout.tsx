@@ -22,7 +22,7 @@ export default function KioskTabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
           title: t('tabs.home'),
           tabBarIcon: ({ color, size, focused }) => (
@@ -31,11 +31,11 @@ export default function KioskTabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="dashboard"
+        name="search"
         options={{
-          title: t('tabs.dashboard'),
+          title: t('tabs.search'),
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'stats-chart' : 'stats-chart-outline'} size={size} color={color} />
+            <Ionicons name={focused ? 'search' : 'search-outline'} size={size} color={color} />
           ),
         }}
       />
