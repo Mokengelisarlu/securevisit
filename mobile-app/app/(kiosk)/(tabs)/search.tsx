@@ -108,7 +108,7 @@ export default function SearchScreen() {
 
       <VisitorBottomSheet
         visible={selectedVisitor !== null}
-        visitor={selectedVisitor as any}
+        visitor={selectedVisitor}
         onClose={() => setSelectedVisitor(null)}
       />
     </ScreenWrapper>
