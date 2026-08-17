@@ -11,9 +11,11 @@ import {
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
+import { router } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
-import { useCheckoutPublicVisit, useCreatePublicVisit } from '@/src/hooks/useVisits';
+import { useKiosk } from '@/src/contexts/KioskContext';
+import { useCheckoutPublicVisit } from '@/src/hooks/useVisits';
 import type { OnSiteVisitor, Visitor } from '@/src/types/api';
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
@@ -43,14 +45,13 @@ interface VisitorBottomSheetProps {
   onCheckinComplete?: () => void;
 }
 
-export default function VisitorBottomSheet({ visible, visitor, onClose, onCheckoutComplete, onCheckinComplete }: VisitorBottomSheetProps) {
+export default function VisitorBottomSheet({ visible, visitor, onClose, onCheckoutComplete }: VisitorBottomSheetProps) {
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const { checkoutVisit, isLoading: isCheckingOut } = useCheckoutPublicVisit(deviceToken);
-  const { createVisit, isLoading: isCheckingIn } = useCreatePublicVisit(deviceToken);
+  const { setPreselectedVisitor } = useKiosk();
   const [submitError, setSubmitError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
   const screenHeight = Dimensions.get('window').height;
 
   const isVisit = isOnSiteVisitor(visitor);
@@ -65,7 +66,6 @@ export default function VisitorBottomSheet({ visible, visitor, onClose, onChecko
     setSubmitError('');
     try {
       await checkoutVisit(visitId);
-      setSuccessMessage('Checked Out');
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
@@ -77,21 +77,11 @@ export default function VisitorBottomSheet({ visible, visitor, onClose, onChecko
     }
   }
 
-  async function handleCheckIn() {
+  function handleCheckIn() {
     if (!visitorData?.id) return;
-    setSubmitError('');
-    try {
-      await createVisit({ visitorId: visitorData.id, status: 'IN' });
-      setSuccessMessage('Checked In');
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-        onCheckinComplete?.();
-      }, 1800);
-    } catch (err: any) {
-      setSubmitError(err?.message || 'Check-in failed');
-    }
+    setPreselectedVisitor(visitorData as Visitor);
+    onClose();
+    router.push('/(kiosk)/check-in/existing-visitor' as any);
   }
 
   return (
@@ -129,10 +119,10 @@ export default function VisitorBottomSheet({ visible, visitor, onClose, onChecko
                     </Svg>
                   </View>
                   <Text className="text-2xl font-black text-teal-900 text-center">
-                    {successMessage}
+                    Checked Out
                   </Text>
                   <Text className="text-sm text-teal-600 mt-2 text-center">
-                    {visitorData?.firstName} {visitorData?.lastName} has been {successMessage.toLowerCase()}.
+                    {visitorData?.firstName} {visitorData?.lastName} has been checked out.
                   </Text>
                 </View>
               ) : visitorData ? (
@@ -224,14 +214,9 @@ export default function VisitorBottomSheet({ visible, visitor, onClose, onChecko
                   ) : (
                     <Pressable
                       onPress={handleCheckIn}
-                      disabled={isCheckingIn}
                       className="bg-teal-700 rounded-2xl py-4 active:bg-teal-800 items-center"
                     >
-                      {isCheckingIn ? (
-                        <ActivityIndicator color="#fff" />
-                      ) : (
-                        <Text className="text-white text-lg font-black">Check In</Text>
-                      )}
+                      <Text className="text-white text-lg font-black">Check In</Text>
                     </Pressable>
                   )}
                 </View>

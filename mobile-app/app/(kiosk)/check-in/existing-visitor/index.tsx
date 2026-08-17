@@ -5,11 +5,12 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { router } from 'expo-router';
 import { ScreenWrapper, Card, Button, TextInput, Select } from '@/src/components/ui';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useKiosk } from '@/src/contexts/KioskContext';
 import {
   useSearchPublicVisitors,
   useGetPublicHosts,
@@ -25,6 +26,7 @@ export default function ExistingVisitorScreen() {
   const { createVisit, isLoading: isCheckinLoading } = useCreatePublicVisit(deviceToken);
   const { data: hosts } = useGetPublicHosts(deviceToken);
   const { data: departments } = useGetPublicDepartments(deviceToken);
+  const { preselectedVisitor, setPreselectedVisitor } = useKiosk();
 
   const [query, setQuery] = useState('');
   const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null);
@@ -36,6 +38,14 @@ export default function ExistingVisitorScreen() {
   const [lastSearchedQuery, setLastSearchedQuery] = useState('');
 
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (preselectedVisitor) {
+      setSelectedVisitor(preselectedVisitor);
+      setQuery(`${preselectedVisitor.firstName} ${preselectedVisitor.lastName}`);
+      setPreselectedVisitor(null);
+    }
+  }, []);
 
   const handleQueryChange = useCallback(
     (text: string) => {
