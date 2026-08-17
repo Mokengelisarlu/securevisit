@@ -94,7 +94,7 @@ export default function ExistingVisitorScreen() {
   }
 
   return (
-    <ScreenWrapper padX={false}>
+    <ScreenWrapper padX={false} scrollable>
       <View className="px-6 pt-8 pb-4">
         <Pressable
           onPress={() => router.back()}
