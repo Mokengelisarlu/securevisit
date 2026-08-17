@@ -38,7 +38,7 @@ export default function DashboardScreen() {
   const { apiBaseUrl } = useApi();
   const { data: onSiteVisitors, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
 
-  const [selectedVisitorId, setSelectedVisitorId] = useState<string | null>(null);
+  const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -118,7 +118,7 @@ export default function DashboardScreen() {
           topVisitors.map((v: OnSiteVisitor) => (
             <Pressable
               key={v.id}
-              onPress={() => setSelectedVisitorId(v.visitor.id)}
+              onPress={() => setSelectedVisitor(v)}
               className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4 active:bg-teal-50 active:border-teal-400"
             >
               {v.visitor.photoUrl ? (
@@ -159,9 +159,9 @@ export default function DashboardScreen() {
       </ScrollView>
 
       <VisitorBottomSheet
-        visible={selectedVisitorId !== null}
-        visitorId={selectedVisitorId}
-        onClose={() => setSelectedVisitorId(null)}
+        visible={selectedVisitor !== null}
+        visitor={selectedVisitor}
+        onClose={() => setSelectedVisitor(null)}
       />
     </ScreenWrapper>
   );
