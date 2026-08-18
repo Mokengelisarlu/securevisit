@@ -1298,7 +1298,7 @@ export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: stri
     where: eq(visits.status, "IN"),
     columns: { visitorId: true },
   });
-  const onSiteIds = new Set(activeVisits.map((v) => v.visitorId));
+  const onSiteIds = new Set(activeVisits.map((v: { visitorId: string }) => v.visitorId));
 
   const arrivedToday = await db.query.visits.findMany({
     where: and(
