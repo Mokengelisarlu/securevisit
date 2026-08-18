@@ -61,7 +61,7 @@ export default function CheckOutScreen() {
       await checkoutVisit(selected.id);
       setSuccess(true);
       setTimeout(() => {
-        router.replace('/(kiosk)');
+        router.replace('/(kiosk)/(tabs)');
       }, 1800);
     } catch (err: any) {
       setSubmitError(err?.message || t('checkOut.errorCheckOut'));

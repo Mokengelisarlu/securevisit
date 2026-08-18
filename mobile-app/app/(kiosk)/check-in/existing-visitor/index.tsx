@@ -86,7 +86,7 @@ export default function ExistingVisitorScreen() {
         departmentId: departmentId || undefined,
         purpose: purpose.trim() || undefined,
       });
-      router.replace('/(kiosk)');
+      router.replace('/(kiosk)/(tabs)');
     } catch (err: any) {
       setSubmitError(err?.message || t('review.errorSubmit'));
     }

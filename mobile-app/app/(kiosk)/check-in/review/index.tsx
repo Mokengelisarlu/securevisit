@@ -96,7 +96,7 @@ export default function ReviewScreen() {
       setSuccess(true);
       setTimeout(() => {
         resetDraft();
-        router.replace('/(kiosk)');
+        router.replace('/(kiosk)/(tabs)');
       }, 1800);
     } catch (err: any) {
       setError(err?.message || t('review.errorSubmit'));

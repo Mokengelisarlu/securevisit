@@ -146,7 +146,7 @@ export default function PairingScreen() {
           await saveToken(token);
           setJustPaired(true);
           setStatusMessage(t('pairing.successTitle'));
-          router.replace('/(kiosk)');
+          router.replace('/(kiosk)/(tabs)');
         } else {
           setStatusMessage(t('pairing.errorInvalidCode'));
         }

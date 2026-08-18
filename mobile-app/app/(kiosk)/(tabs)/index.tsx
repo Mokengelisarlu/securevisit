@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { apiCall } from '@/src/api/client';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
@@ -34,11 +35,22 @@ export default function DashboardScreen() {
   const { data: kpiData, error: kpiError } = useGetPublicVisitorKpis(deviceToken);
 
   useEffect(() => {
-    console.log('[Dashboard] siteData:', JSON.stringify(siteData, null, 2));
-    console.log('[Dashboard] kpiData:', JSON.stringify(kpiData, null, 2));
-    console.log('[Dashboard] siteError:', error);
-    console.log('[Dashboard] kpiError:', kpiError);
-  }, [siteData, kpiData, error, kpiError]);
+    if (!deviceToken || !tenantSlug) return;
+
+    const endpoint = `/api/tenants/${tenantSlug}/public/visitors`;
+    console.log('[Dashboard] full visitors endpoint:', endpoint);
+
+    apiCall(endpoint, {
+      deviceToken: deviceToken ?? undefined,
+      baseUrl: apiBaseUrl,
+    })
+      .then((response) => {
+        console.log('[Dashboard] full visitors result:', JSON.stringify(response, null, 2));
+      })
+      .catch((err) => {
+        console.log('[Dashboard] full visitors error:', err);
+      });
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
 
