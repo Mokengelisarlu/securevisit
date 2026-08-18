@@ -16,6 +16,7 @@ import {
   getPublicVisitById,
   getPublicVisitHistory,
   getPublicRecentVisits,
+  getPublicVisitorKpis,
 } from "@/features/tenants/queries/tenant-data";
 
 function getBearerToken(request: NextRequest) {
@@ -62,6 +63,8 @@ export async function GET(
       }
       case "visitors":
         return jsonResponse(await getPublicVisitors(slug, deviceToken));
+      case "visitor-kpis":
+        return jsonResponse(await getPublicVisitorKpis(slug, deviceToken));
       case "visitor-detail": {
         const visitorId = url.searchParams.get("id");
         if (!visitorId) {

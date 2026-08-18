@@ -440,3 +440,43 @@ export function useGetPublicRecentVisits(deviceToken: string | null) {
 
   return { data, isLoading, error };
 }
+
+export function useGetPublicVisitorKpis(deviceToken: string | null) {
+  const [data, setData] = useState<{
+    visitors: Visitor[];
+    kpis: { onSite: number; outToday: number; totalToday: number };
+  }>({
+    visitors: [],
+    kpis: { onSite: 0, outToday: 0, totalToday: 0 },
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const fetchData = useCallback(async () => {
+    if (!deviceToken) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await apiCall(
+        `/api/tenants/${tenantSlug}/public/visitor-kpis`,
+        { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+      );
+      setData(response);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, isLoading, error, refetch: fetchData };
+}

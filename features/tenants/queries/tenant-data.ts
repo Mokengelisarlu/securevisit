@@ -1275,6 +1275,71 @@ export async function getPublicVisitors(tenantSlug: string, deviceToken: string)
 }
 
 /**
+ * [PUBLIC/SECURE] Get all visitors with KPI stats for the kiosk device.
+ * Returns all visitors with isOnSite flag, plus KPI counts:
+ *  - onSite: visitors currently checked in (status IN)
+ *  - outToday: visitors who checked out today
+ *  - totalToday: all visits today (arrived + departed)
+ */
+export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const allVisitors = await db.query.visitors.findMany({
+    with: { type: true },
+    orderBy: [desc(visitors.createdAt)],
+  });
+
+  const activeVisits = await db.query.visits.findMany({
+    where: eq(visits.status, "IN"),
+    columns: { visitorId: true },
+  });
+  const onSiteIds = new Set(activeVisits.map((v) => v.visitorId));
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(
+      isNotNull(visits.checkInAt),
+      gte(visits.checkInAt, startToday),
+      lte(visits.checkInAt, endToday)
+    ),
+    columns: { id: true },
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(
+      eq(visits.status, "OUT"),
+      isNotNull(visits.checkOutAt),
+      gte(visits.checkOutAt, startToday),
+      lte(visits.checkOutAt, endToday)
+    ),
+    columns: { id: true },
+  });
+
+  return {
+    visitors: allVisitors.map((v) => ({
+      id: v.id,
+      firstName: v.firstName,
+      lastName: v.lastName,
+      phone: v.phone,
+      company: v.company,
+      visitorTypeId: v.visitorTypeId,
+      visitorTypeName: (v as any).type?.name ?? null,
+      photoUrl: v.photoUrl,
+      isOnSite: onSiteIds.has(v.id),
+    })),
+    kpis: {
+      onSite: onSiteIds.size,
+      outToday: departedToday.length,
+      totalToday: arrivedToday.length + departedToday.length,
+    },
+  };
+}
+
+/**
  * [PUBLIC/SECURE] Get single visitor by ID with type, plus an isOnSite boolean
  */
 export async function getPublicVisitorById(

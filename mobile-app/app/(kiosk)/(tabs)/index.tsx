@@ -5,7 +5,7 @@ import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
-import { useGetPublicOnSiteVisitors, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
+import { useGetPublicOnSiteVisitors, useGetPublicVisitorKpis, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
 import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
 import type { OnSiteVisitor } from '@/src/types/api';
 
@@ -31,6 +31,7 @@ export default function DashboardScreen() {
   const router = useRouter();
   const { data: business } = useGetPublicBusinessSettings(deviceToken);
   const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+  const { data: kpiData } = useGetPublicVisitorKpis(deviceToken);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
 
@@ -55,7 +56,7 @@ export default function DashboardScreen() {
   );
 
   const onSiteVisitors = siteData?.visitors ?? [];
-  const stats = siteData?.stats ?? { onSite: 0, arrivedToday: 0, departedToday: 0 };
+  const kpisData = kpiData?.kpis ?? { onSite: 0, outToday: 0, totalToday: 0 };
 
   const sortedVisitors = useMemo(() => {
     return [...onSiteVisitors].sort(
@@ -64,9 +65,9 @@ export default function DashboardScreen() {
   }, [onSiteVisitors]);
 
   const kpis = [
-    { label: 'On Site', value: stats.onSite },
-    { label: 'Checked In Today', value: stats.arrivedToday },
-    { label: 'Checked Out', value: stats.departedToday },
+    { label: 'On Site', value: kpisData.onSite },
+    { label: 'Today', value: kpisData.totalToday },
+    { label: 'Checked Out', value: kpisData.outToday },
   ];
 
   function handleCheckIn() {
