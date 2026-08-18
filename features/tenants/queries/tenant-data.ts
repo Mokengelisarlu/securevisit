@@ -1320,7 +1320,7 @@ export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: stri
   });
 
   return {
-    visitors: allVisitors.map((v) => ({
+    visitors: allVisitors.map((v: (typeof allVisitors)[number]) => ({
       id: v.id,
       firstName: v.firstName,
       lastName: v.lastName,
