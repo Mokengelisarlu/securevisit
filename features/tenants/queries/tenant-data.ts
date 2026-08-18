@@ -1208,38 +1208,51 @@ export async function searchPublicVisitors(
 ) {
   await verifyDeviceToken(tenantSlug, deviceToken);
 
-  if (!query || query.trim().length < 2) {
+  const normalizedQuery = query?.trim() ?? "";
+
+  if (!normalizedQuery) {
     return [];
   }
 
   const db = await getTenantDbBySlug(tenantSlug);
-  const q = `%${query.trim()}%`;
 
-  const results = await db.query.visitors.findMany({
-    where: or(
-      ilike(visitors.firstName, q),
-      ilike(visitors.lastName, q),
-      ilike(visitors.phone, q)
-    ),
-    with: {
-      type: true,
-    },
-    limit: 10,
-  });
+  let results: any[];
 
-  // Determine which of the matched visitors are currently on-site
+  if (normalizedQuery.toLowerCase() === "all") {
+    results = await db.query.visitors.findMany({
+      with: { type: true },
+      orderBy: [desc(visitors.createdAt)],
+    });
+    console.log("[searchPublicVisitors] q=all -> all visitors result:", JSON.stringify(results, null, 2));
+  } else {
+    if (normalizedQuery.length < 2) {
+      return [];
+    }
+
+    const q = `%${normalizedQuery}%`;
+    results = await db.query.visitors.findMany({
+      where: or(
+        ilike(visitors.firstName, q),
+        ilike(visitors.lastName, q),
+        ilike(visitors.phone, q)
+      ),
+      with: {
+        type: true,
+      },
+      limit: 10,
+    });
+  }
+
   const visitorIds: string[] = results.map((r: { id: string }) => r.id);
   let onSiteIds = new Set<string>();
   if (visitorIds.length > 0) {
-    // Query for active visits using inArray
     const activeVisits = await db.query.visits.findMany({
       where: and(eq(visits.status, "IN"), inArray(visits.visitorId, visitorIds)),
     });
     activeVisits.forEach((v: { visitorId: string }) => onSiteIds.add(v.visitorId));
   }
 
-  // Return full visitor details (kiosk needs full names/phones) and include an `isOnSite` flag
-  return (results as typeof results).map((v: (typeof results)[number]) => {
+  const mapped = (results as typeof results).map((v: (typeof results)[number]) => {
     const lastNameMasked = v.lastName ? v.lastName[0].toUpperCase() + "." : "";
     const phoneMasked = v.phone ? "••• " + v.phone.slice(-4) : null;
 
@@ -1257,6 +1270,9 @@ export async function searchPublicVisitors(
       isOnSite: onSiteIds.has(v.id),
     };
   });
+
+  console.log("[searchPublicVisitors] final mapped result:", JSON.stringify(mapped, null, 2));
+  return mapped;
 }
 
 /**
