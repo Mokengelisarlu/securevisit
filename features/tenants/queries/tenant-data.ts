@@ -1824,8 +1824,10 @@ export async function getBusinessSettings(tenantSlug: string) {
   return rows[0] ?? null;
 }
 
-export async function getPublicBusinessSettings(tenantSlug: string, deviceToken: string) {
-  await verifyDeviceToken(tenantSlug, deviceToken);
+export async function getPublicBusinessSettings(tenantSlug: string, deviceToken?: string) {
+  if (deviceToken) {
+    await verifyDeviceToken(tenantSlug, deviceToken);
+  }
   const db = await getTenantDbBySlug(tenantSlug);
   const rows = await db.query.businessSettings.findMany({ limit: 1 });
   return rows[0] ?? null;

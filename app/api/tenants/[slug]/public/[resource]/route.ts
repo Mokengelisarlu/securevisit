@@ -22,7 +22,7 @@ import {
 function getBearerToken(request: NextRequest) {
   const auth = request.headers.get("authorization") || request.headers.get("Authorization");
   if (!auth?.startsWith("Bearer ")) {
-    throw new Error("Missing Authorization header");
+    return null;
   }
   return auth.slice(7);
 }
@@ -40,53 +40,57 @@ export async function GET(
     const deviceToken = getBearerToken(request);
     const url = new URL(request.url);
 
+    if (deviceToken === null && ["departments", "services", "visitor-types", "hosts", "on-site-visitors", "dashboard", "settings", "search-visitors", "visitors", "visitor-kpis", "visitor-detail", "visit-detail", "recent-visits", "visitor-history"].includes(resource)) {
+      return jsonResponse({ error: "Missing Authorization header" }, 401);
+    }
+
     switch (resource) {
       case "departments":
-        return jsonResponse(await getPublicDepartments(slug, deviceToken));
+        return jsonResponse(await getPublicDepartments(slug, deviceToken!));
       case "services":
-        return jsonResponse(await getPublicServices(slug, deviceToken));
+        return jsonResponse(await getPublicServices(slug, deviceToken!));
       case "visitor-types":
-        return jsonResponse(await getPublicVisitorTypes(slug, deviceToken));
+        return jsonResponse(await getPublicVisitorTypes(slug, deviceToken!));
       case "hosts":
-        return jsonResponse(await getPublicHosts(slug, deviceToken));
+        return jsonResponse(await getPublicHosts(slug, deviceToken!));
       case "on-site-visitors":
-        return jsonResponse(await getPublicOnSiteVisitors(slug, deviceToken));
+        return jsonResponse(await getPublicOnSiteVisitors(slug, deviceToken!));
       case "dashboard":
-        return jsonResponse(await getPublicDashboard(slug, deviceToken));
+        return jsonResponse(await getPublicDashboard(slug, deviceToken!));
       case "settings":
-        return jsonResponse(await getPublicSettings(slug, deviceToken));
+        return jsonResponse(await getPublicSettings(slug, deviceToken!));
       case "business-settings":
-        return jsonResponse(await getPublicBusinessSettings(slug, deviceToken));
+        return jsonResponse(await getPublicBusinessSettings(slug, deviceToken ?? undefined));
       case "search-visitors": {
         const query = url.searchParams.get("q") || "";
-        return jsonResponse(await searchPublicVisitors(slug, deviceToken, query));
+        return jsonResponse(await searchPublicVisitors(slug, deviceToken!, query));
       }
       case "visitors":
-        return jsonResponse(await getPublicVisitors(slug, deviceToken));
+        return jsonResponse(await getPublicVisitors(slug, deviceToken!));
       case "visitor-kpis":
-        return jsonResponse(await getPublicVisitorKpis(slug, deviceToken));
+        return jsonResponse(await getPublicVisitorKpis(slug, deviceToken!));
       case "visitor-detail": {
         const visitorId = url.searchParams.get("id");
         if (!visitorId) {
           return jsonResponse({ error: "Missing id query parameter" }, 400);
         }
-        return jsonResponse(await getPublicVisitorById(slug, deviceToken, visitorId));
+        return jsonResponse(await getPublicVisitorById(slug, deviceToken!, visitorId));
       }
       case "visit-detail": {
         const visitId = url.searchParams.get("id");
         if (!visitId) {
           return jsonResponse({ error: "Missing id query parameter" }, 400);
         }
-        return jsonResponse(await getPublicVisitById(slug, deviceToken, visitId));
+        return jsonResponse(await getPublicVisitById(slug, deviceToken!, visitId));
       }
       case "recent-visits":
-        return jsonResponse(await getPublicRecentVisits(slug, deviceToken));
+        return jsonResponse(await getPublicRecentVisits(slug, deviceToken!));
       case "visitor-history": {
         const visitorId = url.searchParams.get("visitorId");
         if (!visitorId) {
           return jsonResponse({ error: "Missing visitorId query parameter" }, 400);
         }
-        return jsonResponse(await getPublicVisitHistory(slug, deviceToken, visitorId));
+        return jsonResponse(await getPublicVisitHistory(slug, deviceToken!, visitorId));
       }
       default:
         return jsonResponse({ error: "Not found" }, 404);
@@ -104,6 +108,10 @@ export async function POST(
     const { slug, resource } = await context.params;
     const deviceToken = getBearerToken(request);
     const body = await request.json();
+
+    if (!deviceToken) {
+      return jsonResponse({ error: "Missing Authorization header" }, 401);
+    }
 
     switch (resource) {
       case "visits": {
