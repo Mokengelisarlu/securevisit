@@ -293,7 +293,11 @@ export function useGetPublicBusinessSettings(deviceToken: string | null) {
   const { tenantSlug, apiBaseUrl } = useApi();
 
   useEffect(() => {
-    if (!deviceToken) return;
+    if (!deviceToken) {
+      setError('Device not authenticated');
+      setIsLoading(false);
+      return;
+    }
 
     async function fetch() {
       setIsLoading(true);

@@ -56,7 +56,7 @@ export async function GET(
       case "settings":
         return jsonResponse(await getPublicSettings(slug, deviceToken));
       case "business-settings":
-        return jsonResponse(await getPublicBusinessSettings(slug));
+        return jsonResponse(await getPublicBusinessSettings(slug, deviceToken));
       case "search-visitors": {
         const query = url.searchParams.get("q") || "";
         return jsonResponse(await searchPublicVisitors(slug, deviceToken, query));

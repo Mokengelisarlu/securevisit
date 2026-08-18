@@ -31,7 +31,14 @@ export default function DashboardScreen() {
   const router = useRouter();
   const { data: business } = useGetPublicBusinessSettings(deviceToken);
   const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
-  const { data: kpiData } = useGetPublicVisitorKpis(deviceToken);
+  const { data: kpiData, error: kpiError } = useGetPublicVisitorKpis(deviceToken);
+
+  useEffect(() => {
+    console.log('[Dashboard] siteData:', JSON.stringify(siteData, null, 2));
+    console.log('[Dashboard] kpiData:', JSON.stringify(kpiData, null, 2));
+    console.log('[Dashboard] siteError:', error);
+    console.log('[Dashboard] kpiError:', kpiError);
+  }, [siteData, kpiData, error, kpiError]);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
 
