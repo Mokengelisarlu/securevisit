@@ -37,18 +37,18 @@ export default function DashboardScreen() {
   useEffect(() => {
     if (!deviceToken || !tenantSlug) return;
 
-    const endpoint = `/api/tenants/${tenantSlug}/public/visitors`;
-    console.log('[Dashboard] full visitors endpoint:', endpoint);
+    const endpoint = `/api/tenants/${tenantSlug}/devices/verify`;
+    console.log('[Dashboard] verify endpoint:', endpoint);
 
     apiCall(endpoint, {
       deviceToken: deviceToken ?? undefined,
       baseUrl: apiBaseUrl,
     })
       .then((response) => {
-        console.log('[Dashboard] full visitors result:', JSON.stringify(response, null, 2));
+        console.log('[Dashboard] verify result:', JSON.stringify(response, null, 2));
       })
       .catch((err) => {
-        console.log('[Dashboard] full visitors error:', err);
+        console.log('[Dashboard] verify error:', err);
       });
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
