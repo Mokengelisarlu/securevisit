@@ -4,7 +4,7 @@
     "slug": "mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon-512x512.png",
+    "icon": "./assets/images/icon-safe.png",
     "scheme": "securevisit",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +19,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#F0FDFA",
-        "foregroundImage": "./assets/images/icon-512x512.png"
+        "foregroundImage": "./assets/images/icon-safe.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.securevisit.kiosk"
@@ -46,7 +46,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon-512x512.png",
+          "image": "./assets/images/icon-safe.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#F0FDFA",

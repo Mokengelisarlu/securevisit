@@ -11,6 +11,7 @@ const iconPaths = [
 ];
 const srcIcon = iconPaths.find((p) => fs.existsSync(p));
 const srcSplash = path.join(root, 'assets', 'images', 'splash-icon.png');
+const safeIcon = path.join(root, 'assets', 'images', 'icon-safe.png');
 const outDir = path.join(root, 'assets', 'images', 'generated');
 
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
@@ -29,10 +30,20 @@ const iosIconSizes = [20, 29, 40, 60, 76, 83.5, 1024];
 async function generate() {
   console.log('Generating icons into', outDir);
 
+  // Keep the logo inside the Android adaptive icon safe zone.
+  await sharp(srcIcon)
+    .resize(307, 307, { fit: 'contain' })
+    .extend({ top: 102, bottom: 103, left: 102, right: 103, background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toFile(safeIcon);
+  console.log('wrote', safeIcon);
+
   // Generate generic icons
   for (const size of iconSizes) {
     const out = path.join(outDir, `icon-${size}x${size}.png`);
-    await sharp(srcIcon).resize(size, size, { fit: 'cover' }).toFile(out);
+    await sharp(srcIcon)
+      .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .toFile(out);
     console.log('wrote', out);
   }
 
@@ -40,7 +51,9 @@ async function generate() {
   for (const base of iosIconSizes) {
     const rounded = Math.round(base * 3); // produce high-res @3x approx
     const out = path.join(outDir, `ios-icon-${base}x${base}@3x.png`);
-    await sharp(srcIcon).resize(rounded, rounded, { fit: 'cover' }).toFile(out);
+    await sharp(srcIcon)
+      .resize(rounded, rounded, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .toFile(out);
     console.log('wrote', out);
   }
 

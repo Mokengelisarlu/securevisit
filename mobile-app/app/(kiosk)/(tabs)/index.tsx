@@ -1,6 +1,8 @@
 import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import { useTranslation } from 'react-i18next';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -9,6 +11,8 @@ import { useKiosk } from '@/src/contexts/KioskContext';
 import { useGetPublicOnSiteVisitors, useGetPublicVisitorKpis, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
 import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
 import type { OnSiteVisitor } from '@/src/types/api';
+
+const DASHBOARD_SPLASH_DISMISS_DELAY_MS = 500;
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
   if (!url) return undefined;
@@ -31,6 +35,7 @@ export default function DashboardScreen() {
   const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings } = useApi();
   const { setMode, resetState, setJustPaired } = useKiosk();
   const router = useRouter();
+  const navigation = useNavigation();
   const { data: business, isLoading: isBusinessLoading, error: businessError } =
     useGetPublicBusinessSettings(deviceToken);
   const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
@@ -42,6 +47,27 @@ export default function DashboardScreen() {
   } = useGetPublicVisitorKpis(deviceToken);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
+  const [showDashboardSplash, setShowDashboardSplash] = useState(true);
+
+  useEffect(() => {
+    if ((!isLoading && !isKpiLoading) || error || kpiError) {
+      const dismissTimer = setTimeout(() => {
+        setShowDashboardSplash(false);
+      }, DASHBOARD_SPLASH_DISMISS_DELAY_MS);
+
+      return () => clearTimeout(dismissTimer);
+    }
+  }, [error, isKpiLoading, isLoading, kpiError]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      tabBarStyle: showDashboardSplash ? { display: 'none' } : undefined,
+    });
+
+    return () => {
+      navigation.setOptions({ tabBarStyle: undefined });
+    };
+  }, [navigation, showDashboardSplash]);
 
   useEffect(() => {
     if (!__DEV__) return;
@@ -120,8 +146,25 @@ export default function DashboardScreen() {
     router.push('/(kiosk)/check-in');
   }
 
+  if (showDashboardSplash) {
+    return (
+      <View className="flex-1 bg-emerald-100 items-center justify-center relative">
+        <StatusBar hidden />
+        <Image
+          source={require('../../../assets/images/icon-512x512.png')}
+          className="w-36 h-36"
+          resizeMode="contain"
+        />
+        <View className="absolute bottom-8 left-0 right-0 items-center">
+          <Text className="text-emerald-900 text-sm font-semibold">{t('common.loading')}</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <ScreenWrapper padX={false}>
+      <StatusBar hidden={false} />
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
