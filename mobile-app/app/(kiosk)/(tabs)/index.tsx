@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { apiCall } from '@/src/api/client';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
@@ -30,29 +29,48 @@ export default function DashboardScreen() {
   const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings } = useApi();
   const { setMode, resetState, setJustPaired } = useKiosk();
   const router = useRouter();
-  const { data: business } = useGetPublicBusinessSettings(deviceToken);
+  const { data: business, isLoading: isBusinessLoading, error: businessError } =
+    useGetPublicBusinessSettings(deviceToken);
   const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
-  const { data: kpiData, error: kpiError } = useGetPublicVisitorKpis(deviceToken);
-
-  useEffect(() => {
-    if (!deviceToken || !tenantSlug) return;
-
-    const endpoint = `/api/tenants/${tenantSlug}/public/search-visitors?q=${encodeURIComponent('all')}`;
-    console.log('[Dashboard] query=all search endpoint:', endpoint);
-
-    apiCall(endpoint, {
-      deviceToken: deviceToken ?? undefined,
-      baseUrl: apiBaseUrl,
-    })
-      .then((response) => {
-        console.log('[Dashboard] query=all search result:', JSON.stringify(response, null, 2));
-      })
-      .catch((err) => {
-        console.log('[Dashboard] query=all search error:', err);
-      });
-  }, [deviceToken, tenantSlug, apiBaseUrl]);
+  const {
+    data: kpiData,
+    isLoading: isKpiLoading,
+    error: kpiError,
+    refetch: refetchKpis,
+  } = useGetPublicVisitorKpis(deviceToken);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
+
+  useEffect(() => {
+    if (!__DEV__) return;
+    console.log('[Dashboard] business-settings state:', {
+      resource: 'business-settings',
+      loading: isBusinessLoading,
+      hasBusiness: Boolean(business || cachedBusiness),
+      error: businessError,
+    });
+  }, [business, cachedBusiness, isBusinessLoading, businessError]);
+
+  useEffect(() => {
+    if (!__DEV__) return;
+    console.log('[Dashboard] on-site-visitors state:', {
+      resource: 'on-site-visitors',
+      loading: isLoading,
+      visitorCount: siteData?.visitors?.length ?? 0,
+      stats: siteData?.stats ?? null,
+      error,
+    });
+  }, [isLoading, siteData, error]);
+
+  useEffect(() => {
+    if (!__DEV__) return;
+    console.log('[Dashboard] visitor-kpis state:', {
+      resource: 'visitor-kpis',
+      loading: isKpiLoading,
+      data: kpiData,
+      error: kpiError,
+    });
+  }, [isKpiLoading, kpiData, kpiError]);
 
   const effectiveBusiness = cachedBusiness || business;
   const tenantName = effectiveBusiness?.name || tenantSlug || 'SecureVisit';
@@ -70,12 +88,16 @@ export default function DashboardScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      if (__DEV__) {
+        console.log('[Dashboard] focus refresh: on-site-visitors + visitor-kpis');
+      }
       refetch();
-    }, [refetch])
+      refetchKpis();
+    }, [refetch, refetchKpis])
   );
 
   const onSiteVisitors = siteData?.visitors ?? [];
-  const kpisData = kpiData?.kpis ?? { onSite: 0, outToday: 0, totalToday: 0 };
+  const kpisData = kpiData ?? { onSite: 0, outToday: 0, totalToday: 0 };
 
   const sortedVisitors = useMemo(() => {
     return [...onSiteVisitors].sort(
@@ -144,8 +166,19 @@ export default function DashboardScreen() {
         ) : null}
 
         {/* KPI Cards */}
+        {kpiError ? (
+          <View className="bg-red-50 rounded-2xl p-4 mx-6 mb-5 border border-red-200">
+            <Text className="text-red-500 text-center text-sm">Unable to load visitor KPIs.</Text>
+            <Pressable
+              onPress={() => refetchKpis()}
+              className="mt-3 bg-teal-600 rounded-xl px-6 py-2 self-center active:bg-teal-700"
+            >
+              <Text className="text-white font-bold text-sm">Retry</Text>
+            </Pressable>
+          </View>
+        ) : null}
         <View className="flex-row gap-3 px-6 mb-5">
-          {isLoading ? (
+          {isKpiLoading ? (
             <View className="flex-1 items-center py-6">
               <ActivityIndicator color="#0F766E" size="small" />
             </View>

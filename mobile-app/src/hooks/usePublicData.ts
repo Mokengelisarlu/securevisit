@@ -13,6 +13,7 @@ import {
   VisitorDetail,
   VisitDetail,
   VisitHistoryEntry,
+  VisitorKpisResponse,
 } from '@/src/types/api';
 
 interface UseFetchOptions {
@@ -209,6 +210,45 @@ export function useGetPublicVisitorTypes(deviceToken: string | null) {
   return { data, isLoading, error };
 }
 
+export function useGetPublicBusinessSettings(deviceToken: string | null) {
+  const [data, setData] = useState<BusinessSettings | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  useEffect(() => {
+    if (!deviceToken) {
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function fetch() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/business-settings`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        if (!cancelled) setData(response as BusinessSettings);
+      } catch (err: any) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    fetch();
+    return () => {
+      cancelled = true;
+    };
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+  return { data, isLoading, error };
+}
+
 export function useGetPublicSettings(deviceToken: string | null, pollIntervalMs?: number) {
   const [data, setData] = useState<KioskSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -284,41 +324,6 @@ export function useGetPublicOnSiteVisitors(deviceToken: string | null) {
   }, [fetchVisitors]);
 
   return { data, isLoading, error, refetch: fetchVisitors };
-}
-
-export function useGetPublicBusinessSettings(deviceToken: string | null) {
-  const [data, setData] = useState<BusinessSettings | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { tenantSlug, apiBaseUrl } = useApi();
-
-  useEffect(() => {
-    if (!deviceToken) {
-      setError('Device not authenticated');
-      setIsLoading(false);
-      return;
-    }
-
-    async function fetch() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await apiCall(
-          `/api/tenants/${tenantSlug}/public/business-settings`,
-          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
-        );
-        setData(response);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetch();
-  }, [deviceToken, tenantSlug, apiBaseUrl]);
-
-  return { data, isLoading, error };
 }
 
 export function useGetPublicVisitorDetail(deviceToken: string | null) {
@@ -446,12 +451,10 @@ export function useGetPublicRecentVisits(deviceToken: string | null) {
 }
 
 export function useGetPublicVisitorKpis(deviceToken: string | null) {
-  const [data, setData] = useState<{
-    visitors: Visitor[];
-    kpis: { onSite: number; outToday: number; totalToday: number };
-  }>({
-    visitors: [],
-    kpis: { onSite: 0, outToday: 0, totalToday: 0 },
+  const [data, setData] = useState<VisitorKpisResponse>({
+    onSite: 0,
+    outToday: 0,
+    totalToday: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

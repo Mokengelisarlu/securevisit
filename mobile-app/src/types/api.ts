@@ -165,12 +165,9 @@ export interface DashboardData extends DashboardKpiStats {
 }
 
 export interface VisitorKpisResponse {
-  visitors: Visitor[];
-  kpis: {
-    onSite: number;
-    outToday: number;
-    totalToday: number;
-  };
+  onSite: number;
+  outToday: number;
+  totalToday: number;
 }
 
 export interface UploadResponse {

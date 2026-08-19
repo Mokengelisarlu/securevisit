@@ -1292,10 +1292,10 @@ export async function getPublicVisitors(tenantSlug: string, deviceToken: string)
 
 /**
  * [PUBLIC/SECURE] Get all visitors with KPI stats for the kiosk device.
- * Returns all visitors with isOnSite flag, plus KPI counts:
+ * Returns KPI counts for the kiosk device:
  *  - onSite: visitors currently checked in (status IN)
  *  - outToday: visitors who checked out today
- *  - totalToday: all visits today (arrived + departed)
+ *  - totalToday: visits checked in today
  */
 export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: string) {
   await verifyDeviceToken(tenantSlug, deviceToken);
@@ -1304,11 +1304,6 @@ export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: stri
   const now = new Date();
   const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-
-  const allVisitors = await db.query.visitors.findMany({
-    with: { type: true },
-    orderBy: [desc(visitors.createdAt)],
-  });
 
   const activeVisits = await db.query.visits.findMany({
     where: eq(visits.status, "IN"),
@@ -1336,22 +1331,9 @@ export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: stri
   });
 
   return {
-    visitors: allVisitors.map((v: (typeof allVisitors)[number]) => ({
-      id: v.id,
-      firstName: v.firstName,
-      lastName: v.lastName,
-      phone: v.phone,
-      company: v.company,
-      visitorTypeId: v.visitorTypeId,
-      visitorTypeName: (v as any).type?.name ?? null,
-      photoUrl: v.photoUrl,
-      isOnSite: onSiteIds.has(v.id),
-    })),
-    kpis: {
-      onSite: onSiteIds.size,
-      outToday: departedToday.length,
-      totalToday: arrivedToday.length + departedToday.length,
-    },
+    onSite: onSiteIds.size,
+    outToday: departedToday.length,
+    totalToday: arrivedToday.length,
   };
 }
 
