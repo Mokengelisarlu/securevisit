@@ -36,6 +36,11 @@ export async function verifyDeviceToken(tenantSlug: string, deviceToken: string)
   const db = await getTenantDbBySlug(tenantSlug);
   const device = await db.query.devices.findFirst({
     where: and(eq(devices.deviceToken, deviceToken), eq(devices.isPaired, 1)),
+    columns: {
+      id: true,
+      isPaired: true,
+      lastActiveAt: true,
+    },
   });
 
   if (!device) {
