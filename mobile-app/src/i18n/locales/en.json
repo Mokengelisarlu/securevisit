@@ -18,7 +18,8 @@
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
-    "submitting": "Submitting…"
+    "submitting": "Submitting…",
+    "onsiteStatus": "IN"
   },
   "pairing": {
     "welcomeTitle": "Welcome",
@@ -37,7 +38,16 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "errorNetwork": "Cannot reach the server. Check the URL and your connection.",
     "reconnectTitle": "Re-Pair Device",
-    "reconnectSubtitle": "You are about to reconnect this device to a new pairing code. The current session will be ended."
+    "reconnectSubtitle": "You are about to reconnect this device to a new pairing code. The current session will be ended.",
+    "invalidSlug": "Slug must only contain lowercase letters, numbers, and hyphens",
+    "serverUrlUpdated": "Server URL updated.",
+    "welcomeSetupTitle": "Welcome to SecureVisit",
+    "welcomeSetupSubtitle": "Enter your organization slug to get started.\nThis is a one-time setup.",
+    "organizationSlug": "Organization Slug",
+    "organizationSlugPlaceholder": "e.g. acme-corp",
+    "organizationSlugHelp": "Find your slug in the SecureVisit admin panel under Settings → Organization.",
+    "defaultServerHelp": "Leave empty to use the default. Change this if the server URL changes.",
+    "saveContinue": "Save & Continue"
   },
   "mainMenu": {
     "checkIn": "Check In",
@@ -67,7 +77,9 @@
     "emptyRecent": "No recent activity yet",
     "host": "Host:",
     "checkIn": "Check In",
-    "checkOut": "Check Out"
+    "checkOut": "Check Out",
+    "unableToLoadKpis": "Unable to load visitor KPIs.",
+    "retryKpis": "Retry"
   },
   "visitorSearch": {
     "title": "Who is visiting?",
@@ -79,7 +91,21 @@
     "newVisitorDescription": "First time visiting? Register here",
     "selectVisitor": "Select a visitor",
     "selectVisitorDescription": "Visited before? Search your record",
-    "recentVisitors": "Recent visitors"
+    "recentVisitors": "Recent visitors",
+    "searchTitle": "Search",
+    "typeToSearch": "Type to search visitors",
+    "selected": "Selected",
+    "change": "Change",
+    "visitingHost": "Who are they visiting?",
+    "selectHost": "Select a host",
+    "department": "Department",
+    "selectDepartment": "Select a department",
+    "purpose": "Purpose of Visit",
+    "purposePlaceholder": "e.g. Meeting, Delivery",
+    "alreadyCheckedIn": "This visitor is already checked in.",
+    "alreadyCheckedInButton": "Already Checked In",
+    "confirmCheckIn": "Confirm Check-In",
+    "searchByNameOrCompany": "Search by name or company"
   },
   "visitorForm": {
     "title": "Visitor Details",
@@ -97,7 +123,18 @@
     "plateNumberPlaceholder": "Enter plate number",
     "required": "Required",
     "invalidEmail": "Invalid email address",
-    "continueButton": "Continue"
+    "continueButton": "Continue",
+    "fillDetails": "Fill in the visitor details below",
+    "personalInfo": "Personal Info",
+    "visitDetails": "Visit Details",
+    "phonePlaceholderExample": "e.g. +1 234 567 8900",
+    "visitorType": "Visitor Type",
+    "visitorTypePlaceholder": "Select visitor type",
+    "hostPlaceholder": "Select a host",
+    "purposePlaceholder": "e.g. Meeting, Delivery, Interview",
+    "requiredFirstName": "First name is required",
+    "requiredLastName": "Last name is required",
+    "requiredVisitorType": "Please select a visitor type"
   },
   "photo": {
     "titleVisitor": "Visitor Photo",
@@ -117,7 +154,17 @@
     "model": "Model",
     "color": "Color",
     "noVehicle": "No vehicle",
-    "skipVehicle": "Skip — No Vehicle"
+    "skipVehicle": "Skip — No Vehicle",
+    "fillDetails": "Fill in vehicle details or skip if not applicable",
+    "vehicleType": "Vehicle Type",
+    "car": "Car",
+    "truck": "Truck",
+    "motorcycle": "Motorcycle",
+    "other": "Other",
+    "makePlaceholder": "e.g. Toyota, Ford",
+    "colorPlaceholder": "e.g. White, Black",
+    "passengerCount": "Passenger Count",
+    "passengerCountPlaceholder": "e.g. 2"
   },
   "signature": {
     "title": "Signature",
@@ -165,10 +212,24 @@
     "confirmMessage": "Check out {{visitorName}}?",
     "errorLoad": "Failed to load checked-in visitors",
     "errorCheckOut": "Failed to check out. Please try again.",
-    "successMessage": "{{visitorName}} has been checked out"
+    "successMessage": "{{visitorName}} has been checked out",
+    "onSiteCount": "{{count}} visitor currently on-site",
+    "onSiteCount_plural": "{{count}} visitors currently on-site",
+    "findVisitor": "Find a visitor to check out"
   },
   "settings": {
     "title": "Settings",
+    "about": "About",
+    "admin": "Admin",
+    "reports": "Reports",
+    "reportsComingSoon": "Reports are under construction.",
+    "aboutDescription": "App, builder, device, and connection details",
+    "adminDescription": "Language, server URL, pairing, and local data",
+    "reportsDescription": "Visitor and activity reports",
+    "backToSettings": "Back to Settings",
+    "builder": "Builder",
+    "poweredBy": "Powered by {{company}}",
+    "appName": "SecureVisit",
     "connection": "Connection",
     "serverUrl": "Server URL",
     "deviceId": "Device ID",
@@ -187,7 +248,13 @@
     "clearDataDescription": "Remove all cached data and reset the app",
     "clearDataConfirmTitle": "Clear Data?",
     "clearDataConfirmMessage": "All cached data will be removed. You will need to pair the device again.",
-    "clearInProgress": "Clearing…"
+    "clearInProgress": "Clearing…",
+    "deviceToken": "Device Token",
+    "platform": "Platform",
+    "runtimeVersion": "Runtime Version",
+    "unknown": "Unknown",
+    "serverUrlOverride": "Server URL Override",
+    "serverUrlPlaceholder": "https://your-server.com"
   },
   "errors": {
     "generic": "Something went wrong",
@@ -195,6 +262,18 @@
     "timeout": "Request timed out. Please try again.",
     "notFound": "Not found",
     "unauthorized": "Session expired. Please pair the device again.",
-    "validationError": "Please check the form for errors"
+    "validationError": "Please check the form for errors",
+    "invalidSlug": "Slug must only contain lowercase letters, numbers, and hyphens",
+    "serverUrlUpdated": "Server URL updated."
+  }
+  ,"visitDetail": {
+    "title": "Visit Detail",
+    "visitor": "Visitor",
+    "host": "Host",
+    "visitInfo": "Visit Info",
+    "purpose": "Purpose",
+    "type": "Type",
+    "passengers": "Passengers",
+    "duration": "Duration"
   }
 }

@@ -26,7 +26,7 @@ function photoSrc(url: string | undefined | null, baseUrl: string): string | und
 }
 
 export default function CheckOutScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const {
@@ -82,9 +82,12 @@ export default function CheckOutScreen() {
     } else if (checkDate.getTime() === yesterday.getTime()) {
       day = t('success.yesterday');
     } else {
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      day = `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${String(date.getFullYear()).slice(-2)}`;
+      day = new Intl.DateTimeFormat(i18n.language, {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'short',
+        year: '2-digit',
+      }).format(date);
     }
 
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -130,8 +133,8 @@ export default function CheckOutScreen() {
         <Text className="text-3xl font-black text-teal-900">{t('checkOut.title')}</Text>
         <Text className="text-base text-teal-600 mt-1">
           {onSiteVisitors.length > 0
-            ? `${onSiteVisitors.length} visitor${onSiteVisitors.length !== 1 ? 's' : ''} currently on-site`
-            : 'Find a visitor to check out'}
+            ? t('checkOut.onSiteCount', { count: onSiteVisitors.length })
+            : t('checkOut.findVisitor')}
         </Text>
       </View>
 

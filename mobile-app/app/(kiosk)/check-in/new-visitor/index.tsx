@@ -31,9 +31,9 @@ export default function NewVisitorScreen() {
 
   function validate() {
     const e: Record<string, string> = {};
-    if (!firstName.trim()) e.firstName = 'First name is required';
-    if (!lastName.trim()) e.lastName = 'Last name is required';
-    if (!visitorTypeId) e.visitorTypeId = 'Please select a visitor type';
+    if (!firstName.trim()) e.firstName = t('visitorForm.requiredFirstName');
+    if (!lastName.trim()) e.lastName = t('visitorForm.requiredLastName');
+    if (!visitorTypeId) e.visitorTypeId = t('visitorForm.requiredVisitorType');
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -71,13 +71,13 @@ export default function NewVisitorScreen() {
           </Pressable>
           <Text className="text-3xl font-black text-teal-900">{t('visitorSearch.newVisitor')}</Text>
           <Text className="text-base text-teal-600 mt-1">
-            Fill in the visitor details below
+            {t('visitorForm.fillDetails')}
           </Text>
         </View>
 
         <Card className="mb-4">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
-            Personal Info
+            {t('visitorForm.personalInfo')}
           </Text>
           <View className="gap-4">
             <TextInput
@@ -98,7 +98,7 @@ export default function NewVisitorScreen() {
             />
             <TextInput
               label={t('visitorForm.phone')}
-              placeholder="e.g. +1 234 567 8900"
+              placeholder={t('visitorForm.phonePlaceholderExample')}
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
@@ -115,12 +115,12 @@ export default function NewVisitorScreen() {
 
         <Card className="mb-4">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
-            Visit Details
+            {t('visitorForm.visitDetails')}
           </Text>
           <View className="gap-4">
             <Select
-              label="Visitor Type *"
-              placeholder="Select visitor type"
+              label={`${t('visitorForm.visitorType')} *`}
+              placeholder={t('visitorForm.visitorTypePlaceholder')}
               value={visitorTypeId}
               options={visitorTypes.map((vt) => ({ value: vt.id, label: vt.name }))}
               onChange={setVisitorTypeId}
@@ -129,8 +129,8 @@ export default function NewVisitorScreen() {
 
             {hosts.length > 0 ? (
               <Select
-                label="Who are you visiting?"
-                placeholder="Select a host"
+                label={t('visitorSearch.visitingHost')}
+                placeholder={t('visitorForm.hostPlaceholder')}
                 value={hostId}
                 options={hosts.map((h) => ({ value: h.id, label: `${h.firstName} ${h.lastName}`.trim() }))}
                 onChange={setHostId}
@@ -139,8 +139,8 @@ export default function NewVisitorScreen() {
 
             {departments.length > 0 ? (
               <Select
-                label="Department"
-                placeholder="Select a department"
+                label={t('visitorSearch.department')}
+                placeholder={t('visitorSearch.selectDepartment')}
                 value={departmentId}
                 options={departments.map((d) => ({ value: d.id, label: d.name }))}
                 onChange={setDepartmentId}
@@ -148,8 +148,8 @@ export default function NewVisitorScreen() {
             ) : null}
 
             <TextInput
-              label="Purpose of Visit"
-              placeholder="e.g. Meeting, Delivery, Interview"
+              label={t('visitorSearch.purpose')}
+              placeholder={t('visitorForm.purposePlaceholder')}
               value={purpose}
               onChangeText={setPurpose}
             />

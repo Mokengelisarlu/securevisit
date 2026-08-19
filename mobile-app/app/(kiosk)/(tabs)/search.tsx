@@ -1,6 +1,7 @@
 import { View, Text, FlatList, Image, Pressable, ActivityIndicator } from 'react-native';
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, TextInput } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
@@ -17,6 +18,7 @@ function photoSrc(url: string | undefined | null, baseUrl: string): string | und
 }
 
 export default function SearchScreen() {
+  const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const { results, isSearching, search } = useSearchPublicVisitors(deviceToken);
@@ -38,9 +40,9 @@ export default function SearchScreen() {
   return (
     <ScreenWrapper padX={false}>
       <View className="flex-1 px-6 pt-8">
-        <Text className="text-2xl font-black text-teal-900 mb-4">Search</Text>
+        <Text className="text-2xl font-black text-teal-900 mb-4">{t('visitorSearch.searchTitle')}</Text>
         <TextInput
-          placeholder="Search by name, company..."
+          placeholder={t('visitorSearch.searchPlaceholder')}
           value={query}
           onChangeText={handleSearch}
           autoCapitalize="words"
@@ -88,7 +90,7 @@ export default function SearchScreen() {
                   </View>
                   {item.isOnSite ? (
                     <View className="bg-teal-100 rounded-full px-3 py-1">
-                      <Text className="text-teal-700 text-xs font-bold">IN</Text>
+                      <Text className="text-teal-700 text-xs font-bold">{t('dashboard.kpiOnSite')}</Text>
                     </View>
                   ) : null}
                 </Pressable>
@@ -96,11 +98,11 @@ export default function SearchScreen() {
             />
           ) : query.trim().length > 0 && !isSearching ? (
             <View className="items-center py-12">
-              <Text className="text-slate-400 text-center">No visitors found</Text>
+              <Text className="text-slate-400 text-center">{t('visitorSearch.noResults')}</Text>
             </View>
           ) : (
             <View className="items-center py-12">
-              <Text className="text-slate-400 text-center">Type to search visitors</Text>
+              <Text className="text-slate-400 text-center">{t('visitorSearch.typeToSearch')}</Text>
             </View>
           )}
         </View>

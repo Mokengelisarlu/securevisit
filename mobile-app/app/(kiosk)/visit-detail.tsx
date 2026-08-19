@@ -54,7 +54,7 @@ export default function VisitDetailScreen() {
           <Pressable onPress={() => router.back()} className="p-2 -ml-2">
             <Ionicons name="arrow-back" size={24} color="#0F766E" />
           </Pressable>
-          <Text className="text-xl font-black text-teal-900">{t('visitDetail.title', 'Visit Detail')}</Text>
+          <Text className="text-xl font-black text-teal-900">{t('visitDetail.title')}</Text>
         </View>
 
         {error && !data ? (
@@ -91,7 +91,7 @@ export default function VisitDetailScreen() {
               <View className="flex-row items-center gap-2 mb-3">
                 <Ionicons name="person" size={18} color="#0F766E" />
                 <Text className="text-sm font-black text-teal-900 uppercase tracking-wide">
-                  {t('visitDetail.visitor', 'Visitor')}
+                  {t('visitDetail.visitor')}
                 </Text>
               </View>
               <Text className="text-base font-bold text-slate-900">
@@ -110,7 +110,7 @@ export default function VisitDetailScreen() {
                 <View className="flex-row items-center gap-2 mb-3">
                   <Ionicons name="business" size={18} color="#0F766E" />
                   <Text className="text-sm font-black text-teal-900 uppercase tracking-wide">
-                    {t('visitDetail.host', 'Host')}
+                    {t('visitDetail.host')}
                   </Text>
                 </View>
                 <Text className="text-base font-bold text-slate-900">
@@ -126,28 +126,28 @@ export default function VisitDetailScreen() {
               <View className="flex-row items-center gap-2 mb-3">
                 <Ionicons name="information-circle" size={18} color="#0F766E" />
                 <Text className="text-sm font-black text-teal-900 uppercase tracking-wide">
-                  {t('visitDetail.visitInfo', 'Visit Info')}
+                    {t('visitDetail.visitInfo')}
                 </Text>
               </View>
               {data.purpose ? (
                 <View className="flex-row justify-between mb-2">
-                  <Text className="text-sm text-slate-500">{t('visitDetail.purpose', 'Purpose')}</Text>
+                  <Text className="text-sm text-slate-500">{t('visitDetail.purpose')}</Text>
                   <Text className="text-sm font-bold text-slate-900">{data.purpose}</Text>
                 </View>
               ) : null}
               <View className="flex-row justify-between mb-2">
-                <Text className="text-sm text-slate-500">{t('visitDetail.type', 'Type')}</Text>
+                <Text className="text-sm text-slate-500">{t('visitDetail.type')}</Text>
                 <Text className="text-sm font-bold text-slate-900">{data.visitType}</Text>
               </View>
               {data.passengerCount ? (
                 <View className="flex-row justify-between mb-2">
-                  <Text className="text-sm text-slate-500">{t('visitDetail.passengers', 'Passengers')}</Text>
+                  <Text className="text-sm text-slate-500">{t('visitDetail.passengers')}</Text>
                   <Text className="text-sm font-bold text-slate-900">{data.passengerCount}</Text>
                 </View>
               ) : null}
               {data.checkOutAt && data.durationMinutes ? (
                 <View className="flex-row justify-between">
-                  <Text className="text-sm text-slate-500">{t('visitDetail.duration', 'Duration')}</Text>
+                  <Text className="text-sm text-slate-500">{t('visitDetail.duration')}</Text>
                   <Text className="text-sm font-bold text-slate-900">{data.durationMinutes} min</Text>
                 </View>
               ) : null}

@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
@@ -25,6 +26,7 @@ function formatTime(dateStr?: string | null): string {
 }
 
 export default function DashboardScreen() {
+  const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { tenantSlug, apiBaseUrl, businessSettings: cachedBusiness, saveBusinessSettings } = useApi();
   const { setMode, resetState, setJustPaired } = useKiosk();
@@ -106,9 +108,9 @@ export default function DashboardScreen() {
   }, [onSiteVisitors]);
 
   const kpis = [
-    { label: 'On Site', value: kpisData.onSite },
-    { label: 'Today', value: kpisData.totalToday },
-    { label: 'Checked Out', value: kpisData.outToday },
+    { label: t('dashboard.kpiOnSite'), value: kpisData.onSite },
+    { label: t('dashboard.kpiToday'), value: kpisData.totalToday },
+    { label: t('dashboard.kpiCheckedOut'), value: kpisData.outToday },
   ];
 
   function handleCheckIn() {
@@ -149,7 +151,7 @@ export default function DashboardScreen() {
             onPress={handleCheckIn}
             className="bg-teal-700 rounded-2xl py-4 active:bg-teal-800 active:scale-95 items-center"
           >
-            <Text className="text-white text-lg font-black">Check In</Text>
+            <Text className="text-white text-lg font-black">{t('dashboard.checkIn')}</Text>
           </Pressable>
         </View>
 
@@ -160,7 +162,7 @@ export default function DashboardScreen() {
               onPress={() => refetch()}
               className="mt-3 bg-teal-600 rounded-xl px-6 py-2 self-center active:bg-teal-700"
             >
-              <Text className="text-white font-bold text-sm">Retry</Text>
+              <Text className="text-white font-bold text-sm">{t('common.retry')}</Text>
             </Pressable>
           </View>
         ) : null}
@@ -168,12 +170,12 @@ export default function DashboardScreen() {
         {/* KPI Cards */}
         {kpiError ? (
           <View className="bg-red-50 rounded-2xl p-4 mx-6 mb-5 border border-red-200">
-            <Text className="text-red-500 text-center text-sm">Unable to load visitor KPIs.</Text>
+            <Text className="text-red-500 text-center text-sm">{t('dashboard.unableToLoadKpis')}</Text>
             <Pressable
               onPress={() => refetchKpis()}
               className="mt-3 bg-teal-600 rounded-xl px-6 py-2 self-center active:bg-teal-700"
             >
-              <Text className="text-white font-bold text-sm">Retry</Text>
+              <Text className="text-white font-bold text-sm">{t('dashboard.retryKpis')}</Text>
             </Pressable>
           </View>
         ) : null}
@@ -195,7 +197,7 @@ export default function DashboardScreen() {
         </View>
 
         {/* Currently In */}
-        <Text className="text-lg font-black text-teal-900 mb-3 px-6">Currently In</Text>
+        <Text className="text-lg font-black text-teal-900 mb-3 px-6">{t('dashboard.onSiteTitle')}</Text>
 
         {isLoading ? (
           <View className="items-center py-12">
@@ -231,12 +233,12 @@ export default function DashboardScreen() {
                     {v.visitor.company ? (
                       <Text className="text-sm text-slate-500">{v.visitor.company}</Text>
                     ) : null}
-                    <Text className="text-xs text-teal-600 mt-0.5">
-                      Checked in at {formatTime(v.checkInAt)}
+                      <Text className="text-xs text-teal-600 mt-0.5">
+                      {t('success.checkedInAt')} {formatTime(v.checkInAt)}
                     </Text>
                   </View>
                   <View className="bg-teal-100 rounded-full px-3 py-1">
-                    <Text className="text-teal-700 text-xs font-bold">IN</Text>
+                      <Text className="text-teal-700 text-xs font-bold">{t('common.onsiteStatus')}</Text>
                   </View>
                 </Pressable>
               ))}
@@ -244,7 +246,7 @@ export default function DashboardScreen() {
           </View>
         ) : (
           <View className="bg-white rounded-2xl p-6 items-center border border-slate-200 mx-6">
-            <Text className="text-slate-400 text-center">No visitors currently on site</Text>
+            <Text className="text-slate-400 text-center">{t('dashboard.emptyOnSite')}</Text>
           </View>
         )}
       </ScrollView>

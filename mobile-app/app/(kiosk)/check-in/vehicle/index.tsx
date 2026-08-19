@@ -74,7 +74,7 @@ export default function VehicleScreen() {
           </Pressable>
           <Text className="text-3xl font-black text-teal-900">{t('vehicle.title')}</Text>
           <Text className="text-base text-teal-600 mt-1">
-            Fill in vehicle details or skip if not applicable
+            {t('vehicle.fillDetails')}
           </Text>
         </View>
 
@@ -94,7 +94,7 @@ export default function VehicleScreen() {
 
             <View>
               <Text className="text-sm font-semibold text-slate-700 mb-2">
-                Vehicle Type *
+                {t('vehicle.vehicleType')} *
               </Text>
               <View className="gap-2">
                 {VEHICLE_TYPES.map((vt) => (
@@ -112,7 +112,7 @@ export default function VehicleScreen() {
                         type === vt ? 'text-teal-800' : 'text-slate-700'
                       }`}
                     >
-                      {vt === 'CAR' ? 'Car' : vt === 'TRUCK' ? 'Truck' : vt === 'MOTORCYCLE' ? 'Motorcycle' : 'Other'}
+                      {vt === 'CAR' ? t('vehicle.car') : vt === 'TRUCK' ? t('vehicle.truck') : vt === 'MOTORCYCLE' ? t('vehicle.motorcycle') : t('vehicle.other')}
                     </Text>
                   </Pressable>
                 ))}
@@ -121,7 +121,7 @@ export default function VehicleScreen() {
 
             <TextInput
               label={t('vehicle.make')}
-              placeholder="e.g. Toyota, Ford"
+              placeholder={t('vehicle.makePlaceholder')}
               value={brand}
               onChangeText={setBrand}
               autoCapitalize="words"
@@ -129,15 +129,15 @@ export default function VehicleScreen() {
 
             <TextInput
               label={t('vehicle.color')}
-              placeholder="e.g. White, Black"
+              placeholder={t('vehicle.colorPlaceholder')}
               value={color}
               onChangeText={setColor}
               autoCapitalize="words"
             />
 
             <TextInput
-              label="Passenger Count"
-              placeholder="e.g. 2"
+              label={t('vehicle.passengerCount')}
+              placeholder={t('vehicle.passengerCountPlaceholder')}
               value={passengerCount}
               onChangeText={setPassengerCount}
               keyboardType="number-pad"

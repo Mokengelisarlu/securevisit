@@ -43,7 +43,7 @@ export default function PairingScreen() {
       return;
     }
     if (!/^[a-z0-9-]+$/.test(trimmed)) {
-      setSlugError('Slug must only contain lowercase letters, numbers, and hyphens');
+      setSlugError(t('pairing.invalidSlug'));
       return;
     }
     setSlugError('');
@@ -86,7 +86,7 @@ export default function PairingScreen() {
   async function handleSaveUrl() {
     const trimmed = urlInput.trim().replace(/\/+$/, '');
     if (!trimmed) {
-      setUrlError('Please enter a server URL');
+      setUrlError(t('pairing.errorServerUrl'));
       return;
     }
     if (!/^https?:\/\/.+/.test(trimmed)) {
@@ -98,7 +98,7 @@ export default function PairingScreen() {
       await saveApiBaseUrl(trimmed.replace(/\/+$/, ''));
       setShowUrlInput(false);
       setUrlInput('');
-      setStatusMessage('Server URL updated.');
+      setStatusMessage(t('pairing.serverUrlUpdated'));
     } catch {
       setUrlError(t('errors.generic'));
     }
@@ -185,20 +185,20 @@ export default function PairingScreen() {
               resizeMode="contain"
             />
             <Text className="text-3xl font-black text-teal-900 text-center">
-              Welcome to SecureVisit
+              {t('pairing.welcomeSetupTitle')}
             </Text>
-            <Text className="text-base text-teal-700 text-center mt-2">
-              Enter your organization slug to get started.{'\n'}This is a one-time setup.
+              <Text className="text-base text-teal-700 text-center mt-2">
+                {t('pairing.welcomeSetupSubtitle')}
             </Text>
           </View>
 
           {/* Input card */}
           <View className="bg-white rounded-2xl p-6 mb-4">
             <Text className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">
-              Organization Slug
+              {t('pairing.organizationSlug')}
             </Text>
             <TextInput
-              placeholder="e.g. acme-corp"
+              placeholder={t('pairing.organizationSlugPlaceholder')}
               value={slugInput}
               onChangeText={(v) => {
                 setSlugInput(v);
@@ -212,7 +212,7 @@ export default function PairingScreen() {
               error={slugError}
             />
             <Text className="text-xs text-teal-500 mt-3">
-              You can find your slug in the SecureVisit admin panel under Settings → Organization.
+              {t('pairing.organizationSlugHelp')}
             </Text>
 
             <View className="h-px bg-teal-100 my-4" />
@@ -235,7 +235,7 @@ export default function PairingScreen() {
               error={urlError}
             />
             <Text className="text-xs text-teal-500 mt-3">
-              Leave empty to use the default. Change this if the server URL changes.
+              {t('pairing.defaultServerHelp')}
             </Text>
           </View>
 
@@ -245,7 +245,7 @@ export default function PairingScreen() {
             disabled={!slugInput.trim()}
             size="lg"
           >
-            Save & Continue
+            {t('pairing.saveContinue')}
           </Button>
         </ScrollView>
       </View>

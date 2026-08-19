@@ -103,7 +103,7 @@ export default function ExistingVisitorScreen() {
       </Pressable>
       <Text className="text-3xl font-black text-teal-900">{t('visitorSearch.title')}</Text>
       <Text className="text-base text-teal-600 mt-1">
-        Search by name or company
+        {t('visitorSearch.searchByNameOrCompany')}
       </Text>
     </View>
   );
@@ -127,7 +127,7 @@ export default function ExistingVisitorScreen() {
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-sm font-semibold text-teal-700 uppercase tracking-wide">
-              Selected
+              {t('visitorSearch.selected')}
             </Text>
             <Text className="text-xl font-black text-teal-900 mt-1">
               {selectedVisitor.firstName} {selectedVisitor.lastName}
@@ -142,15 +142,15 @@ export default function ExistingVisitorScreen() {
             onPress={() => setSelectedVisitor(null)}
             className="bg-teal-200 rounded-full px-3 py-1 active:bg-teal-300"
           >
-            <Text className="text-teal-800 text-sm font-semibold">Change</Text>
+            <Text className="text-teal-800 text-sm font-semibold">{t('visitorSearch.change')}</Text>
           </Pressable>
         </View>
       </Card>
 
       {hosts.length > 0 ? (
         <Select
-          label="Who are they visiting?"
-          placeholder="Select a host"
+          label={t('visitorSearch.visitingHost')}
+          placeholder={t('visitorSearch.selectHost')}
           value={hostId}
           options={hosts.map((h) => ({ value: h.id, label: `${h.firstName} ${h.lastName}`.trim() }))}
           onChange={setHostId}
@@ -159,8 +159,8 @@ export default function ExistingVisitorScreen() {
 
       {departments.length > 0 ? (
         <Select
-          label="Department"
-          placeholder="Select a department"
+          label={t('visitorSearch.department')}
+          placeholder={t('visitorSearch.selectDepartment')}
           value={departmentId}
           options={departments.map((d) => ({ value: d.id, label: d.name }))}
           onChange={setDepartmentId}
@@ -168,8 +168,8 @@ export default function ExistingVisitorScreen() {
       ) : null}
 
       <TextInput
-        label="Purpose of Visit"
-        placeholder="e.g. Meeting, Delivery"
+        label={t('visitorSearch.purpose')}
+        placeholder={t('visitorSearch.purposePlaceholder')}
         value={purpose}
         onChangeText={setPurpose}
       />
@@ -182,7 +182,7 @@ export default function ExistingVisitorScreen() {
 
       {selectedVisitor.isOnSite ? (
         <View className="bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-3">
-          <Text className="text-yellow-700 text-sm text-center">This visitor is already checked in.</Text>
+          <Text className="text-yellow-700 text-sm text-center">{t('visitorSearch.alreadyCheckedIn')}</Text>
         </View>
       ) : null}
 
@@ -192,7 +192,7 @@ export default function ExistingVisitorScreen() {
         disabled={isCheckinLoading || selectedVisitor.isOnSite}
         size="lg"
       >
-        {selectedVisitor.isOnSite ? 'Already Checked In' : 'Confirm Check-In'}
+        {selectedVisitor.isOnSite ? t('visitorSearch.alreadyCheckedInButton') : t('visitorSearch.confirmCheckIn')}
       </Button>
     </View>
   ) : null;
@@ -268,7 +268,7 @@ export default function ExistingVisitorScreen() {
                       {item.isOnSite ? (
                         <View className="px-2 mr-3">
                           <View className="bg-teal-100 px-2 py-1 rounded-full">
-                            <Text className="text-teal-700 text-xs font-bold">IN</Text>
+                            <Text className="text-teal-700 text-xs font-bold">{t('common.onsiteStatus')}</Text>
                           </View>
                         </View>
                       ) : null}

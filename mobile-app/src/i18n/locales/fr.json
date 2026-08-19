@@ -18,7 +18,8 @@
     "back": "Retour",
     "next": "Suivant",
     "submit": "Valider",
-    "submitting": "Validation…"
+    "submitting": "Validation…",
+    "onsiteStatus": "PRÉSENT"
   },
   "pairing": {
     "welcomeTitle": "Bienvenue",
@@ -37,7 +38,16 @@
     "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
     "errorNetwork": "Impossible de joindre le serveur. Vérifiez l'URL et votre connexion.",
     "reconnectTitle": "Ré-appairer",
-    "reconnectSubtitle": "Vous allez reconnecter cette borne à un nouveau code d'appairage. La session actuelle sera terminée."
+    "reconnectSubtitle": "Vous allez reconnecter cette borne à un nouveau code d'appairage. La session actuelle sera terminée.",
+    "invalidSlug": "L'identifiant doit contenir uniquement des minuscules, des chiffres et des tirets",
+    "serverUrlUpdated": "URL du serveur mise à jour.",
+    "welcomeSetupTitle": "Bienvenue sur SecureVisit",
+    "welcomeSetupSubtitle": "Saisissez l'identifiant de votre organisation pour commencer.\nCette configuration est unique.",
+    "organizationSlug": "Identifiant de l'organisation",
+    "organizationSlugPlaceholder": "ex. acme-corp",
+    "organizationSlugHelp": "Trouvez votre identifiant dans l'administration SecureVisit, sous Paramètres → Organisation.",
+    "defaultServerHelp": "Laissez vide pour utiliser la valeur par défaut. Modifiez-la si l'URL du serveur change.",
+    "saveContinue": "Enregistrer et continuer"
   },
   "mainMenu": {
     "checkIn": "Enregistrer",
@@ -67,7 +77,9 @@
     "emptyRecent": "Aucune activité récente",
     "host": "Hôte :",
     "checkIn": "Arrivée",
-    "checkOut": "Départ"
+    "checkOut": "Départ",
+    "unableToLoadKpis": "Impossible de charger les indicateurs des visiteurs.",
+    "retryKpis": "Réessayer"
   },
   "visitorSearch": {
     "title": "Qui vient visiter ?",
@@ -79,7 +91,21 @@
     "newVisitorDescription": "Première visite ? Inscrivez-vous ici",
     "selectVisitor": "Sélectionnez un visiteur",
     "selectVisitorDescription": "Déjà venu ? Recherchez votre fiche",
-    "recentVisitors": "Visiteurs récents"
+    "recentVisitors": "Visiteurs récents",
+    "searchTitle": "Rechercher",
+    "typeToSearch": "Saisissez une recherche",
+    "selected": "Sélectionné",
+    "change": "Modifier",
+    "visitingHost": "Qui visitez-vous ?",
+    "selectHost": "Sélectionnez un hôte",
+    "department": "Département",
+    "selectDepartment": "Sélectionnez un département",
+    "purpose": "Motif de la visite",
+    "purposePlaceholder": "ex. Réunion, livraison",
+    "alreadyCheckedIn": "Ce visiteur est déjà enregistré.",
+    "alreadyCheckedInButton": "Déjà enregistré",
+    "confirmCheckIn": "Confirmer l'arrivée",
+    "searchByNameOrCompany": "Rechercher par nom ou société"
   },
   "visitorForm": {
     "title": "Coordonnées du visiteur",
@@ -97,7 +123,18 @@
     "plateNumberPlaceholder": "Saisissez la plaque",
     "required": "Requis",
     "invalidEmail": "Adresse courriel invalide",
-    "continueButton": "Continuer"
+    "continueButton": "Continuer",
+    "fillDetails": "Saisissez les informations du visiteur ci-dessous",
+    "personalInfo": "Informations personnelles",
+    "visitDetails": "Détails de la visite",
+    "phonePlaceholderExample": "ex. +1 234 567 8900",
+    "visitorType": "Type de visiteur",
+    "visitorTypePlaceholder": "Sélectionnez un type de visiteur",
+    "hostPlaceholder": "Sélectionnez un hôte",
+    "purposePlaceholder": "ex. Réunion, livraison, entretien",
+    "requiredFirstName": "Le prénom est requis",
+    "requiredLastName": "Le nom est requis",
+    "requiredVisitorType": "Veuillez sélectionner un type de visiteur"
   },
   "photo": {
     "titleVisitor": "Photo du visiteur",
@@ -117,7 +154,17 @@
     "model": "Modèle",
     "color": "Couleur",
     "noVehicle": "Aucun véhicule",
-    "skipVehicle": "Passer — Aucun véhicule"
+    "skipVehicle": "Passer — Aucun véhicule",
+    "fillDetails": "Saisissez les détails du véhicule ou passez cette étape",
+    "vehicleType": "Type de véhicule",
+    "car": "Voiture",
+    "truck": "Camion",
+    "motorcycle": "Moto",
+    "other": "Autre",
+    "makePlaceholder": "ex. Toyota, Ford",
+    "colorPlaceholder": "ex. Blanc, noir",
+    "passengerCount": "Nombre de passagers",
+    "passengerCountPlaceholder": "ex. 2"
   },
   "signature": {
     "title": "Signature",
@@ -165,10 +212,24 @@
     "confirmMessage": "Libérer {{visitorName}} ?",
     "errorLoad": "Échec du chargement des visiteurs enregistrés",
     "errorCheckOut": "Échec de la libération. Veuillez réessayer.",
-    "successMessage": "{{visitorName}} a été libéré"
+    "successMessage": "{{visitorName}} a été libéré",
+    "onSiteCount": "{{count}} visiteur actuellement présent",
+    "onSiteCount_plural": "{{count}} visiteurs actuellement présents",
+    "findVisitor": "Rechercher un visiteur à faire sortir"
   },
   "settings": {
     "title": "Paramètres",
+    "about": "À propos",
+    "admin": "Administration",
+    "reports": "Rapports",
+    "reportsComingSoon": "Les rapports sont en cours de construction.",
+    "aboutDescription": "Détails de l'application, du concepteur, de la borne et de la connexion",
+    "adminDescription": "Langue, URL du serveur, appairage et données locales",
+    "reportsDescription": "Rapports des visiteurs et de l'activité",
+    "backToSettings": "Retour aux paramètres",
+    "builder": "Concepteur",
+    "poweredBy": "Propulsé par {{company}}",
+    "appName": "SecureVisit",
     "connection": "Connexion",
     "serverUrl": "URL du serveur",
     "deviceId": "ID de la borne",
@@ -187,7 +248,13 @@
     "clearDataDescription": "Supprimer toutes les données en cache et réinitialiser l'application",
     "clearDataConfirmTitle": "Effacer les données ?",
     "clearDataConfirmMessage": "Toutes les données en cache seront supprimées. Vous devrez appairer la borne à nouveau.",
-    "clearInProgress": "Suppression…"
+    "clearInProgress": "Suppression…",
+    "deviceToken": "Jeton de la borne",
+    "platform": "Plateforme",
+    "runtimeVersion": "Version d'exécution",
+    "unknown": "Inconnu",
+    "serverUrlOverride": "Remplacement de l'URL du serveur",
+    "serverUrlPlaceholder": "https://votre-serveur.com"
   },
   "errors": {
     "generic": "Une erreur est survenue",
@@ -195,6 +262,18 @@
     "timeout": "La requête a expiré. Veuillez réessayer.",
     "notFound": "Introuvable",
     "unauthorized": "Session expirée. Veuillez appairer la borne à nouveau.",
-    "validationError": "Veuillez vérifier le formulaire"
+    "validationError": "Veuillez vérifier le formulaire",
+    "invalidSlug": "L'identifiant doit contenir uniquement des minuscules, des chiffres et des tirets",
+    "serverUrlUpdated": "URL du serveur mise à jour."
+  }
+  ,"visitDetail": {
+    "title": "Détail de la visite",
+    "visitor": "Visiteur",
+    "host": "Hôte",
+    "visitInfo": "Informations de la visite",
+    "purpose": "Motif",
+    "type": "Type",
+    "passengers": "Passagers",
+    "duration": "Durée"
   }
 }
