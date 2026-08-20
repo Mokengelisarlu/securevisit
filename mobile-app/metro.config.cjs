@@ -10,7 +10,7 @@ const config = getDefaultConfig(__dirname);
 config.resolver = {
   ...config.resolver,
   // Allow Metro to follow symlinks (required for pnpm)
-  unstable_enableSymlinks: true,
+  unstable_enableSymlinks: undefined,
   // Ensure node_modules at project root are searched
   nodeModulesPaths: [path.resolve(__dirname, 'node_modules')],
 };

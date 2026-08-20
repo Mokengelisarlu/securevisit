@@ -9,7 +9,7 @@ export function useCreatePublicVisit(deviceToken: string | null) {
   const { tenantSlug, apiBaseUrl } = useApi();
 
   const createVisit = useCallback(
-    async (visitData: Omit<Visit, 'id' | 'checkedInAt'>) => {
+    async (visitData: Omit<Visit, 'id' | 'checkInAt'>) => {
       if (!deviceToken) throw new Error('Device not paired');
 
       setIsLoading(true);

@@ -75,12 +75,99 @@ export interface Visit {
     color?: string;
   };
   passengerCount?: number;
-  checkedInAt: string;
-  checkedOutAt?: string;
+  checkInAt: string;
+  checkOutAt?: string;
+}
+
+export interface VisitorDetail extends Visitor {
+  isOnSite: boolean;
+}
+
+export interface VisitDetail {
+  id: string;
+  visitNumber: string | null;
+  visitorId: string;
+  hostId: string | null;
+  departmentId: string | null;
+  serviceId: string | null;
+  vehicleId: string | null;
+  passengerCount: number | null;
+  visitType: string;
+  visitDate: string;
+  purpose: string | null;
+  checkInAt: string | null;
+  checkOutAt: string | null;
+  durationMinutes: number | null;
+  status: 'IN' | 'OUT' | 'CANCELLED' | 'SCHEDULED';
+  visitorPhotoUrl: string | null;
+  vehiclePhotoUrl: string | null;
+  visitor: Visitor;
+  host: Host | null;
+  department: Department | null;
+  service: Service | null;
+  vehicle: {
+    id: string;
+    plateNumber: string;
+    type: string;
+    brand: string | null;
+    color: string | null;
+  } | null;
+}
+
+export interface VisitHistoryEntry {
+  id: string;
+  visitNumber: string | null;
+  visitDate: string;
+  purpose: string | null;
+  checkInAt: string | null;
+  checkOutAt: string | null;
+  durationMinutes: number | null;
+  status: 'IN' | 'OUT' | 'CANCELLED' | 'SCHEDULED';
+  visitor: Visitor;
+  host: Host | null;
+  department: Department | null;
+  service: Service | null;
+  vehicle: {
+    id: string;
+    plateNumber: string;
+    type: string;
+  } | null;
 }
 
 export interface OnSiteVisitor extends Visit {
   visitor: Visitor;
+  host: Host | null;
+}
+
+export interface RecentActivity {
+  id: string;
+  visitorName: string;
+  hostName: string;
+  type: 'CHECK_IN' | 'CHECK_OUT';
+  time: string;
+  visitorPhotoUrl?: string | null;
+}
+
+export interface DashboardKpiStats {
+  arrivedToday: number;
+  onSite: number;
+  departedToday: number;
+  monthlyVisits: number;
+  weeklyAverage: number;
+  weeklyTrend: { day: string; count: number }[];
+  vehiclesOnSite: number;
+  visitsToday: number;
+  recentActivities: RecentActivity[];
+}
+
+export interface DashboardData extends DashboardKpiStats {
+  onSiteVisitors: OnSiteVisitor[];
+}
+
+export interface VisitorKpisResponse {
+  onSite: number;
+  outToday: number;
+  totalToday: number;
 }
 
 export interface UploadResponse {
@@ -94,7 +181,9 @@ export interface PairingCodeResponse {
   code?: string;
   deviceId?: string;
   expiresAt?: string;
+  diviceId?: string;
 }
+
 
 export interface PairingStatusResponse {
   ok?: boolean;
@@ -112,6 +201,13 @@ export interface DeviceVerifyResponse {
 export interface DevicePingResponse {
   ok: boolean;
   timestamp: string;
+}
+
+export interface KioskSettings {
+  requireSignature: number;
+  requireVisitorPhoto: number;
+  requireVehiclePhoto: number;
+  ndaPolicyText: string | null;
 }
 
 export interface ErrorResponse {

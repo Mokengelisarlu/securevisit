@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { DEFAULT_API_BASE_URL } from '@/src/api/client';
-import { BusinessSettings } from '@/src/types/api';
+import { BusinessSettings, KioskSettings } from '@/src/types/api';
 
 const SLUG_STORAGE_KEY = 'kiosk_tenant_slug';
 const URL_STORAGE_KEY = 'kiosk_api_base_url';
@@ -13,6 +13,7 @@ interface ApiContextType {
   tenantSlug: string | null;
   deviceId: string | null;
   businessSettings: BusinessSettings | null;
+  kioskSettings: KioskSettings | null;
   isLoadingSlug: boolean;
   saveTenantSlug: (slug: string) => Promise<void>;
   clearTenantSlug: () => Promise<void>;
@@ -21,6 +22,8 @@ interface ApiContextType {
   clearDeviceId: () => Promise<void>;
   saveBusinessSettings: (settings: BusinessSettings) => Promise<void>;
   clearBusinessSettings: () => Promise<void>;
+  saveKioskSettings: (settings: KioskSettings) => Promise<void>;
+  clearKioskSettings: () => Promise<void>;
 }
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -30,6 +33,7 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [apiBaseUrl, setApiBaseUrl] = useState<string>(DEFAULT_API_BASE_URL);
   const [businessSettings, setBusinessSettings] = useState<BusinessSettings | null>(null);
+  const [kioskSettings, setKioskSettings] = useState<KioskSettings | null>(null);
   const [isLoadingSlug, setIsLoadingSlug] = useState(true);
 
   useEffect(() => {
@@ -68,6 +72,10 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
       const sanitized = slug.trim().toLowerCase();
       await SecureStore.setItemAsync(SLUG_STORAGE_KEY, sanitized);
       setTenantSlug(sanitized);
+      // stale business/kiosk settings no longer apply to the new tenant
+      await SecureStore.deleteItemAsync(BUSINESS_SETTINGS_KEY);
+      setBusinessSettings(null);
+      setKioskSettings(null);
     } catch (err) {
       console.error('Failed to save tenant slug:', err);
       throw err;
@@ -135,6 +143,24 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function saveKioskSettings(settings: KioskSettings) {
+    try {
+      setKioskSettings(settings);
+    } catch (err) {
+      console.error('Failed to save kiosk settings:', err);
+      throw err;
+    }
+  }
+
+  async function clearKioskSettings() {
+    try {
+      setKioskSettings(null);
+    } catch (err) {
+      console.error('Failed to clear kiosk settings:', err);
+      throw err;
+    }
+  }
+
   return (
     <ApiContext.Provider
       value={{
@@ -142,6 +168,7 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
         tenantSlug,
         deviceId,
         businessSettings,
+        kioskSettings,
         isLoadingSlug,
         saveTenantSlug,
         clearTenantSlug,
@@ -150,6 +177,8 @@ export function ApiProvider({ children }: { children: React.ReactNode }) {
         clearDeviceId,
         saveBusinessSettings,
         clearBusinessSettings,
+        saveKioskSettings,
+        clearKioskSettings,
       }}
     >
       {children}

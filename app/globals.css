@@ -160,6 +160,20 @@ html {
   overflow: hidden;
 }
 
+.dashboard-loop {
+  animation: dashboardFloat 14s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes dashboardFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.014);
+  }
+}
+
 /* Text gradient */
 .text-gradient {
   background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(177 90% 55%) 100%);

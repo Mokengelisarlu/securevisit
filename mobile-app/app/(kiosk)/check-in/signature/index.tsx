@@ -4,11 +4,15 @@ import { router } from 'expo-router';
 import { ScreenWrapper, Button, SignaturePad } from '@/src/components/ui';
 import type { SignaturePadHandle } from '@/src/components/ui';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
+import { useApi } from '@/src/contexts/ApiContext';
+import { useTranslation } from 'react-i18next';
 
 export default function SignatureScreen() {
   const { updateDraft } = useVisitDraft();
+  const { kioskSettings } = useApi();
   const padRef = useRef<SignaturePadHandle>(null);
   const [hasSignature, setHasSignature] = useState(false);
+  const { t } = useTranslation();
 
   function handleClear() {
     padRef.current?.clear();
@@ -43,9 +47,9 @@ export default function SignatureScreen() {
             className="mb-4 self-start"
             hitSlop={12}
           >
-            <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+            <Text className="text-teal-700 text-base font-semibold">{t('common.back')}</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900">Signature</Text>
+          <Text className="text-3xl font-black text-teal-900">{t('signature.title')}</Text>
           <Text className="text-base text-teal-600 mt-1 mb-6">
             Sign using your finger on the pad below
           </Text>
@@ -55,7 +59,7 @@ export default function SignatureScreen() {
           {/* Header row above the pad */}
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
-              Sign below
+              {t('signature.signHere')}
             </Text>
             {hasSignature && (
               <Pressable
@@ -63,7 +67,7 @@ export default function SignatureScreen() {
                 hitSlop={12}
                 className="flex-row items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 active:bg-red-100"
               >
-                <Text className="text-red-600 text-sm font-semibold">✕ Clear</Text>
+                <Text className="text-red-600 text-sm font-semibold">{t('signature.clear')}</Text>
               </Pressable>
             )}
           </View>
@@ -76,11 +80,13 @@ export default function SignatureScreen() {
 
         <View className="pb-6 gap-3">
           <Button onPress={handleContinue} size="lg">
-            Continue with Signature
+            {t('signature.continue')}
           </Button>
-          <Button onPress={handleSkip} variant="ghost" size="md">
-            Skip — No Signature
-          </Button>
+          {kioskSettings?.requireSignature !== 1 ? (
+            <Button onPress={handleSkip} variant="ghost" size="md">
+              {t('signature.skip')}
+            </Button>
+          ) : null}
         </View>
       </View>
     </ScreenWrapper>

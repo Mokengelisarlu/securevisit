@@ -8,6 +8,8 @@ interface ScreenWrapperProps {
   padX?: boolean;
   /** If true, wrap children in a ScrollView. Defaults to false to avoid nesting VirtualizedLists. */
   scrollable?: boolean;
+  /** Offset for KeyboardAvoidingView to account for headers */
+  keyboardOffset?: number;
 }
 
 export function ScreenWrapper({
@@ -15,6 +17,7 @@ export function ScreenWrapper({
   className = '',
   padX = true,
   scrollable = false,
+  keyboardOffset = 0,
 }: ScreenWrapperProps) {
   const insets = useSafeAreaInsets();
 
@@ -22,6 +25,7 @@ export function ScreenWrapper({
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
+      keyboardVerticalOffset={keyboardOffset}
     >
       <View
         className={`flex-1 bg-teal-50 ${padX ? 'px-6' : ''} ${className}`}

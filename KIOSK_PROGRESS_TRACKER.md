@@ -740,6 +740,27 @@
   - `app/(kiosk)/index.tsx` — "Reset Device / Change Tenant" replaced with "Settings" button
 - [x] **Status**: COMPLETED
 
+### Unit 3.10 - Kiosk Dashboard Tab (KPIs, On-Site, Recent Activity) ✓ COMPLETED
+- [x] **Task**: Add a live Dashboard tab to the paired kiosk showing visitor KPIs, currently on-site visitors, and recent check-in/check-out activity
+- [x] **UI**:
+  - [x] Bottom tab navigation (`Home / Dashboard / Settings`) via `expo-router` Tabs under `(kiosk)/(tabs)`
+  - [x] KPI cards: On Site, Checked In, Checked Out, Today's Visits
+  - [x] "Currently On Site" list (visitor photo/initials, company, check-in time)
+  - [x] "Recent Visits" activity list with CHECK_IN/CHECK_OUT badges and timestamps
+  - [x] Loading spinner, error card with Retry, and empty states for both lists
+  - [x] Auto-refresh every 20s plus refetch on focus
+- [x] **Infrastructure**:
+  - [x] `useGetDashboard` hook (polling) in `src/hooks/useDashboard.ts`
+  - [x] `useKioskHeartbeat` hook in `src/hooks/useHeartbeat.ts` — pings `/devices/ping` every 2 min (mounted in root layout)
+  - [x] `DashboardData` / `DashboardKpiStats` / `RecentActivity` types in `src/types/api.ts`
+  - [x] EN/FR `tabs.*` and `dashboard.*` i18n keys
+  - [x] `device_id` column rename + unique index migrations for the pairing idempotency fix
+- [x] **Backend**:
+  - [x] `GET /api/tenants/{slug}/public/dashboard` — returns KPI stats + `onSiteVisitors` (auth: device token)
+  - [x] Extracted `computeDashboardStats(db)` shared by admin + public dashboards
+- [x] **Test**: `tsc --noEmit` clean; `expo lint` clean for new files; `expo export` bundles successfully
+- [x] **Status**: COMPLETED
+
 ---
 
 ## Phase 4: Offline Mode & Sync (Target: Week 7)
@@ -917,8 +938,8 @@
 | Phase 5: Admin | NOT STARTED | 0% |
 | Phase 6: Testing | NOT STARTED | 0% |
 
-**Total Units**: 48  
-**Completed**: 20  
+**Total Units**: 49  
+**Completed**: 21  
 **In Progress**: 0  
 **Blocked**: 0  
 

@@ -1,15 +1,19 @@
 import { Stack } from 'expo-router';
 import './globals.css';
+import '@/src/i18n';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
 import { KioskProvider } from '@/src/contexts/KioskContext';
 import { ApiProvider, useApi } from '@/src/contexts/ApiContext';
 import { VisitDraftProvider } from '@/src/contexts/VisitDraftContext';
+import { useKioskHeartbeat } from '@/src/hooks/useHeartbeat';
 
 function RootContent() {
   const { isCheckingToken } = useAuth();
   const { isLoadingSlug } = useApi();
+
+  useKioskHeartbeat();
 
   if (isCheckingToken || isLoadingSlug) {
     return (
@@ -37,4 +41,3 @@ export default function RootLayout() {
     </SafeAreaProvider>
   );
 }
-

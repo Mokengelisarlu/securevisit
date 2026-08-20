@@ -17,8 +17,10 @@ export async function GET(
     const result = await checkPairingStatus(slug, deviceId);
     return NextResponse.json({ ok: true, ...result });
   } catch (error: any) {
+    console.error('[pairing-status] error:', error);
+    const detail = error?.cause || error?.stack || null;
     return NextResponse.json(
-      { ok: false, error: error?.message || "Failed to fetch pairing status" },
+      { ok: false, error: error?.message || "Failed to fetch pairing status", detail },
       { status: 500 }
     );
   }

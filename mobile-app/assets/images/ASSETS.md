@@ -2,6 +2,7 @@ This folder contains source images for the Expo app.
 
 Files:
 - icon.png or icon-512x512.png - primary square app icon source used to generate variants
+- icon-safe.png - generated padded icon that keeps the logo inside platform icon safe zones
 - splash-icon.png - optional splash artwork (centered)
 - android-icon-foreground.png / android-icon-background.png - adaptive icon parts
 - favicon.png - web favicon
@@ -30,3 +31,4 @@ pnpm run generate:assets
 Notes:
 - The script requires `sharp` and Node 16+.
 - The script resizes `icon.png`; for best results, provide a high-resolution square PNG (at least 2048x2048).
+- Generated icon variants use `contain`; the safe icon scales the artwork to 60% of the canvas to avoid adaptive-icon cropping.

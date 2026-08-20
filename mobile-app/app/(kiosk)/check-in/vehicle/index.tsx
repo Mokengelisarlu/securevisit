@@ -2,12 +2,15 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { ScreenWrapper, Card, Button, TextInput } from '@/src/components/ui';
+import { useApi } from '@/src/contexts/ApiContext';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
+import { useTranslation } from 'react-i18next';
 
 const VEHICLE_TYPES = ['CAR', 'TRUCK', 'MOTORCYCLE', 'OTHER'] as const;
 
 export default function VehicleScreen() {
   const { draft, setVehicle } = useVisitDraft();
+  const { kioskSettings } = useApi();
 
   const [plateNumber, setPlateNumber] = useState('');
   const [type, setType] = useState<'CAR' | 'TRUCK' | 'MOTORCYCLE' | 'OTHER'>('CAR');
@@ -15,6 +18,7 @@ export default function VehicleScreen() {
   const [color, setColor] = useState('');
   const [passengerCount, setPassengerCount] = useState('');
   const [error, setError] = useState('');
+  const { t } = useTranslation();
 
   function handleContinue() {
     if (!plateNumber.trim()) {
@@ -30,12 +34,26 @@ export default function VehicleScreen() {
       passengerCount: passengerCount ? parseInt(passengerCount, 10) : undefined,
     });
 
-    router.push('/(kiosk)/check-in/photo' as any);
+    navigateNext(true);
   }
 
   function handleSkip() {
     setVehicle(null);
-    router.push('/(kiosk)/check-in/photo' as any);
+    navigateNext(false);
+  }
+
+  function navigateNext(hasVehicle: boolean) {
+    const requireVisitorPhoto = kioskSettings?.requireVisitorPhoto === 1;
+    const requireVehiclePhoto = kioskSettings?.requireVehiclePhoto === 1 && hasVehicle;
+    const requireSignature = kioskSettings?.requireSignature === 1;
+
+    if (requireVisitorPhoto || requireVehiclePhoto) {
+      router.push('/(kiosk)/check-in/photo' as any);
+    } else if (requireSignature) {
+      router.push('/(kiosk)/check-in/signature' as any);
+    } else {
+      router.push('/(kiosk)/check-in/review' as any);
+    }
   }
 
   return (
@@ -52,32 +70,31 @@ export default function VehicleScreen() {
             className="mb-4 self-start"
             hitSlop={12}
           >
-            <Text className="text-teal-700 text-base font-semibold">← Back</Text>
+            <Text className="text-teal-700 text-base font-semibold">{t('common.back')}</Text>
           </Pressable>
-          <Text className="text-3xl font-black text-teal-900">Vehicle Info</Text>
+          <Text className="text-3xl font-black text-teal-900">{t('vehicle.title')}</Text>
           <Text className="text-base text-teal-600 mt-1">
-            Fill in vehicle details or skip if not applicable
+            {t('vehicle.fillDetails')}
           </Text>
         </View>
 
         <Card className="mb-6">
           <Text className="text-sm font-bold text-teal-700 uppercase tracking-wide mb-4">
-            Vehicle Details
+            {t('vehicle.title')}
           </Text>
 
           <View className="gap-4">
             <TextInput
-              label="Plate Number *"
-              placeholder="e.g. ABC 123"
+              label={`${t('vehicle.plateNumber')} *`}
+              placeholder={t('vehicle.plateNumberPlaceholder')}
               value={plateNumber}
-              onChangeText={(t) => { setPlateNumber(t); setError(''); }}
-              autoCapitalize="characters"
+              onChangeText={(t) => { setPlateNumber(t.toUpperCase()); setError(''); }}
               error={error}
             />
 
             <View>
               <Text className="text-sm font-semibold text-slate-700 mb-2">
-                Vehicle Type *
+                {t('vehicle.vehicleType')} *
               </Text>
               <View className="gap-2">
                 {VEHICLE_TYPES.map((vt) => (
@@ -95,7 +112,7 @@ export default function VehicleScreen() {
                         type === vt ? 'text-teal-800' : 'text-slate-700'
                       }`}
                     >
-                      {vt === 'CAR' ? 'Car' : vt === 'TRUCK' ? 'Truck' : vt === 'MOTORCYCLE' ? 'Motorcycle' : 'Other'}
+                      {vt === 'CAR' ? t('vehicle.car') : vt === 'TRUCK' ? t('vehicle.truck') : vt === 'MOTORCYCLE' ? t('vehicle.motorcycle') : t('vehicle.other')}
                     </Text>
                   </Pressable>
                 ))}
@@ -103,24 +120,24 @@ export default function VehicleScreen() {
             </View>
 
             <TextInput
-              label="Brand"
-              placeholder="e.g. Toyota, Ford"
+              label={t('vehicle.make')}
+              placeholder={t('vehicle.makePlaceholder')}
               value={brand}
               onChangeText={setBrand}
               autoCapitalize="words"
             />
 
             <TextInput
-              label="Color"
-              placeholder="e.g. White, Black"
+              label={t('vehicle.color')}
+              placeholder={t('vehicle.colorPlaceholder')}
               value={color}
               onChangeText={setColor}
               autoCapitalize="words"
             />
 
             <TextInput
-              label="Passenger Count"
-              placeholder="e.g. 2"
+              label={t('vehicle.passengerCount')}
+              placeholder={t('vehicle.passengerCountPlaceholder')}
               value={passengerCount}
               onChangeText={setPassengerCount}
               keyboardType="number-pad"
@@ -136,10 +153,10 @@ export default function VehicleScreen() {
 
         <View className="gap-3">
           <Button onPress={handleContinue} size="lg">
-            Continue with Vehicle
+            {t('common.continue')}
           </Button>
           <Button onPress={handleSkip} variant="ghost" size="md">
-            Skip — No Vehicle
+            {t('vehicle.skipVehicle')}
           </Button>
         </View>
       </ScrollView>

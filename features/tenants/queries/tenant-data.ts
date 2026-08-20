@@ -36,6 +36,11 @@ export async function verifyDeviceToken(tenantSlug: string, deviceToken: string)
   const db = await getTenantDbBySlug(tenantSlug);
   const device = await db.query.devices.findFirst({
     where: and(eq(devices.deviceToken, deviceToken), eq(devices.isPaired, 1)),
+    columns: {
+      id: true,
+      isPaired: true,
+      lastActiveAt: true,
+    },
   });
 
   if (!device) {
@@ -64,17 +69,42 @@ export async function pingDevice(tenantSlug: string, deviceToken: string) {
 /**
  * [PUBLIC] Generate a pairing code for a new kiosk
  */
-export async function generatePairingCode(tenantSlug: string) {
+export async function generatePairingCode(tenantSlug: string, deviceId: string) {
   const db = await getTenantDbBySlug(tenantSlug);
 
   // Generate a 6-character uppercase code
   const pairingCode = randomBytes(3).toString("hex").toUpperCase();
   const expiresAt = addMinutes(new Date(), 10); // Expires in 10 minutes
 
+  // Idempotency: reuse existing device row for the same physical device.
+  const existingDevice = await db.query.devices.findFirst({
+    where: eq(devices.deviceId, deviceId),
+  });
+
+  if (existingDevice) {
+    const [updatedDevice] = await db.update(devices).set({
+      pairingCode,
+      pairingCodeExpiresAt: expiresAt,
+      isPaired: 0,
+      deviceToken: null,
+      pairedAt: null,
+      lastActiveAt: null,
+    }).where(eq(devices.id, existingDevice.id)).returning();
+
+    return {
+      deviceId: updatedDevice.id,
+      pairingCode,
+    };
+  }
+
   const [device] = await db.insert(devices).values({
+    deviceId,
     pairingCode,
     pairingCodeExpiresAt: expiresAt,
     isPaired: 0,
+    deviceToken: null,
+    pairedAt: null,
+    lastActiveAt: null,
   }).returning();
 
   return {
@@ -82,6 +112,7 @@ export async function generatePairingCode(tenantSlug: string) {
     pairingCode,
   };
 }
+
 
 /**
  * [PUBLIC] Generate a pairing code for an EXISTING device (reconnect flow)
@@ -139,7 +170,8 @@ export async function generateReconnectPairingCode(tenantSlug: string, deviceId:
 export async function checkPairingStatus(tenantSlug: string, deviceId: string) {
   const db = await getTenantDbBySlug(tenantSlug);
   const device = await db.query.devices.findFirst({
-    where: eq(devices.id, deviceId),
+    // Support checking by either the DB row id or the stable physical device id
+    where: or(eq(devices.id, deviceId), eq(devices.deviceId, deviceId)),
   });
 
   if (device?.isPaired === 1 && device.deviceToken) {
@@ -1094,13 +1126,38 @@ async function checkoutVisitInternal(tenantSlug: string, visitId: string) {
 export async function getPublicOnSiteVisitors(tenantSlug: string, deviceToken: string) {
   await verifyDeviceToken(tenantSlug, deviceToken);
   const db = await getTenantDbBySlug(tenantSlug);
-  return await db.query.visits.findMany({
+
+  const onSite = await db.query.visits.findMany({
     where: eq(visits.status, "IN"),
     with: {
       visitor: true,
+      host: true,
     },
     orderBy: [desc(visits.checkInAt)],
   });
+
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkInAt), gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
+    columns: { id: true },
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkOutAt), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
+    columns: { id: true },
+  });
+
+  return {
+    visitors: onSite,
+    stats: {
+      onSite: onSite.length,
+      arrivedToday: arrivedToday.length,
+      departedToday: departedToday.length,
+    },
+  };
 }
 
 /**
@@ -1156,38 +1213,51 @@ export async function searchPublicVisitors(
 ) {
   await verifyDeviceToken(tenantSlug, deviceToken);
 
-  if (!query || query.trim().length < 2) {
+  const normalizedQuery = query?.trim() ?? "";
+
+  if (!normalizedQuery) {
     return [];
   }
 
   const db = await getTenantDbBySlug(tenantSlug);
-  const q = `%${query.trim()}%`;
 
-  const results = await db.query.visitors.findMany({
-    where: or(
-      ilike(visitors.firstName, q),
-      ilike(visitors.lastName, q),
-      ilike(visitors.phone, q)
-    ),
-    with: {
-      type: true,
-    },
-    limit: 10,
-  });
+  let results: any[];
 
-  // Determine which of the matched visitors are currently on-site
+  if (normalizedQuery.toLowerCase() === "all") {
+    results = await db.query.visitors.findMany({
+      with: { type: true },
+      orderBy: [desc(visitors.createdAt)],
+    });
+    console.log("[searchPublicVisitors] q=all -> all visitors result:", JSON.stringify(results, null, 2));
+  } else {
+    if (normalizedQuery.length < 2) {
+      return [];
+    }
+
+    const q = `%${normalizedQuery}%`;
+    results = await db.query.visitors.findMany({
+      where: or(
+        ilike(visitors.firstName, q),
+        ilike(visitors.lastName, q),
+        ilike(visitors.phone, q)
+      ),
+      with: {
+        type: true,
+      },
+      limit: 10,
+    });
+  }
+
   const visitorIds: string[] = results.map((r: { id: string }) => r.id);
   let onSiteIds = new Set<string>();
   if (visitorIds.length > 0) {
-    // Query for active visits using inArray
     const activeVisits = await db.query.visits.findMany({
       where: and(eq(visits.status, "IN"), inArray(visits.visitorId, visitorIds)),
     });
     activeVisits.forEach((v: { visitorId: string }) => onSiteIds.add(v.visitorId));
   }
 
-  // Return full visitor details (kiosk needs full names/phones) and include an `isOnSite` flag
-  return (results as typeof results).map((v: (typeof results)[number]) => {
+  const mapped = (results as typeof results).map((v: (typeof results)[number]) => {
     const lastNameMasked = v.lastName ? v.lastName[0].toUpperCase() + "." : "";
     const phoneMasked = v.phone ? "••• " + v.phone.slice(-4) : null;
 
@@ -1205,12 +1275,189 @@ export async function searchPublicVisitors(
       isOnSite: onSiteIds.has(v.id),
     };
   });
+
+  console.log("[searchPublicVisitors] final mapped result:", JSON.stringify(mapped, null, 2));
+  return mapped;
 }
 
-export async function getDashboardStats(tenantSlug: string) {
-  await verifyTenantOwnership(tenantSlug);
+/**
+ * [PUBLIC/SECURE] Get all visitors with their type, ordered by createdAt desc
+ */
+export async function getPublicVisitors(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
   const db = await getTenantDbBySlug(tenantSlug);
 
+  return await db.query.visitors.findMany({
+    with: {
+      type: true,
+    },
+    orderBy: [desc(visitors.createdAt)],
+  });
+}
+
+/**
+ * [PUBLIC/SECURE] Get all visitors with KPI stats for the kiosk device.
+ * Returns KPI counts for the kiosk device:
+ *  - onSite: visitors currently checked in (status IN)
+ *  - outToday: visitors who checked out today
+ *  - totalToday: visits checked in today
+ */
+export async function getPublicVisitorKpis(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const activeVisits = await db.query.visits.findMany({
+    where: eq(visits.status, "IN"),
+    columns: { visitorId: true },
+  });
+  const onSiteIds = new Set(activeVisits.map((v: { visitorId: string }) => v.visitorId));
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(
+      isNotNull(visits.checkInAt),
+      gte(visits.checkInAt, startToday),
+      lte(visits.checkInAt, endToday)
+    ),
+    columns: { id: true },
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(
+      eq(visits.status, "OUT"),
+      isNotNull(visits.checkOutAt),
+      gte(visits.checkOutAt, startToday),
+      lte(visits.checkOutAt, endToday)
+    ),
+    columns: { id: true },
+  });
+
+  return {
+    onSite: onSiteIds.size,
+    outToday: departedToday.length,
+    totalToday: arrivedToday.length,
+  };
+}
+
+/**
+ * [PUBLIC/SECURE] Get single visitor by ID with type, plus an isOnSite boolean
+ */
+export async function getPublicVisitorById(
+  tenantSlug: string,
+  deviceToken: string,
+  visitorId: string
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const visitor = await db.query.visitors.findFirst({
+    where: eq(visitors.id, visitorId),
+    with: {
+      type: true,
+    },
+  });
+
+  if (!visitor) {
+    throw new Error("Visitor not found");
+  }
+
+  const activeVisit = await db.query.visits.findFirst({
+    where: and(eq(visits.visitorId, visitorId), eq(visits.status, "IN")),
+  });
+
+  return {
+    id: visitor.id,
+    firstName: visitor.firstName,
+    lastName: visitor.lastName,
+    phone: visitor.phone,
+    company: visitor.company,
+    visitorTypeId: visitor.visitorTypeId,
+    visitorTypeName: (visitor as any).type?.name ?? null,
+    photoUrl: visitor.photoUrl,
+    isOnSite: !!activeVisit,
+  };
+}
+
+/**
+ * [PUBLIC/SECURE] Get single visit by ID with visitor, host, department, service, vehicle
+ */
+export async function getPublicVisitById(
+  tenantSlug: string,
+  deviceToken: string,
+  visitId: string
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const visit = await db.query.visits.findFirst({
+    where: eq(visits.id, visitId),
+    with: {
+      visitor: {
+        with: {
+          type: true,
+        },
+      },
+      host: true,
+      department: true,
+      service: true,
+      vehicle: true,
+    },
+  });
+
+  if (!visit) {
+    throw new Error("Visit not found");
+  }
+
+  return visit;
+}
+
+/**
+ * [PUBLIC/SECURE] Get all visits for a specific visitor with relations, ordered by visitDate desc
+ */
+export async function getPublicVisitHistory(
+  tenantSlug: string,
+  deviceToken: string,
+  visitorId: string
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  return await db.query.visits.findMany({
+    where: eq(visits.visitorId, visitorId),
+    with: {
+      visitor: true,
+      host: true,
+      department: true,
+      service: true,
+      vehicle: true,
+    },
+    orderBy: [desc(visits.visitDate)],
+  });
+}
+
+/**
+ * [PUBLIC/SECURE] Get recent visits across all visitors for dashboard
+ */
+export async function getPublicRecentVisits(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  return await db.query.visits.findMany({
+    limit: 20,
+    with: {
+      visitor: true,
+      host: true,
+      department: true,
+      service: true,
+    },
+    orderBy: [desc(visits.checkInAt)],
+  });
+}
+
+async function computeDashboardStats(db: any) {
   const now = new Date();
   const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
@@ -1279,13 +1526,55 @@ export async function getDashboardStats(tenantSlug: string) {
     weeklyAverage: weeklyAverage,
     weeklyTrend: weeklyTrend,
     vehiclesOnSite: vehiclesOnSite.length,
+    visitsToday: arrivedToday.length + departedToday.length,
     recentActivities: recentActivities.map((v: any) => ({
       id: v.id,
       visitorName: `${v.visitor.firstName} ${v.visitor.lastName}`,
       hostName: v.host?.firstName ? `${v.host.firstName} ${v.host.lastName}` : "N/A",
       type: v.status === "IN" ? "CHECK_IN" : "CHECK_OUT",
       time: v.status === "IN" ? v.checkInAt : v.checkOutAt,
+      visitorPhotoUrl: v.visitorPhotoUrl || v.visitor?.photoUrl || null,
     }))
+  };
+}
+
+/**
+ * [ADMIN] Dashboard stats for the tenant dashboard
+ */
+export async function getDashboardStats(tenantSlug: string) {
+  await verifyTenantOwnership(tenantSlug);
+  const db = await getTenantDbBySlug(tenantSlug);
+  return await computeDashboardStats(db);
+}
+
+/**
+ * [PUBLIC/SECURE] Kiosk mini dashboard — KPI stats plus the visitors
+ * currently on-site. Requires a valid paired device token.
+ */
+export async function getPublicDashboard(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkInAt), gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(eq(visits.status, "OUT"), isNotNull(visits.checkOutAt), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
+  });
+
+  const onSite = await db.query.visits.findMany({
+    where: eq(visits.status, "IN"),
+  });
+
+  return {
+    arrivedToday: arrivedToday.length,
+    departedToday: departedToday.length,
+    onSite: onSite.length,
   };
 }
 
@@ -1538,7 +1827,10 @@ export async function getBusinessSettings(tenantSlug: string) {
   return rows[0] ?? null;
 }
 
-export async function getPublicBusinessSettings(tenantSlug: string) {
+export async function getPublicBusinessSettings(tenantSlug: string, deviceToken?: string) {
+  if (deviceToken) {
+    await verifyDeviceToken(tenantSlug, deviceToken);
+  }
   const db = await getTenantDbBySlug(tenantSlug);
   const rows = await db.query.businessSettings.findMany({ limit: 1 });
   return rows[0] ?? null;

@@ -2,7 +2,7 @@
 
 import type { UploadResponse } from '@/src/types/api';
 
-const DEFAULT_API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://192.168.11.102:3000';
+const DEFAULT_API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://securevisitapp.com';
 
 export { DEFAULT_API_BASE_URL };
 
@@ -36,9 +36,23 @@ export async function apiCall(
 
   let lastError: any;
 
+  let normalizedBaseUrl = (baseUrl || DEFAULT_API_BASE_URL)
+    .trim()
+    .replace(/\/+$/, '');
+
+  // Auto-correct missing slashes from typoed manual inputs (e.g. "https:securevisitapp.com")
+  if (normalizedBaseUrl.startsWith('https:') && !normalizedBaseUrl.startsWith('https://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('https:', 'https://');
+  } else if (normalizedBaseUrl.startsWith('http:') && !normalizedBaseUrl.startsWith('http://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('http:', 'http://');
+  }
+
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const url = `${baseUrl || DEFAULT_API_BASE_URL}${endpoint}`;
+      const url = `${normalizedBaseUrl}${normalizedEndpoint}`;
+
       const options: RequestInit = {
         method,
         headers: {
@@ -61,8 +75,22 @@ export async function apiCall(
       const response = await fetch(url, options);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData?.error || `HTTP ${response.status}`);
+        // Try JSON first; fall back to text for reverse-proxy HTML errors.
+        const contentType = response.headers.get('content-type') || '';
+        let errorMessage = `HTTP ${response.status}`;
+
+        if (contentType.includes('application/json')) {
+          const errorData = await response.json().catch(() => ({}));
+          errorMessage = errorData?.error || errorMessage;
+        } else {
+          const text = await response.text().catch(() => '');
+          const trimmed = text?.trim();
+          if (trimmed) {
+            errorMessage = `${errorMessage} - ${trimmed.slice(0, 300)}`;
+          }
+        }
+
+        throw new Error(errorMessage);
       }
 
       return await response.json();
@@ -76,6 +104,7 @@ export async function apiCall(
       }
     }
   }
+
 
   throw lastError;
 }
@@ -98,7 +127,14 @@ export async function uploadFile(
     ? 'image/svg+xml'
     : 'image/jpeg';
 
-  const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  let normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, '');
+  if (normalizedBaseUrl.startsWith('https:') && !normalizedBaseUrl.startsWith('https://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('https:', 'https://');
+  } else if (normalizedBaseUrl.startsWith('http:') && !normalizedBaseUrl.startsWith('http://')) {
+    normalizedBaseUrl = normalizedBaseUrl.replace('http:', 'http://');
+  }
+
+  const url = `${normalizedBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   let lastError: any;
 
@@ -125,44 +161,20 @@ export async function uploadFile(
               xhr.setRequestHeader('Authorization', `Bearer ${deviceToken}`);
             }
 
-            let fallbackTimer: ReturnType<typeof setInterval> | null = null;
-            let currentFallback = 0;
-
-            const startFallback = () => {
-              if (fallbackTimer) return;
-              currentFallback = 2;
-              onProgress?.(currentFallback);
-              fallbackTimer = setInterval(() => {
-                // increase slowly up to 90
-                const inc = Math.floor(Math.random() * 6) + 2; // 2-7
-                currentFallback = Math.min(90, currentFallback + inc);
-                onProgress?.(currentFallback);
-              }, 500);
-            };
-
-            const stopFallback = () => {
-              if (fallbackTimer) {
-                clearInterval(fallbackTimer);
-                fallbackTimer = null;
-              }
-            };
-
-            let sawLengthComputable = false;
+            let reportedRealProgress = false;
 
             xhr.upload.onprogress = (event: ProgressEvent) => {
-              if (event.lengthComputable) {
-                sawLengthComputable = true;
-                const percent = Math.round((event.loaded / event.total) * 100);
+              if (event.lengthComputable && event.total > 0) {
+                reportedRealProgress = true;
+                const percent = Math.min(100, Math.round((event.loaded / event.total) * 100));
                 onProgress?.(percent);
-              } else {
-                // start a fallback incremental progress if we don't get computable length
-                startFallback();
+              } else if (!reportedRealProgress) {
+                onProgress?.(-1);
               }
             };
 
             xhr.onload = () => {
               try {
-                stopFallback();
                 const status = xhr.status;
                 const text = xhr.responseText;
                 const json = text ? JSON.parse(text) : null;
@@ -187,18 +199,11 @@ export async function uploadFile(
             };
 
             xhr.onerror = () => {
-              stopFallback();
               reject(new Error('Upload failed: network error'));
             };
             xhr.onabort = () => {
-              stopFallback();
               reject(new Error('Upload aborted'));
             };
-
-            // Start a short timeout: if we don't receive a progress event in 200ms, start fallback
-            const progressWait = setTimeout(() => {
-              if (!sawLengthComputable) startFallback();
-            }, 200);
 
             xhr.send(formData as any);
           } catch (err) {
