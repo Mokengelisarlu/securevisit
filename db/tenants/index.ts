@@ -44,7 +44,7 @@ export async function getTenantDbBySlug(slug: string) {
   const cached = clients.get(id);
   if (cached) return cached.db;
 
-  const client = postgres(dbUrl, { max: 1 });
+  const client = postgres(dbUrl, { max: 1, idle_timeout: 20, connect_timeout: 10 });
   const db = drizzle(client, { schema: tenantSchema }) as any;
 
   clients.set(id, { client, db });
@@ -54,6 +54,53 @@ export async function getTenantDbBySlug(slug: string) {
 
 export function getCachedTenantDb(tenantId: string) {
   return clients.get(tenantId)?.db ?? null;
+}
+
+/**
+ * Clear the cached connection for a tenant so the next query creates a fresh one.
+ */
+export function clearTenantDbCache(tenantId: string) {
+  const cached = clients.get(tenantId);
+  if (cached) {
+    cached.client.end().catch(() => {});
+    clients.delete(tenantId);
+  }
+}
+
+/**
+ * Execute a function with a tenant DB, automatically retrying once on
+ * connection failures (stale connection recovery).
+ */
+export async function withTenantDb<T>(
+  slug: string,
+  fn: (db: any) => Promise<T>
+): Promise<T> {
+  try {
+    const db = await getTenantDbBySlug(slug);
+    return await fn(db);
+  } catch (error: any) {
+    const msg = error?.message || "";
+    const isConnectionError =
+      msg.includes("Failed query") ||
+      msg.includes("connection") ||
+      msg.includes("ECONNRESET") ||
+      msg.includes("timeout") ||
+      msg.includes("fetch failed") ||
+      error?.code === "ECONNRESET" ||
+      error?.code === "UND_ERR_CONNECT_TIMEOUT";
+
+    if (isConnectionError) {
+      console.warn("[withTenantDb] Connection error, retrying with fresh connection:", msg.slice(0, 200));
+      // Clear stale connection
+      const tenant = await getTenantBySlug(slug);
+      if (tenant) {
+        clearTenantDbCache((tenant as any).id as string);
+      }
+      const db = await getTenantDbBySlug(slug);
+      return await fn(db);
+    }
+    throw error;
+  }
 }
 
 export async function closeAllTenantDbs() {

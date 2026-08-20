@@ -1,6 +1,6 @@
 "use server";
 
-import { getTenantDbBySlug } from "@/db/tenants";
+import { getTenantDbBySlug, withTenantDb } from "@/db/tenants";
 import { departments, hosts, visitors, users, services, visitorTypes, visits, devices, settings, vehicles, authorizedUsers, businessSettings } from "@/db/tenants/schema";
 import { and, gte, lte, eq, between, desc, or, ilike, asc, isNotNull, inArray } from "drizzle-orm";
 import { format, addMinutes } from "date-fns";
@@ -70,47 +70,47 @@ export async function pingDevice(tenantSlug: string, deviceToken: string) {
  * [PUBLIC] Generate a pairing code for a new kiosk
  */
 export async function generatePairingCode(tenantSlug: string, deviceId: string) {
-  const db = await getTenantDbBySlug(tenantSlug);
+  return withTenantDb(tenantSlug, async (db) => {
+    // Generate a 6-character uppercase code
+    const pairingCode = randomBytes(3).toString("hex").toUpperCase();
+    const expiresAt = addMinutes(new Date(), 10); // Expires in 10 minutes
 
-  // Generate a 6-character uppercase code
-  const pairingCode = randomBytes(3).toString("hex").toUpperCase();
-  const expiresAt = addMinutes(new Date(), 10); // Expires in 10 minutes
+    // Idempotency: reuse existing device row for the same physical device.
+    const existingDevice = await db.query.devices.findFirst({
+      where: eq(devices.deviceId, deviceId),
+    });
 
-  // Idempotency: reuse existing device row for the same physical device.
-  const existingDevice = await db.query.devices.findFirst({
-    where: eq(devices.deviceId, deviceId),
-  });
+    if (existingDevice) {
+      const [updatedDevice] = await db.update(devices).set({
+        pairingCode,
+        pairingCodeExpiresAt: expiresAt,
+        isPaired: 0,
+        deviceToken: null,
+        pairedAt: null,
+        lastActiveAt: null,
+      }).where(eq(devices.id, existingDevice.id)).returning();
 
-  if (existingDevice) {
-    const [updatedDevice] = await db.update(devices).set({
+      return {
+        deviceId: updatedDevice.id,
+        pairingCode,
+      };
+    }
+
+    const [device] = await db.insert(devices).values({
+      deviceId,
       pairingCode,
       pairingCodeExpiresAt: expiresAt,
       isPaired: 0,
       deviceToken: null,
       pairedAt: null,
       lastActiveAt: null,
-    }).where(eq(devices.id, existingDevice.id)).returning();
+    }).returning();
 
     return {
-      deviceId: updatedDevice.id,
+      deviceId: device.id,
       pairingCode,
     };
-  }
-
-  const [device] = await db.insert(devices).values({
-    deviceId,
-    pairingCode,
-    pairingCodeExpiresAt: expiresAt,
-    isPaired: 0,
-    deviceToken: null,
-    pairedAt: null,
-    lastActiveAt: null,
-  }).returning();
-
-  return {
-    deviceId: device.id,
-    pairingCode,
-  };
+  });
 }
 
 

@@ -23,6 +23,7 @@ export async function POST(
       pairingCode: result.pairingCode,
     });
   } catch (error: any) {
+    console.error(`[pairing-code] Error for slug="${slug}":`, error?.message || error);
     return NextResponse.json(
       { ok: false, error: error?.message || "Failed to generate pairing code" },
       { status: 500 }
