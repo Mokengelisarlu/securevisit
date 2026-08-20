@@ -5,8 +5,8 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   try {
-    const { slug } = await params;
     const body = await request.json();
     // Accept either new `deviceId` or legacy `diviceId` key from older clients
     const deviceId = body.deviceId || body.diviceId;
