@@ -24,6 +24,7 @@ export async function POST(
     });
   } catch (error: any) {
     console.error(`[pairing-code] Error for slug="${slug}":`, error?.message || error);
+    console.error(`[pairing-code] Full error:`, JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
     return NextResponse.json(
       { ok: false, error: error?.message || "Failed to generate pairing code" },
       { status: 500 }

@@ -91,6 +91,7 @@ export async function withTenantDb<T>(
 
     if (isConnectionError) {
       console.warn("[withTenantDb] Connection error, retrying with fresh connection:", msg.slice(0, 200));
+      console.warn("[withTenantDb] Full error properties:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
       // Clear stale connection
       const tenant = await getTenantBySlug(slug);
       if (tenant) {
