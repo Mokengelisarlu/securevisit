@@ -2,6 +2,7 @@
 
 import { runTenantMigrations } from "@/db/tenants/migrate";
 import { createApiClient } from "@neondatabase/api-client";
+import postgres from "postgres";
 
 const apiClient = createApiClient({
   apiKey: process.env.NEON_API_KEY!,
@@ -16,6 +17,31 @@ const BRANCH_ID = process.env.NEON_BRANCH_ID!;
  */
 function generateTenantDbName(slug: string) {
   return `tenant_${slug.replace(/-/g, "_")}`;
+}
+
+/**
+ * Wait until a freshly created Neon database is actually reachable.
+ * The Neon control plane registers the database before the compute
+ * node knows about it, so connecting immediately can fail with 3D000.
+ */
+async function waitForDatabaseReady(dbUrl: string, attempts = 10, delayMs = 1500) {
+  for (let i = 0; i < attempts; i++) {
+    const client = postgres(dbUrl, { max: 1, connect_timeout: 10 });
+    try {
+      await client.unsafe("SELECT 1");
+      await client.end();
+      return;
+    } catch (error: any) {
+      await client.end().catch(() => {});
+      const pgCode = error?.code ?? error?.cause?.code;
+      const isTransient = pgCode === "3D000";
+      if (!isTransient || i === attempts - 1) {
+        throw error;
+      }
+      console.log(`Database not ready yet (attempt ${i + 1}/${attempts}), retrying...`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
 }
 
 /**
@@ -53,6 +79,9 @@ export async function createTenantDatabase(slug: string, ownerName: string) {
     if (!dbUrl) throw new Error("Failed to fetch connection URI from Neon API");
 
     console.log("Tenant DB URL:", dbUrl);
+
+    // 2️⃣5️⃣ Wait for the database to be reachable before migrating
+    await waitForDatabaseReady(dbUrl);
 
     // 3️⃣ Optional: run tenant migrations here
     await runTenantMigrations(dbUrl);
