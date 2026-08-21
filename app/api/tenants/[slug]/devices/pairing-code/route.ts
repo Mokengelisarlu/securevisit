@@ -22,9 +22,16 @@ export async function POST(
       deviceId: result.deviceId,
       pairingCode: result.pairingCode,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[pairing-code] Failed to generate pairing code", {
+      operation: "generate_pairing_code",
+      slug: (await params).slug,
+      error: message,
+    });
+
     return NextResponse.json(
-      { ok: false, error: error?.message || "Failed to generate pairing code" },
+      { ok: false, error: "Failed to generate pairing code" },
       { status: 500 }
     );
   }
