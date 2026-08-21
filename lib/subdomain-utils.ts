@@ -54,26 +54,24 @@ export function isReservedSubdomain(
 
 export function getTenantUrl(
   slug: string,
-  domain: string = process.env.NEXT_PUBLIC_TENANT_DOMAIN || 'localhost',
-  protocol: string = 'http'
+  domain: string = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost',
+  protocol?: string
 ): string {
-  // If we're on localhost, ensure we use the correct dev port
+  // Localhost dev runs on port 3000 over http; production defaults to https
   if (domain.includes('localhost')) {
-    // We use port 3000 by default for dev
-    return `${protocol}://${slug}.localhost:3000`;
+    return `${protocol ?? 'http'}://${slug}.localhost:3000`;
   }
 
-  return `${protocol}://${slug}.${domain}`;
+  return `${protocol ?? 'https'}://${slug}.${domain}`;
 }
 
 export function getMainAppUrl(
-  domain: string = process.env.NEXT_PUBLIC_APP_DOMAIN || 'localhost:3000',
-  protocol: string = 'http'
+  domain: string = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000',
+  protocol?: string
 ): string {
-  // For localhost
   if (domain.includes('localhost')) {
-    return 'http://localhost:3000';
+    return `${protocol ?? 'http'}://localhost:3000`;
   }
 
-  return `${protocol}://${domain}`;
+  return `${protocol ?? 'https'}://${domain}`;
 }
