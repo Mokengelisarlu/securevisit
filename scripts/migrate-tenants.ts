@@ -2,7 +2,7 @@ import 'dotenv/config';
 import postgres from "postgres";
 import { runTenantMigrations } from "../db/tenants/migrate";
 
-function formatDatabaseError(error: unknown) {
+function formatDatabaseError(error: unknown): string {
     if (!(error instanceof Error)) {
         return String(error);
     }
