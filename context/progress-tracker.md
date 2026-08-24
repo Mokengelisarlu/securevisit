@@ -11,6 +11,7 @@ Update this file after every meaningful implementation change.
 **Total Units**: 49 (organized into 6 phases)  
 **Current Phase**: Phase 1 (REST API Foundation) & Phase 4-6 (Offline/Admin/Testing)  
 **Recent Change**: 
+- Fixed intermittent `DrizzleQueryError: Failed query ... fetch failed` on `getPublicTenantBySlug` (tenants master-DB lookup). Root cause: broken IPv6 route to Neon (ENETUNREACH on AAAA records) plus `withRetry` never matching Drizzle-wrapped causes. Fixes: ipv4first DNS order via new `instrumentation.ts`, cause-chain-aware retry classification in `lib/db-retry.ts`, and a retrying `neonConfig.fetchFunction` in `db/master/index.ts`. Full record: [docs/troubleshooting/2026-08-24-neon-http-fetch-failed-on-tenant-lookup.md](../docs/troubleshooting/2026-08-24-neon-http-fetch-failed-on-tenant-lookup.md).
 - Added a generated padded `icon-safe.png` for the installed app icon, Android adaptive foreground, and native splash. The asset generator now preserves the full logo with `contain` instead of crop-prone `cover` resizing.
 - Added a branded full-screen light-green splash to the kiosk dashboard. It hides the tab and status bars, remains visible until the KPI cards and Currently In data finish their initial load, then dismisses automatically; request errors reveal the existing retry states.
 - Hardened tenant migration repair for kiosk pairing: migrations now ensure legacy tenant databases have `devices.device_id` and its unique index, propagate migration failures, and return safe pairing-route errors with server-side diagnostics.

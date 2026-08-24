@@ -18,6 +18,77 @@ export interface RequestConfig extends FetchOptions {
   retries?: number;
 }
 
+export interface ConnectionTestResult {
+  ok: boolean;
+  serverReachable: boolean;
+  apiReachable: boolean;
+  latencyMs?: number;
+  message: string;
+}
+
+function normalizeBaseUrl(baseUrl?: string): string {
+  let normalized = (baseUrl || DEFAULT_API_BASE_URL).trim().replace(/\/+$/, '');
+
+  if (normalized.startsWith('https:') && !normalized.startsWith('https://')) {
+    normalized = normalized.replace('https:', 'https://');
+  } else if (normalized.startsWith('http:') && !normalized.startsWith('http://')) {
+    normalized = normalized.replace('http:', 'http://');
+  }
+
+  return normalized;
+}
+
+function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+/**
+ * Diagnose connectivity to the API server in two steps:
+ * 1. Can the device open any connection to the host (DNS/TLS/routing)?
+ * 2. Do the API routes respond?
+ * Returns a human-readable report suitable for display on-screen.
+ */
+export async function testConnection(
+  baseUrl: string = DEFAULT_API_BASE_URL,
+  timeoutMs: number = 10000
+): Promise<ConnectionTestResult> {
+  const base = normalizeBaseUrl(baseUrl);
+
+  const startedAt = Date.now();
+  try {
+    await fetchWithTimeout(`${base}/`, { method: 'GET' }, timeoutMs);
+  } catch (error: any) {
+    const timedOut = error?.name === 'AbortError';
+    const message = timedOut
+      ? `Cannot reach ${base}\nRequest timed out after ${timeoutMs / 1000}s.\n\nCheck the tablet's internet (Wi-Fi/captive portal), then retry.`
+      : `Cannot reach ${base}\nThe device could not open a secure connection (DNS/TLS/firewall).\n\nOn the tablet, try: Settings > Network > Private DNS > Automatic, disable VPN/ad-blocker apps, or test with a mobile hotspot.`;
+    console.log('[client] testConnection failed:', error?.name, error?.message);
+    return { ok: false, serverReachable: false, apiReachable: false, message };
+  }
+
+  const latencyMs = Date.now() - startedAt;
+
+  let apiReachable = false;
+  try {
+    await fetchWithTimeout(
+      `${base}/api/sync-user`,
+      { method: 'OPTIONS', headers: { 'Content-Type': 'application/json' } },
+      timeoutMs
+    );
+    apiReachable = true;
+  } catch (error: any) {
+    console.log('[client] testConnection API probe failed:', error?.name, error?.message);
+  }
+
+  const message = apiReachable
+    ? `Connected to ${base}\nServer reachable (${latencyMs}ms)\nAPI reachable\n\nIf pairing still fails, the error is not network-related.`
+    : `Server reachable (${latencyMs}ms) but API did not respond.\nCheck the Server URL value.`;
+
+  return { ok: true, serverReachable: true, apiReachable, latencyMs, message };
+}
+
 /**
  * Make an authenticated API call with optional retry logic
  */

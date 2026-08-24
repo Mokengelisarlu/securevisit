@@ -9,6 +9,7 @@ import { useDeviceManagement } from '@/src/hooks/useDeviceManagement';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, TextInput } from '@/src/components/ui';
 import { useTranslation } from 'react-i18next';
+import { testConnection } from '@/src/api/client';
 
 export default function PairingScreen() {
   const insets = useSafeAreaInsets();
@@ -29,6 +30,8 @@ export default function PairingScreen() {
   const [urlInput, setUrlInput] = useState('');
   const [urlError, setUrlError] = useState('');
   const [showUrlInput, setShowUrlInput] = useState(false);
+  const [isTestingConnection, setIsTestingConnection] = useState(false);
+  const [connectionTestResult, setConnectionTestResult] = useState('');
 
   useEffect(() => {
     if (tenantSlug) {
@@ -101,6 +104,21 @@ export default function PairingScreen() {
       setStatusMessage(t('pairing.serverUrlUpdated'));
     } catch {
       setUrlError(t('errors.generic'));
+    }
+  }
+
+  async function handleTestConnection() {
+    setIsTestingConnection(true);
+    setConnectionTestResult('');
+    try {
+      const result = await testConnection(apiBaseUrl);
+      console.log('[pairing] testConnection:', result);
+      setConnectionTestResult(result.message);
+    } catch (err: any) {
+      console.error('[pairing] testConnection error:', err);
+      setConnectionTestResult(err?.message || 'Connection test failed');
+    } finally {
+      setIsTestingConnection(false);
     }
   }
 
@@ -239,6 +257,21 @@ export default function PairingScreen() {
             </Text>
           </View>
 
+          <Pressable
+            onPress={handleTestConnection}
+            disabled={isTestingConnection}
+            className="mb-4 active:opacity-60"
+          >
+            <Text className="text-sm font-semibold text-teal-600 text-center underline">
+              {isTestingConnection ? 'Testing connection…' : 'Test Connection'}
+            </Text>
+          </Pressable>
+          {connectionTestResult ? (
+            <Text className="text-xs text-teal-700 text-center mb-4 px-2">
+              {connectionTestResult}
+            </Text>
+          ) : null}
+
           <Button
             onPress={handleSaveSlug}
             loading={isSavingSlug}
@@ -355,6 +388,21 @@ export default function PairingScreen() {
       <Text className="text-xs text-teal-500 text-center mt-3">
         Server: {apiBaseUrl}
       </Text>
+
+      <Pressable
+        onPress={handleTestConnection}
+        disabled={isTestingConnection}
+        className="mt-3 active:opacity-60"
+      >
+        <Text className="text-xs font-semibold text-teal-600 text-center underline">
+          {isTestingConnection ? 'Testing connection…' : 'Test Connection'}
+        </Text>
+      </Pressable>
+      {connectionTestResult ? (
+        <Text className="text-xs text-teal-700 text-center mt-2 px-6">
+          {connectionTestResult}
+        </Text>
+      ) : null}
 
       <Text className="text-xs text-teal-600 text-center mt-2">
         This kiosk will sync visitor data with the main system.

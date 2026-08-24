@@ -318,6 +318,13 @@ ipconfig /flushdns
 - Make sure slug matches the subdomain
 - Check database has the tenant record
 
+### "Failed query ... fetch failed" on tenants lookup
+Intermittent `DrizzleQueryError` on `/tenants/[slug]` caused by broken IPv6
+routing to Neon plus retries that never matched Drizzle-wrapped errors.
+Fixed 2026-08-24 (see
+[docs/troubleshooting/2026-08-24-neon-http-fetch-failed-on-tenant-lookup.md](docs/troubleshooting/2026-08-24-neon-http-fetch-failed-on-tenant-lookup.md)).
+If it recurs on a new host/network, check IPv6 reachability first.
+
 ---
 
 ## ✨ New Features Added
