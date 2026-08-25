@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { ScreenWrapper, Card, Button, TextInput, Select } from '@/src/components/ui';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -27,7 +28,7 @@ export default function ExistingVisitorScreen() {
   const { createVisit, isLoading: isCheckinLoading } = useCreatePublicVisit(deviceToken);
   const { data: hosts } = useGetPublicHosts(deviceToken);
   const { data: departments } = useGetPublicDepartments(deviceToken);
-  const { preselectedVisitor, setPreselectedVisitor } = useKiosk();
+  const { preselectedVisitor, setPreselectedVisitor, pendingHostSelection, setPendingHostSelection } = useKiosk();
 
   const [query, setQuery] = useState('');
   const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null);
@@ -47,6 +48,17 @@ export default function ExistingVisitorScreen() {
       setPreselectedVisitor(null);
     }
   }, []);
+
+  // When a host is selected from the host picker screen, auto-fill host + department
+  useEffect(() => {
+    if (pendingHostSelection) {
+      setHostId(pendingHostSelection.id);
+      if (pendingHostSelection.departmentId) {
+        setDepartmentId(pendingHostSelection.departmentId);
+      }
+      setPendingHostSelection(null);
+    }
+  }, [pendingHostSelection]);
 
   const handleQueryChange = useCallback(
     (text: string) => {
@@ -148,13 +160,27 @@ export default function ExistingVisitorScreen() {
       </Card>
 
       {hosts.length > 0 ? (
-        <Select
-          label={t('visitorSearch.visitingHost')}
-          placeholder={t('visitorSearch.selectHost')}
-          value={hostId}
-          options={hosts.map((h) => ({ value: h.id, label: `${h.firstName} ${h.lastName}`.trim() }))}
-          onChange={setHostId}
-        />
+        <Pressable
+          onPress={() => router.push('/(kiosk)/check-in/select-host' as any)}
+          className="bg-white rounded-xl border border-slate-200 p-4 flex-row items-center justify-between active:bg-teal-50 active:border-teal-400"
+        >
+          <View className="flex-1">
+            <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+              {t('visitorSearch.visitingHost')}
+            </Text>
+            {hostId ? (
+              <Text className="text-base font-bold text-slate-900">
+                {hosts.find((h) => h.id === hostId)?.firstName}{' '}
+                {hosts.find((h) => h.id === hostId)?.lastName}
+              </Text>
+            ) : (
+              <Text className="text-base text-slate-400">
+                {t('visitorSearch.selectHost')}
+              </Text>
+            )}
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+        </Pressable>
       ) : null}
 
       {departments.length > 0 ? (

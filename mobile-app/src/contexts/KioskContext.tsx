@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import type { Visitor } from '@/src/types/api';
+import type { Visitor, Host } from '@/src/types/api';
 
 type KioskMode = 'IN' | 'OUT' | null;
 type VisitorMode = 'new' | 'existing' | null;
@@ -10,11 +10,13 @@ interface KioskContextType {
   step: number;
   justPaired: boolean;
   preselectedVisitor: Visitor | null;
+  pendingHostSelection: Host | null;
   setMode: (mode: KioskMode) => void;
   setVisitorMode: (mode: VisitorMode) => void;
   setStep: (step: number) => void;
   setJustPaired: (val: boolean) => void;
   setPreselectedVisitor: (visitor: Visitor | null) => void;
+  setPendingHostSelection: (host: Host | null) => void;
   resetState: () => void;
 }
 
@@ -26,6 +28,7 @@ export function KioskProvider({ children }: { children: React.ReactNode }) {
   const [step, setStep] = useState(1);
   const [justPaired, setJustPaired] = useState(false);
   const [preselectedVisitor, setPreselectedVisitor] = useState<Visitor | null>(null);
+  const [pendingHostSelection, setPendingHostSelection] = useState<Host | null>(null);
 
   function resetState() {
     setMode(null);
@@ -33,6 +36,7 @@ export function KioskProvider({ children }: { children: React.ReactNode }) {
     setStep(1);
     setJustPaired(false);
     setPreselectedVisitor(null);
+    setPendingHostSelection(null);
   }
 
   return (
@@ -43,11 +47,13 @@ export function KioskProvider({ children }: { children: React.ReactNode }) {
         step,
         justPaired,
         preselectedVisitor,
+        pendingHostSelection,
         setMode,
         setVisitorMode,
         setStep,
         setJustPaired,
         setPreselectedVisitor,
+        setPendingHostSelection,
         resetState,
       }}
     >

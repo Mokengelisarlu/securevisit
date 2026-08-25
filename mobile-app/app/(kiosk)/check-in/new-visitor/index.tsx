@@ -1,10 +1,12 @@
 import { View, Text, ScrollView, Pressable } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { ScreenWrapper, Card, Button, TextInput, Select } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
+import { useKiosk } from '@/src/contexts/KioskContext';
 import {
   useGetPublicVisitorTypes,
   useGetPublicHosts,
@@ -15,6 +17,7 @@ export default function NewVisitorScreen() {
   const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { updateDraft } = useVisitDraft();
+  const { pendingHostSelection, setPendingHostSelection } = useKiosk();
   const { data: visitorTypes } = useGetPublicVisitorTypes(deviceToken);
   const { data: hosts } = useGetPublicHosts(deviceToken);
   const { data: departments } = useGetPublicDepartments(deviceToken);
@@ -28,6 +31,17 @@ export default function NewVisitorScreen() {
   const [departmentId, setDepartmentId] = useState('');
   const [purpose, setPurpose] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // When a host is selected from the host picker screen, auto-fill host + department
+  useEffect(() => {
+    if (pendingHostSelection) {
+      setHostId(pendingHostSelection.id);
+      if (pendingHostSelection.departmentId) {
+        setDepartmentId(pendingHostSelection.departmentId);
+      }
+      setPendingHostSelection(null);
+    }
+  }, [pendingHostSelection]);
 
   function validate() {
     const e: Record<string, string> = {};
@@ -128,13 +142,27 @@ export default function NewVisitorScreen() {
             />
 
             {hosts.length > 0 ? (
-              <Select
-                label={t('visitorSearch.visitingHost')}
-                placeholder={t('visitorForm.hostPlaceholder')}
-                value={hostId}
-                options={hosts.map((h) => ({ value: h.id, label: `${h.firstName} ${h.lastName}`.trim() }))}
-                onChange={setHostId}
-              />
+              <Pressable
+                onPress={() => router.push('/(kiosk)/check-in/select-host' as any)}
+                className="bg-white rounded-xl border border-slate-200 p-4 flex-row items-center justify-between active:bg-teal-50 active:border-teal-400"
+              >
+                <View className="flex-1">
+                  <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                    {t('visitorSearch.visitingHost')}
+                  </Text>
+                  {hostId ? (
+                    <Text className="text-base font-bold text-slate-900">
+                      {hosts.find((h) => h.id === hostId)?.firstName}{' '}
+                      {hosts.find((h) => h.id === hostId)?.lastName}
+                    </Text>
+                  ) : (
+                    <Text className="text-base text-slate-400">
+                      {t('visitorForm.hostPlaceholder')}
+                    </Text>
+                  )}
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+              </Pressable>
             ) : null}
 
             {departments.length > 0 ? (

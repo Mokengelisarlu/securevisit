@@ -588,6 +588,9 @@ export async function getPublicHosts(tenantSlug: string, deviceToken: string) {
   const db = await getTenantDbBySlug(tenantSlug);
   return await db.query.hosts.findMany({
     where: eq(hosts.isActive, 1),
+    with: {
+      department: true,
+    },
   });
 }
 

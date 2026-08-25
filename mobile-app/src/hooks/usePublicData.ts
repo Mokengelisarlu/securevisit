@@ -86,8 +86,11 @@ export function useSearchPublicVisitors(deviceToken: string | null) {
   return { results, isSearching, search };
 }
 
+const hostsCache: { data: Host[]; ts: number } = { data: [], ts: 0 };
+const HOSTS_STALE_MS = 60_000;
+
 export function useGetPublicHosts(deviceToken: string | null) {
-  const [data, setData] = useState<Host[]>([]);
+  const [data, setData] = useState<Host[]>(hostsCache.data);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { tenantSlug, apiBaseUrl } = useApi();
@@ -95,23 +98,35 @@ export function useGetPublicHosts(deviceToken: string | null) {
   useEffect(() => {
     if (!deviceToken) return;
 
-    async function fetch() {
-      setIsLoading(true);
+    let cancelled = false;
+
+    async function fetchFresh() {
       setError(null);
       try {
         const response = await apiCall(
           `/api/tenants/${tenantSlug}/public/hosts`,
           { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
         );
+        if (cancelled) return;
+        hostsCache.data = response;
+        hostsCache.ts = Date.now();
         setData(response);
       } catch (err: any) {
-        setError(err.message);
+        if (!cancelled) setError(err.message);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
 
-    fetch();
+    const stale = Date.now() - hostsCache.ts > HOSTS_STALE_MS;
+    if (hostsCache.data.length === 0 || stale) {
+      setIsLoading(hostsCache.data.length === 0);
+      fetchFresh();
+    } else {
+      setIsLoading(false);
+    }
+
+    return () => { cancelled = true; };
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
   return { data, isLoading, error };

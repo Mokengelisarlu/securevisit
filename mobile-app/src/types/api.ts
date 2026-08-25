@@ -20,6 +20,8 @@ export interface Host {
   email?: string;
   phone?: string;
   departmentId?: string;
+  photoUrl?: string | null;
+  department?: Department | null;
 }
 
 export interface Department {
