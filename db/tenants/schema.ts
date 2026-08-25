@@ -243,6 +243,7 @@ export const settings = pgTable("settings", {
   requireSignature: integer("require_signature").default(1), // 0 or 1
   requireVisitorPhoto: integer("require_visitor_photo").default(0), // 0 or 1
   requireVehiclePhoto: integer("require_vehicle_photo").default(0), // 0 or 1
+  requireVehicleCheck: integer("require_vehicle_check").default(0), // 0 or 1
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at"),

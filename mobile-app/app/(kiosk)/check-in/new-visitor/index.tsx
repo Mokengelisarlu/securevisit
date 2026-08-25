@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { ScreenWrapper, Card, Button, TextInput, Select } from '@/src/components/ui';
+import { ScreenWrapper, Card, Button, TextInput, Select, PhoneInput } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useApi } from '@/src/contexts/ApiContext';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
 import {
@@ -16,6 +17,7 @@ import {
 export default function NewVisitorScreen() {
   const { t } = useTranslation();
   const { deviceToken } = useAuth();
+  const { kioskSettings } = useApi();
   const { updateDraft } = useVisitDraft();
   const { pendingHostSelection, setPendingHostSelection } = useKiosk();
   const { data: visitorTypes } = useGetPublicVisitorTypes(deviceToken);
@@ -25,6 +27,7 @@ export default function NewVisitorScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState('+243');
   const [company, setCompany] = useState('');
   const [visitorTypeId, setVisitorTypeId] = useState('');
   const [hostId, setHostId] = useState('');
@@ -57,14 +60,20 @@ export default function NewVisitorScreen() {
     updateDraft({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
-      phone: phone.trim() || undefined,
+      phone: phone.trim() ? `${phoneCountry}${phone.trim()}` : undefined,
       company: company.trim() || undefined,
       visitorTypeId,
       hostId: hostId || undefined,
       departmentId: departmentId || undefined,
       purpose: purpose.trim() || undefined,
     });
-    router.push('/(kiosk)/check-in/vehicle' as any);
+
+    const requireVehicleCheck = kioskSettings?.requireVehicleCheck === 1;
+    if (requireVehicleCheck) {
+      router.push('/(kiosk)/check-in/vehicle' as any);
+    } else {
+      router.push('/(kiosk)/check-in/review' as any);
+    }
   }
 
   return (
@@ -110,12 +119,11 @@ export default function NewVisitorScreen() {
               autoCapitalize="words"
               error={errors.lastName}
             />
-            <TextInput
+            <PhoneInput
               label={t('visitorForm.phone')}
-              placeholder={t('visitorForm.phonePlaceholderExample')}
               value={phone}
               onChangeText={setPhone}
-              keyboardType="phone-pad"
+              onCountryChange={setPhoneCountry}
             />
             <TextInput
               label={t('visitorForm.company')}

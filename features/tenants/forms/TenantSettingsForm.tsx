@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Camera, Loader2, Save, Shield } from "lucide-react";
+import { Camera, Loader2, Save, Shield, Car } from "lucide-react";
 import { updateSettings } from "../queries/tenant-data";
 
 interface TenantSettingsFormProps {
@@ -18,6 +18,7 @@ interface TenantSettingsFormProps {
         requireSignature: number | null;
         requireVisitorPhoto: number | null;
         requireVehiclePhoto: number | null;
+        requireVehicleCheck: number | null;
     };
 }
 
@@ -28,6 +29,7 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
     const [requireSignature, setRequireSignature] = useState(initialData.requireSignature !== 0);
     const [requireVisitorPhoto, setRequireVisitorPhoto] = useState(initialData.requireVisitorPhoto !== 0);
     const [requireVehiclePhoto, setRequireVehiclePhoto] = useState(initialData.requireVehiclePhoto !== 0);
+    const [requireVehicleCheck, setRequireVehicleCheck] = useState(initialData.requireVehicleCheck !== 0);
 
     async function handleSave() {
         setIsPending(true);
@@ -37,6 +39,7 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
                 requireSignature: requireSignature ? 1 : 0,
                 requireVisitorPhoto: requireVisitorPhoto ? 1 : 0,
                 requireVehiclePhoto: requireVehiclePhoto ? 1 : 0,
+                requireVehicleCheck: requireVehicleCheck ? 1 : 0,
             });
             toast.success("Paramètres mis à jour avec succès.");
             router.refresh();
@@ -137,6 +140,25 @@ export function TenantSettingsForm({ tenantSlug, initialData }: TenantSettingsFo
                             />
                         </div>
                     </div>
+                </div>
+
+                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-colors hover:bg-gray-100/50">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                            <Car className="w-5 h-5 text-gray-600" />
+                            <Label htmlFor="reqVehCheck" className="text-base font-bold text-gray-800">
+                                Contrôle Véhicule
+                            </Label>
+                        </div>
+                        <p className="text-sm text-gray-500 font-medium">
+                            Affiche le formulaire de saisie des informations véhicule lors de l'enregistrement.
+                        </p>
+                    </div>
+                    <Switch
+                        id="reqVehCheck"
+                        checked={requireVehicleCheck}
+                        onCheckedChange={setRequireVehicleCheck}
+                    />
                 </div>
 
                 <div className="flex justify-end pt-4">

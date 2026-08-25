@@ -23,7 +23,8 @@ export default async function Page({ params }: PageProps) {
                         ndaPolicyText: settings.ndaPolicyText,
                         requireSignature: settings.requireSignature,
                         requireVisitorPhoto: settings.requireVisitorPhoto,
-                        requireVehiclePhoto: settings.requireVehiclePhoto
+                        requireVehiclePhoto: settings.requireVehiclePhoto,
+                        requireVehicleCheck: settings.requireVehicleCheck
                     }}
                 />
             </div>

@@ -127,6 +127,13 @@
       "when": 1772194828273,
       "tag": "0017_business_info",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1787662259044,
+      "tag": "0018_charming_hercules",
+      "breakpoints": true
     }
   ]
 }

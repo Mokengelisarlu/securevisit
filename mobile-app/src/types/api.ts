@@ -209,6 +209,7 @@ export interface KioskSettings {
   requireSignature: number;
   requireVisitorPhoto: number;
   requireVehiclePhoto: number;
+  requireVehicleCheck: number;
   ndaPolicyText: string | null;
 }
 

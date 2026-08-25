@@ -1732,7 +1732,7 @@ export async function getPublicSettings(tenantSlug: string, deviceToken: string)
 
 export async function updateSettings(
   tenantSlug: string,
-  data: { ndaPolicyText?: string; requireSignature?: number; requireVisitorPhoto?: number; requireVehiclePhoto?: number }
+  data: { ndaPolicyText?: string; requireSignature?: number; requireVisitorPhoto?: number; requireVehiclePhoto?: number; requireVehicleCheck?: number }
 ) {
   await verifyTenantOwnership(tenantSlug);
   const db = await getTenantDbBySlug(tenantSlug);
