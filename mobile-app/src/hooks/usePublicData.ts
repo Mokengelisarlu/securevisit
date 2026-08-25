@@ -307,20 +307,19 @@ export function useGetPublicSettings(deviceToken: string | null, pollIntervalMs?
   return { data, isLoading, error };
 }
 
-export function useGetPublicOnSiteVisitors(deviceToken: string | null) {
+export function useGetPublicOnSiteVisitors(deviceToken: string | null, pollIntervalMs?: number) {
   const [data, setData] = useState<{ visitors: OnSiteVisitor[]; stats: { onSite: number; arrivedToday: number; departedToday: number } }>({ visitors: [], stats: { onSite: 0, arrivedToday: 0, departedToday: 0 } });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { tenantSlug, apiBaseUrl } = useApi();
-
-  const fetchVisitors = useCallback(async () => {
+  const fetchVisitors = useCallback(async (silent = false) => {
     if (!deviceToken) {
       setIsLoading(false);
       return;
     }
 
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       setError(null);
       const response = await apiCall(
         `/api/tenants/${tenantSlug}/public/on-site-visitors`,
@@ -330,13 +329,19 @@ export function useGetPublicOnSiteVisitors(deviceToken: string | null) {
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
   useEffect(() => {
     fetchVisitors();
   }, [fetchVisitors]);
+
+  useEffect(() => {
+    if (!pollIntervalMs) return;
+    const interval = setInterval(() => fetchVisitors(true), pollIntervalMs);
+    return () => clearInterval(interval);
+  }, [fetchVisitors, pollIntervalMs]);
 
   return { data, isLoading, error, refetch: fetchVisitors };
 }
@@ -465,7 +470,7 @@ export function useGetPublicRecentVisits(deviceToken: string | null) {
   return { data, isLoading, error };
 }
 
-export function useGetPublicVisitorKpis(deviceToken: string | null) {
+export function useGetPublicVisitorKpis(deviceToken: string | null, pollIntervalMs?: number) {
   const [data, setData] = useState<VisitorKpisResponse>({
     onSite: 0,
     outToday: 0,
@@ -475,14 +480,14 @@ export function useGetPublicVisitorKpis(deviceToken: string | null) {
   const [error, setError] = useState<string | null>(null);
   const { tenantSlug, apiBaseUrl } = useApi();
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (silent = false) => {
     if (!deviceToken) {
       setIsLoading(false);
       return;
     }
 
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       setError(null);
       const response = await apiCall(
         `/api/tenants/${tenantSlug}/public/visitor-kpis`,
@@ -492,13 +497,19 @@ export function useGetPublicVisitorKpis(deviceToken: string | null) {
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    if (!pollIntervalMs) return;
+    const interval = setInterval(() => fetchData(true), pollIntervalMs);
+    return () => clearInterval(interval);
+  }, [fetchData, pollIntervalMs]);
 
   return { data, isLoading, error, refetch: fetchData };
 }

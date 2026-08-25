@@ -38,13 +38,13 @@ export default function DashboardScreen() {
   const navigation = useNavigation();
   const { data: business, isLoading: isBusinessLoading, error: businessError } =
     useGetPublicBusinessSettings(deviceToken);
-  const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken);
+  const { data: siteData, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken, 10_000);
   const {
     data: kpiData,
     isLoading: isKpiLoading,
     error: kpiError,
     refetch: refetchKpis,
-  } = useGetPublicVisitorKpis(deviceToken);
+  } = useGetPublicVisitorKpis(deviceToken, 10_000);
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
   const [showDashboardSplash, setShowDashboardSplash] = useState(true);
