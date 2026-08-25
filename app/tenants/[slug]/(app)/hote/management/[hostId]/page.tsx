@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useGetHostById } from "@/features/tenants/hooks/useGetTenantData";
 import { useGetHostHistory } from "@/features/tenants/hooks/useGetHostHistory.hook";
 import { useTenant } from "@/lib/tenant-provider";
-import { cn } from "@/lib/utils";
+import { cn, getBlobUrl } from "@/lib/utils";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -68,7 +68,7 @@ export default function HostDetailsPage() {
                             <div className="w-32 h-32 rounded-[2.5rem] bg-slate-50 border border-gray-200 p-1.5 shadow-sm overflow-hidden flex items-center justify-center">
                                 <div className="w-full h-full overflow-hidden rounded-[2rem] bg-slate-100 flex items-center justify-center">
                                     {host.photoUrl ? (
-                                        <img src={host.photoUrl} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                        <img src={getBlobUrl(host.photoUrl)} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                     ) : (
                                         <User className="w-12 h-12 text-slate-300" />
                                     )}

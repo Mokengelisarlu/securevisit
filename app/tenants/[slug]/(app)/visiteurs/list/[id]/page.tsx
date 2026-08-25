@@ -182,7 +182,7 @@ export default function VisitDetailsPage() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Hôte (Employé)</p>
-                                            <p className="text-base font-bold text-gray-900">{visit.host?.fullName || "Non assigné"}</p>
+                                            <p className="text-base font-bold text-gray-900">{visit.host ? `${visit.host.firstName} ${visit.host.lastName}` : "Non assigné"}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
