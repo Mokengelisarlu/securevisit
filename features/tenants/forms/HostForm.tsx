@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { useEffect, useState, useRef } from "react";
 import { Camera, Upload, X, User } from "lucide-react";
 import { uploadToBlob } from "../server/upload";
+import { deleteFromBlob } from "../server/delete-blob";
 import { cn } from "@/lib/utils";
 import { CameraCapture } from "../components/CameraCapture";
 
@@ -68,6 +69,7 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
     const [photoPreview, setPhotoPreview] = useState<string | null>(initialData?.photoUrl || null);
+    const savedPhotoUrlRef = useRef<string | null>(initialData?.photoUrl || null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<FormSchema>({
@@ -125,6 +127,8 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                 finalPhotoUrl = null;
             }
 
+            const previousPhotoUrl = savedPhotoUrlRef.current;
+
             const dataToSubmit = {
                 ...values,
                 photoUrl: finalPhotoUrl,
@@ -143,7 +147,13 @@ export function HostForm({ initialData, onSuccess }: HostFormProps) {
                 await createHost.mutateAsync(dataToSubmit);
                 toast.success("Hôte créé avec succès !");
             }
+
+            savedPhotoUrlRef.current = finalPhotoUrl ?? null;
             onSuccess?.();
+
+            if (previousPhotoUrl && previousPhotoUrl !== finalPhotoUrl) {
+                deleteFromBlob(previousPhotoUrl);
+            }
         } catch (error: any) {
             toast.error(error?.message || "Une erreur est survenue");
         } finally {

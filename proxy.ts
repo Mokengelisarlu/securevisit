@@ -77,12 +77,15 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
       return res;
     }
 
-    // Add CORS headers to API response
+    // Set tenant slug header for API routes (same logic as page routes below)
     const res = NextResponse.next();
     res.headers.set('Access-Control-Allow-Origin', allowed);
     res.headers.set('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.headers.set('Access-Control-Allow-Credentials', 'true');
+    if (subdomain && subdomain !== 'admin' && subdomain !== 'www' && subdomain !== 'localhost') {
+      res.headers.set('x-tenant-slug', subdomain);
+    }
     return res;
   }
 

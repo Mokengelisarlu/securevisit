@@ -21,6 +21,7 @@ import { Loader2, Building2, Phone, Mail, Globe, MapPin, Hash, Briefcase, Image 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getBlobUrl } from "@/lib/utils";
+import { deleteFromBlob } from "../server/delete-blob";
 
 const formSchema = z.object({
     name: z.string().min(1, "Le nom de l'entreprise est requis"),
@@ -45,11 +46,13 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
     const router = useRouter();
     const queryClient = useQueryClient();
     const [logoPreview, setLogoPreview] = useState<string | null>(defaultValues?.logoUrl || null);
+    const savedLogoUrlRef = useRef<string | null>(defaultValues?.logoUrl || null);
 
     // Sync state with props when they change
     useEffect(() => {
         if (defaultValues?.logoUrl) {
             setLogoPreview(defaultValues.logoUrl);
+            savedLogoUrlRef.current = defaultValues.logoUrl;
         }
     }, [defaultValues?.logoUrl]);
     const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -101,13 +104,19 @@ export function BusinessSettingsForm({ defaultValues }: BusinessSettingsFormProp
     async function onSubmit(values: FormValues) {
         if (!slug) return;
         try {
+            const previousLogoUrl = savedLogoUrlRef.current;
             await upsertBusinessSettings(slug, {
                 ...values,
                 logoUrl: logoPreview,
             });
+            savedLogoUrlRef.current = logoPreview;
             toast.success("Paramètres enregistrés");
             queryClient.invalidateQueries({ queryKey: ["business-settings", slug] });
             router.refresh();
+
+            if (previousLogoUrl && previousLogoUrl !== logoPreview) {
+                deleteFromBlob(previousLogoUrl);
+            }
         } catch (error: any) {
             toast.error(error.message || "Erreur lors de la sauvegarde");
         }
