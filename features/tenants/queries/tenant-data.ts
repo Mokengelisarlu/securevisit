@@ -1874,3 +1874,38 @@ export async function upsertBusinessSettings(
     return created;
   }
 }
+
+/**
+ * [PUBLIC/SECURE] Lightweight activity check for dashboard polling.
+ * Returns only what's needed to decide whether to do a full refetch.
+ */
+export async function getPublicActivityCheck(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const onSite = await db.query.visits.findMany({
+    where: eq(visits.status, "IN"),
+    columns: { id: true },
+  });
+
+  const arrivedToday = await db.query.visits.findMany({
+    where: and(isNotNull(visits.checkInAt), gte(visits.checkInAt, startToday), lte(visits.checkInAt, endToday)),
+    columns: { id: true },
+  });
+
+  const departedToday = await db.query.visits.findMany({
+    where: and(eq(visits.status, "OUT"), isNotNull(visits.checkOutAt), gte(visits.checkOutAt, startToday), lte(visits.checkOutAt, endToday)),
+    columns: { id: true },
+  });
+
+  return {
+    onSite: onSite.length,
+    arrivedToday: arrivedToday.length,
+    departedToday: departedToday.length,
+    ts: Date.now(),
+  };
+}
