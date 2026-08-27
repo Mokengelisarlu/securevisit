@@ -10,9 +10,10 @@ import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
 import { useNetwork } from '@/src/contexts/NetworkContext';
 import { useGetPublicOnSiteVisitors, useGetPublicVisitorKpis, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
+import { useGetWaitingVisits, useGetExpectedVisits } from '@/src/hooks/useVisits';
 import { getQueue, onQueueChange } from '@/src/lib/offline-queue';
 import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
-import type { OnSiteVisitor } from '@/src/types/api';
+import type { OnSiteVisitor, WaitingVisit } from '@/src/types/api';
 
 const DASHBOARD_SPLASH_DISMISS_DELAY_MS = 500;
 
@@ -47,6 +48,12 @@ export default function DashboardScreen() {
     error: kpiError,
     refetch: refetchKpis,
   } = useGetPublicVisitorKpis(deviceToken, 10_000);
+
+  const { data: waitingData } = useGetWaitingVisits(deviceToken, 10_000);
+  const { data: expectedData, refetch: refetchExpected } = useGetExpectedVisits(deviceToken, 10_000);
+
+  const waitingVisits = waitingData ?? [];
+  const expectedVisits = expectedData ?? [];
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
   const [showDashboardSplash, setShowDashboardSplash] = useState(true);
@@ -131,11 +138,12 @@ export default function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       if (__DEV__) {
-        console.log('[Dashboard] focus refresh: on-site-visitors + visitor-kpis');
+        console.log('[Dashboard] focus refresh: on-site-visitors + visitor-kpis + operator');
       }
       refetch();
       refetchKpis();
-    }, [refetch, refetchKpis])
+      refetchExpected();
+    }, [refetch, refetchKpis, refetchExpected])
   );
 
   const onSiteVisitors = siteData?.visitors ?? [];
@@ -266,6 +274,55 @@ export default function DashboardScreen() {
               </View>
             ))
           )}
+        </View>
+
+        {/* Operator: waiting + expected (always visible for discoverability) */}
+        <View className="px-6 mb-3 gap-3">
+          <Pressable
+            onPress={() => router.push('/(kiosk)/operator/waiting' as never)}
+            className="bg-white rounded-2xl p-4 border border-slate-200 flex-row items-center gap-3 active:bg-amber-50"
+          >
+            <View
+              className={`w-10 h-10 rounded-full items-center justify-center ${
+                waitingVisits.length > 0 ? 'bg-amber-100' : 'bg-slate-100'
+              }`}
+            >
+              <Text className={`font-black ${waitingVisits.length > 0 ? 'text-amber-700' : 'text-slate-400'}`}>
+                {waitingVisits.length}
+              </Text>
+            </View>
+            <View className="flex-1">
+              <Text className="text-base font-bold text-slate-900">{t('operator.waitingSection')}</Text>
+              <Text className="text-xs text-slate-500">
+                {waitingVisits.length > 0
+                  ? `${waitingVisits.filter((v: WaitingVisit) => v.status === 'PENDING_APPROVAL').length} ${t('operator.pending')}`
+                  : t('operator.waitingEmpty')}
+              </Text>
+            </View>
+            <Text className="text-teal-600 font-bold text-sm">{t('operator.viewList')}</Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/(kiosk)/operator/expected' as never)}
+            className="bg-white rounded-2xl p-4 border border-slate-200 flex-row items-center gap-3 active:bg-teal-50"
+          >
+            <View
+              className={`w-10 h-10 rounded-full items-center justify-center ${
+                expectedVisits.length > 0 ? 'bg-teal-100' : 'bg-slate-100'
+              }`}
+            >
+              <Text className={`font-black ${expectedVisits.length > 0 ? 'text-teal-700' : 'text-slate-400'}`}>
+                {expectedVisits.length}
+              </Text>
+            </View>
+            <View className="flex-1">
+              <Text className="text-base font-bold text-slate-900">{t('operator.expectedSection')}</Text>
+              <Text className="text-xs text-slate-500">
+                {expectedVisits.length > 0 ? t('operator.approved') : t('operator.expectedEmpty')}
+              </Text>
+            </View>
+            <Text className="text-teal-600 font-bold text-sm">{t('operator.viewList')}</Text>
+          </Pressable>
         </View>
 
         {/* Currently In */}

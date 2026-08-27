@@ -247,3 +247,97 @@ export interface Command {
 export interface CommandsQueueResponse {
   commands: Command[];
 }
+
+// --- V2 Visitor Lifecycle (operator workflow) ---
+
+export type VisitStatus =
+  | 'IN'
+  | 'OUT'
+  | 'CANCELLED'
+  | 'SCHEDULED'
+  | 'PENDING_APPROVAL'
+  | 'APPROVED'
+  | 'POSTPONED'
+  | 'REJECTED';
+
+export type ParticipantStatus =
+  | 'EXPECTED'
+  | 'WAITING'
+  | 'CHECKED_IN'
+  | 'CHECKED_OUT'
+  | 'NO_SHOW'
+  | 'CANCELED';
+
+export interface VisitParticipant {
+  id: string;
+  visitId: string;
+  visitorId: string;
+  status: ParticipantStatus;
+  checkedInAt: string | null;
+  checkedOutAt: string | null;
+  notes: string | null;
+  visitor: Visitor;
+}
+
+export interface LifecycleVisit {
+  id: string;
+  visitNumber: string | null;
+  visitorId: string;
+  hostId: string | null;
+  departmentId: string | null;
+  serviceId: string | null;
+  status: VisitStatus;
+  visitType: string;
+  visitDate: string;
+  purpose: string | null;
+  groupName: string | null;
+  organization: string | null;
+  participantCount: number | null;
+  arrivalAt: string | null;
+  checkInAt: string | null;
+  checkOutAt: string | null;
+  visitorPhotoUrl?: string | null;
+  visitor: Visitor;
+  host: Host | null;
+  department: Department | null;
+  service: Service | null;
+  participants?: VisitParticipant[];
+}
+
+export type WaitingEscalation = 'normal' | 'warning' | 'critical';
+
+export interface WaitingVisit extends LifecycleVisit {
+  waitingMinutes: number | null;
+  escalation: WaitingEscalation;
+}
+
+export interface ExpectedVisit extends LifecycleVisit {}
+
+export interface CurrentlyInside {
+  participants: {
+    id: string;
+    visitId: string;
+    participantId?: string;
+    status: string;
+    checkedInAt?: string | null;
+    visitor: Visitor;
+    visit?: { id: string; visitNumber: string | null; host: Host | null; department: Department | null } | null;
+  }[];
+  individuals: LifecycleVisit[];
+  count: number;
+  onSite: number;
+}
+
+export interface PublicVisitCreateResult {
+  id?: string;
+  visitNumber?: string | null;
+  status: VisitStatus;
+  requiresApproval?: boolean;
+}
+
+export interface ParticipantBulkResult {
+  checkedIn?: number;
+  checkedOut?: number;
+  total: number;
+}
+

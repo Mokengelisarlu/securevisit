@@ -25,6 +25,7 @@ export default function ReviewScreen() {
   const { createVisit, isLoading } = useCreatePublicVisit(deviceToken);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [awaitingApproval, setAwaitingApproval] = useState(false);
   const [queued, setQueued] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const progressRef = useRef<number[]>([]);
@@ -115,7 +116,7 @@ export default function ReviewScreen() {
         else signatureData = uploadedUrl;
       }
 
-      await createVisit({
+      const created = await createVisit({
         newVisitor: {
           firstName: draft.firstName!,
           lastName: draft.lastName!,
@@ -141,11 +142,19 @@ export default function ReviewScreen() {
         vehiclePhotoUrl,
         signatureData,
       } as any);
-      setSuccess(true);
-      setTimeout(() => {
-        resetDraft();
-        router.replace('/(kiosk)/(tabs)');
-      }, 1800);
+      if (created && (created as any).requiresApproval) {
+        setAwaitingApproval(true);
+        setTimeout(() => {
+          resetDraft();
+          router.replace('/(kiosk)/(tabs)');
+        }, 2200);
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          resetDraft();
+          router.replace('/(kiosk)/(tabs)');
+        }, 1800);
+      }
     } catch (err: any) {
       const msg = (err?.message || '').toLowerCase();
       const isNetErr =
@@ -201,6 +210,37 @@ export default function ReviewScreen() {
     } finally {
       setUploadProgress(null);
     }
+  }
+
+  if (awaitingApproval) {
+    return (
+      <ScreenWrapper className="justify-center items-center">
+        <View className="items-center gap-4 px-6">
+          <View className="w-20 h-20 rounded-full bg-amber-100 items-center justify-center">
+            <Svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <Path
+                d="M12 8v4l3 3"
+                stroke="#92400E"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <Path
+                d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"
+                stroke="#92400E"
+                strokeWidth="2"
+              />
+            </Svg>
+          </View>
+          <Text className="text-3xl font-black text-amber-900 text-center">
+            {t('operator.awaitingApprovalTitle')}
+          </Text>
+          <Text className="text-lg text-amber-700 text-center">
+            {t('operator.awaitingApprovalMessage')}
+          </Text>
+        </View>
+      </ScreenWrapper>
+    );
   }
 
   if (success) {

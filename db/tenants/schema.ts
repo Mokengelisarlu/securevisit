@@ -48,6 +48,7 @@ export const visitTypeEnum = pgEnum("visit_type", [
 ]);
 
 export const participantStatusEnum = pgEnum("participant_status", [
+  "EXPECTED",
   "WAITING",
   "CHECKED_IN",
   "CHECKED_OUT",
@@ -79,6 +80,17 @@ export const deviceEventTypeEnum = pgEnum("device_event_type", [
   "REBOOT",
   "ONLINE",
   "OFFLINE",
+]);
+
+export const notificationTypeEnum = pgEnum("notification_type", [
+  "VISIT_REQUEST_CREATED",
+  "VISIT_APPROVED",
+  "VISIT_REJECTED",
+  "VISIT_POSTPONED",
+  "VISIT_CANCELLED",
+  "VISITOR_CHECKED_IN",
+  "VISITOR_CHECKED_OUT",
+  "VISITOR_NO_SHOW",
 ]);
 
 /* =====================================================
@@ -348,48 +360,66 @@ export const settings = pgTable("settings", {
    V2: VISIT PARTICIPANTS (Group visit members)
 ===================================================== */
 
-export const visitParticipants = pgTable("visit_participants", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  visitId: uuid("visit_id").notNull(),
-  visitorId: uuid("visitor_id").notNull(),
-  status: participantStatusEnum("status").default("WAITING"),
-  checkedInAt: timestamp("checked_in_at"),
-  checkedOutAt: timestamp("checked_out_at"),
-  notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const visitParticipants = pgTable(
+  "visit_participants",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    visitId: uuid("visit_id").notNull(),
+    visitorId: uuid("visitor_id").notNull(),
+    status: participantStatusEnum("status").default("WAITING"),
+    checkedInAt: timestamp("checked_in_at"),
+    checkedOutAt: timestamp("checked_out_at"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [
+    index("visit_participants_visit_id_idx").on(t.visitId),
+    unique("visit_participants_visit_visitor_unique").on(t.visitId, t.visitorId),
+  ]
+);
 
 /* =====================================================
    V2: VISIT STATUS HISTORY (Audit trail)
 ===================================================== */
 
-export const visitStatusHistory = pgTable("visit_status_history", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  visitId: uuid("visit_id").notNull(),
-  fromStatus: text("from_status"),
-  toStatus: text("to_status").notNull(),
-  actorId: text("actor_id"),
-  actorRole: text("actor_role"),
-  reason: text("reason"),
-  metadata: text("metadata"), // JSON string
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const visitStatusHistory = pgTable(
+  "visit_status_history",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    visitId: uuid("visit_id")
+      .notNull()
+      .references(() => visits.id, { onDelete: "cascade" }),
+    fromStatus: text("from_status"),
+    toStatus: text("to_status").notNull(),
+    actorId: text("actor_id"),
+    actorRole: text("actor_role"),
+    reason: text("reason"),
+    metadata: text("metadata"), // JSON string
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [index("visit_status_history_visit_idx").on(t.visitId, t.createdAt)]
+);
 
 /* =====================================================
    V2: NOTIFICATIONS
 ===================================================== */
 
-export const notifications = pgTable("notifications", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  recipientId: text("recipient_id").notNull(),
-  recipientRole: text("recipient_role"),
-  type: text("type").notNull(),
-  title: text("title").notNull(),
-  body: text("body"),
-  visitId: uuid("visit_id"),
-  isRead: integer("is_read").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    recipientId: text("recipient_id").notNull(),
+    recipientRole: text("recipient_role"),
+    type: notificationTypeEnum("type").notNull(),
+    title: text("title").notNull(),
+    body: text("body"),
+    visitId: uuid("visit_id").references(() => visits.id, { onDelete: "cascade" }),
+    isRead: integer("is_read").default(0),
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [index("notifications_recipient_idx").on(t.recipientId, t.isRead, t.createdAt)]
+);
 
 /* =====================================================
    V2: AUDIT LOGS

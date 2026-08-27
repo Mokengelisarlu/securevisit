@@ -265,8 +265,8 @@
     "validationError": "Please check the form for errors",
     "invalidSlug": "Slug must only contain lowercase letters, numbers, and hyphens",
     "serverUrlUpdated": "Server URL updated."
-  }
-  ,  "visitDetail": {
+  },
+  "visitDetail": {
     "title": "Visit Detail",
     "visitor": "Visitor",
     "host": "Host",
@@ -307,5 +307,39 @@
     "checkInMessage": "{{visitorName}} will be checked in when connection is restored.",
     "checkOutTitle": "Check-Out Queued",
     "checkOutMessage": "Checkout will be processed when connection is restored."
+  },
+  "operator": {
+    "title": "Operator",
+    "waitingSection": "Waiting for approval",
+    "expectedSection": "Expected arrivals",
+    "insideSection": "Currently Inside",
+    "completedSection": "Completed",
+    "waitingEmpty": "No visits waiting for approval",
+    "expectedEmpty": "No expected arrivals",
+    "insideEmpty": "No visitors currently on site",
+    "pending": "Pending approval",
+    "approved": "Approved",
+    "waitingSince": "Waiting since",
+    "escalationWarning": "Long wait",
+    "escalationCritical": "Critical wait",
+    "visitId": "Visit",
+    "organization": "Organization",
+    "participants": "Participants",
+    "group": "Group",
+    "individual": "Individual",
+    "checkInAll": "Check in all arrived",
+    "checkInSelected": "Check in selected",
+    "checkOut": "Check out",
+    "memberCheckIn": "Check in",
+    "memberCheckOut": "Check out",
+    "memberStatus": "Status",
+    "awaitingApprovalTitle": "Request submitted",
+    "awaitingApprovalMessage": "Your visit request is waiting for host approval. The visitor is not on site yet.",
+    "submitted": "Submitted",
+    "arrived": "Arrived",
+    "onSiteCount": "on site",
+    "insideCount": "inside",
+    "viewList": "View list",
+    "waiting": "Waiting"
   }
 }

@@ -312,7 +312,14 @@ export default function CheckOutScreen() {
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => (
                 <Pressable
-                  onPress={() => setSelected(item)}
+                  onPress={() => {
+                    const t = item as any;
+                    if (t.visitType === 'GROUP' || t.groupName) {
+                      router.push(`/(kiosk)/operator/group/${item.id}` as never);
+                    } else {
+                      setSelected(item);
+                    }
+                  }}
                   className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 active:bg-teal-50 active:border-teal-400"
                 >
                   <View className="flex-row items-center gap-4">

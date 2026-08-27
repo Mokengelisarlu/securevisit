@@ -9,7 +9,6 @@ import {
   getPublicSettings,
   getPublicBusinessSettings,
   searchPublicVisitors,
-  createPublicVisit,
   checkoutPublicVisit,
   getPublicVisitors,
   getPublicVisitorById,
@@ -18,6 +17,15 @@ import {
   getPublicRecentVisits,
   getPublicVisitorKpis,
 } from "@/features/tenants/queries/tenant-data";
+import {
+  createPublicVisitRequest,
+  getPublicWaitingVisits,
+  getPublicExpectedVisits,
+  getPublicCurrentlyInside,
+  checkInPublicParticipants,
+  checkOutPublicParticipants,
+  getPublicVisitDetail,
+} from "@/features/tenants/queries/visits-public";
 import { getBearerToken } from "@/lib/device-auth";
 
 function jsonResponse(data: any, status = 200) {
@@ -33,7 +41,7 @@ export async function GET(
     const deviceToken = getBearerToken(request);
     const url = new URL(request.url);
 
-    if (deviceToken === null && ["departments", "services", "visitor-types", "hosts", "on-site-visitors", "dashboard", "settings", "search-visitors", "visitors", "visitor-kpis", "visitor-detail", "visit-detail", "recent-visits", "visitor-history"].includes(resource)) {
+    if (deviceToken === null && ["departments", "services", "visitor-types", "hosts", "on-site-visitors", "dashboard", "settings", "search-visitors", "visitors", "visitor-kpis", "visitor-detail", "visit-detail", "recent-visits", "visitor-history", "waiting-visits", "expected-visits", "inside"].includes(resource)) {
       return jsonResponse({ error: "Missing Authorization header" }, 401);
     }
 
@@ -85,6 +93,19 @@ export async function GET(
         }
         return jsonResponse(await getPublicVisitHistory(slug, deviceToken!, visitorId));
       }
+      case "waiting-visits":
+        return jsonResponse(await getPublicWaitingVisits(slug, deviceToken!));
+      case "expected-visits":
+        return jsonResponse(await getPublicExpectedVisits(slug, deviceToken!));
+      case "inside":
+        return jsonResponse(await getPublicCurrentlyInside(slug, deviceToken!));
+      case "visit-detail-public": {
+        const visitId = url.searchParams.get("id");
+        if (!visitId) {
+          return jsonResponse({ error: "Missing id query parameter" }, 400);
+        }
+        return jsonResponse(await getPublicVisitDetail(slug, deviceToken!, visitId));
+      }
       default:
         return jsonResponse({ error: "Not found" }, 404);
     }
@@ -112,7 +133,7 @@ export async function POST(
 
     switch (resource) {
       case "visits": {
-        const visit = await createPublicVisit(slug, deviceToken, body);
+        const visit = await createPublicVisitRequest(slug, deviceToken, body);
         return jsonResponse(visit);
       }
       case "checkouts": {
@@ -121,6 +142,22 @@ export async function POST(
           return jsonResponse({ error: "Missing visitId" }, 400);
         }
         const result = await checkoutPublicVisit(slug, deviceToken, visitId);
+        return jsonResponse(result);
+      }
+      case "participants/checkin": {
+        const visitId = body.visitId;
+        if (!visitId) {
+          return jsonResponse({ error: "Missing visitId" }, 400);
+        }
+        const result = await checkInPublicParticipants(slug, deviceToken, visitId, body.participantIds);
+        return jsonResponse(result);
+      }
+      case "participants/checkout": {
+        const visitId = body.visitId;
+        if (!visitId) {
+          return jsonResponse({ error: "Missing visitId" }, 400);
+        }
+        const result = await checkOutPublicParticipants(slug, deviceToken, visitId, body.participantIds);
         return jsonResponse(result);
       }
       default:

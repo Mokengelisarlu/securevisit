@@ -265,8 +265,8 @@
     "validationError": "Veuillez vérifier le formulaire",
     "invalidSlug": "L'identifiant doit contenir uniquement des minuscules, des chiffres et des tirets",
     "serverUrlUpdated": "URL du serveur mise à jour."
-  }
-  ,  "visitDetail": {
+  },
+  "visitDetail": {
     "title": "Détail de la visite",
     "visitor": "Visiteur",
     "host": "Hôte",
@@ -307,5 +307,39 @@
     "checkInMessage": "{{visitorName}} sera enregistré(e) lorsque la connexion sera rétablie.",
     "checkOutTitle": "Libération en file",
     "checkOutMessage": "La libération sera traitée lorsque la connexion sera rétablie."
+  },
+  "operator": {
+    "title": "Opérateur",
+    "waitingSection": "En attente d'approbation",
+    "expectedSection": "Arrivées attendues",
+    "insideSection": "Actuellement à l'intérieur",
+    "completedSection": "Terminés",
+    "waitingEmpty": "Aucune visite en attente d'approbation",
+    "expectedEmpty": "Aucune arrivée attendue",
+    "insideEmpty": "Aucun visiteur sur le site",
+    "pending": "En attente d'approbation",
+    "approved": "Approuvé",
+    "waitingSince": "En attente depuis",
+    "escalationWarning": "Attente longue",
+    "escalationCritical": "Attente critique",
+    "visitId": "Visite",
+    "organization": "Organisation",
+    "participants": "Participants",
+    "group": "Groupe",
+    "individual": "Individuel",
+    "checkInAll": "Enregistrer tous les arrivés",
+    "checkInSelected": "Enregistrer la sélection",
+    "checkOut": "Sortie",
+    "memberCheckIn": "Enregistrer",
+    "memberCheckOut": "Sortie",
+    "memberStatus": "Statut",
+    "awaitingApprovalTitle": "Demande envoyée",
+    "awaitingApprovalMessage": "Votre demande de visite est en attente d'approbation de l'hôte. Le visiteur n'est pas encore sur le site.",
+    "submitted": "Envoyé",
+    "arrived": "Arrivé",
+    "onSiteCount": "sur site",
+    "insideCount": "à l'intérieur",
+    "viewList": "Voir la liste",
+    "waiting": "En attente"
   }
 }

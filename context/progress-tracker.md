@@ -39,6 +39,31 @@ Update this file after every meaningful implementation change.
 ### 2. SecureVisit Web SaaS
 **Status**: Architecture Planning  
 
+### 3. Visitor Lifecycle & Host Portal (v2 workstream)
+**Status**: Phase 1 (Domain Foundation) + Phase 2 (Operator Mobile) — COMPLETE. Now implementing Phase 3 (Host Portal, web).  
+**Plan**: [context/visitor-lifecycle-plan.md](./visitor-lifecycle-plan.md) (mandatory read before implementation)  
+**Summary**: Controlled evolution of the MVP → request → approval → check-in → check-out workflow with
+individual, group, pre-registered, walk-in visits; host portal/PWA; per-member accountability;
+notifications; audit. Pure implementation gap over the existing v2 schema (`visits`, `visitParticipants`,
+`visitStatusHistory`, `auditLogs`, `notifications` already exist). Five phases, backend-first, verify per
+phase, await approval between phases.
+
+**Recent Change — Phase 1 (Domain Foundation) backend complete**: Implemented the full visit-lifecycle
+domain layer and API surface. **Schema** (`db/tenants/schema.ts`): added `EXPECTED` to
+`participantStatusEnum`; added `notificationTypeEnum` (8 values) and switched `notifications.type` to use it;
+added `visitParticipants` unique `(visit_id, visitor_id)` + index; added `visitStatusHistory` FK
+`visit_id → visits(id)` cascade + index; added `notifications.readAt` + FK `visit_id → visits(id)` cascade +
+`recipient` index. Migration `db/tenants/migrations/0022_reflective_rachel_grey.sql` generated (additive only,
+NOT applied). **Server** (`features/tenants/queries/visits-lifecycle.ts`, `"use server"`): actor resolution
+(`getActor`), ownership/state-machine guards (`assertHostOwnsVisit`), and the full lifecycle — `createVisitRequest`,
+`approveVisit`, `rejectVisit`, `postponeVisit`, `cancelVisit`, `addVisitParticipant`, `setParticipantStatus`,
+bulk `checkInVisitParticipants`/`checkOutVisitParticipants`, plus reads `getPendingVisitRequests`, `getExpectedVisits`,
+`getWaitingVisits` (normal|warning|critical escalation), `getCurrentlyInside`, `getVisitDetail`,
+`getMyNotifications`, `markNotificationRead`; internal helpers `insertNotification`/`insertAudit`/`insertStatusHistory`.
+**API** (`app/api/tenants/[slug]/visits/*` + `notifications/*`): 14 routes wired to the lifecycle module with
+`_helpers.ts` (`jsonResponse`, `handleError` → 401/403/400/404/500). Verified: `tsc --noEmit` clean, eslint clean
+on new files, `next build` exit 0 with all 16 new routes compiling. Awaiting approval before Phase 2.
+
 ---
 
 ## Archive: SecureVisit SaaS Progress
@@ -88,3 +113,19 @@ Tenant isolation is the highest-priority architectural concern
 All requests must remain tenant-scoped
 Context-driven development workflow established
 Documentation-first implementation strategy adopted
+## Phase 2 Mobile UI (operator workflow) — completed (online-only actions)
+- Added `operator` i18n namespace (en/fr): waiting/expected/inside/completed sections, escalation badges, group check-in, participant checkout, awaiting-approval strings.
+- New operator screens under `mobile-app/app/(kiosk)/operator/`:
+  - `waiting.tsx` — waiting-for-approval list with escalation badges (normal/warning/critical), polling 10s.
+  - `expected.tsx` — approved pre-registered/groups list, polling 10s.
+  - `group/[id].tsx` — participant management: group check-in all/partial (multi-select), per-member check-out, pending gate.
+- Dashboard (`(tabs)/index.tsx`): added Waiting + Expected compact panels with count badges, "view list" deep links, focus-refresh of operator data.
+- Check-in review (`check-in/review/index.tsx`): approval-gate success state — when `createVisit` returns `requiresApproval`, show "Request submitted / waiting" screen instead of "checked in".
+- Check-out (`check-out/index.tsx`): group visits route to the participant-aware group screen; individual checkout unchanged.
+- Verification: `pnpm lint:ts` exit 0; `eslint` 0 errors on all changed mobile files (1 pre-existing warning in dashboard useMemo).
+- Decision (user): offline queue/sync-engine NOT extended — operator actions are online-only; legacy individual check-in replay already routes through the approval gate server-side.
+
+## Phase 2 bug fix (check-in approval gate)
+- Fixed duplicate `createVisit` call in `mobile-app/app/(kiosk)/check-in/review/index.tsx` (a single call now). Root cause: an earlier edit left two calls — the first created the PENDING visit, the second tripped the dedup guard ("visiteur a déjà une demande"), breaking the flow and leaving the UI showing checked-in/error instead of the pending "Request submitted / waiting" screen.
+- Verified: `lint:ts` exit 0, eslint 0 errors on review screen; exactly one `createVisit` call remains.
+- walk-in -> lobby (PENDING) is a Phase 2 (kiosk) behavior and DOES NOT require Phase 3; only host approve/reject (PENDING->APPROVED/inside) requires Phase 3.

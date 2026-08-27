@@ -13,6 +13,7 @@ This document explains how to use agents and subagents in this repository, and d
 - `DRIZZLE_SCHEMA.md` — Drizzle ORM schema and DB client setup for Neon Postgres.
 - `context/progress-tracker.md` — central project progress document; update after each meaningful implementation change.
 - `CLAUDE.md` — application-building context; follow the note: "If implementation changes the architecture, scope, or standards documented in the context files, update the relevant file before continuing." (keep this in mind while making structural changes)
+- `context/visitor-lifecycle-plan.md` — **APPROVED master implementation plan** for the Visitor Request → Approval → Check-in → Check-out → Completion workstream (host + operator + group visits). **MANDATORY: read this file before implementing anything related to the visit lifecycle, host portal, approvals, participants, notifications, or audit.** It encodes the frozen scope, domain model, state machine, schema deltas, API contracts, phases, and acceptance criteria. Do not deviate from it without updating the file first. Companion draft: `docs/plans/2026-08-27-visitor-lifecycle-host-portal.md`.
 
 ## Available Agent (Subagent) Patterns
 
