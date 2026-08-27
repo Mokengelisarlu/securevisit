@@ -8,7 +8,9 @@ import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useKiosk } from '@/src/contexts/KioskContext';
+import { useNetwork } from '@/src/contexts/NetworkContext';
 import { useGetPublicOnSiteVisitors, useGetPublicVisitorKpis, useGetPublicBusinessSettings } from '@/src/hooks/usePublicData';
+import { getQueue, onQueueChange } from '@/src/lib/offline-queue';
 import VisitorBottomSheet from '@/src/components/VisitorBottomSheet';
 import type { OnSiteVisitor } from '@/src/types/api';
 
@@ -48,6 +50,8 @@ export default function DashboardScreen() {
 
   const [selectedVisitor, setSelectedVisitor] = useState<OnSiteVisitor | null>(null);
   const [showDashboardSplash, setShowDashboardSplash] = useState(true);
+  const [pendingCount, setPendingCount] = useState(0);
+  const { isOnline } = useNetwork();
 
   useEffect(() => {
     if ((!isLoading && !isKpiLoading) || error || kpiError) {
@@ -99,6 +103,16 @@ export default function DashboardScreen() {
       error: kpiError,
     });
   }, [isKpiLoading, kpiData, kpiError]);
+
+  useEffect(() => {
+    async function refreshCount() {
+      const queue = await getQueue();
+      setPendingCount(queue.filter((a) => a.status === 'pending' || a.status === 'failed').length);
+    }
+    refreshCount();
+    const unsub = onQueueChange(refreshCount);
+    return unsub;
+  }, []);
 
   const effectiveBusiness = cachedBusiness || business;
   const tenantName = effectiveBusiness?.name || tenantSlug || 'SecureVisit';
@@ -197,6 +211,21 @@ export default function DashboardScreen() {
             <Text className="text-white text-lg font-black">{t('dashboard.checkIn')}</Text>
           </Pressable>
         </View>
+
+        {pendingCount > 0 ? (
+          <Pressable
+            onPress={() => router.push('/(kiosk)/offline' as any)}
+            className="mx-6 mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex-row items-center gap-3 active:bg-amber-100"
+          >
+            <View className="w-8 h-8 rounded-full bg-amber-500 items-center justify-center">
+              <Text className="text-white text-sm font-black">{pendingCount}</Text>
+            </View>
+            <View className="flex-1">
+              <Text className="text-amber-900 text-sm font-bold">{t('offline.pending')}</Text>
+              <Text className="text-amber-700 text-xs">{isOnline ? t('offline.onlineWarning') : t('offline.offlineWarning')}</Text>
+            </View>
+          </Pressable>
+        ) : null}
 
         {error ? (
           <View className="bg-red-50 rounded-2xl p-4 mx-6 mb-5 border border-red-200">

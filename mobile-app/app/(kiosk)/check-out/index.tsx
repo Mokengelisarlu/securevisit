@@ -13,8 +13,10 @@ import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, Card, Button, TextInput } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
+import { useNetwork } from '@/src/contexts/NetworkContext';
 import { useGetPublicOnSiteVisitors } from '@/src/hooks/usePublicData';
 import { useCheckoutPublicVisit } from '@/src/hooks/useVisits';
+import { addAction } from '@/src/lib/offline-queue';
 import type { OnSiteVisitor } from '@/src/types/api';
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
@@ -29,6 +31,7 @@ export default function CheckOutScreen() {
   const { t, i18n } = useTranslation();
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
+  const { isOnline } = useNetwork();
   const {
     data: siteData,
     isLoading,
@@ -43,6 +46,7 @@ export default function CheckOutScreen() {
   const [selected, setSelected] = useState<OnSiteVisitor | null>(null);
   const [submitError, setSubmitError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [queued, setQueued] = useState(false);
 
   const filtered = query.trim()
     ? onSiteVisitors.filter((v) => {
@@ -57,6 +61,16 @@ export default function CheckOutScreen() {
   async function handleCheckOut() {
     if (!selected) return;
     setSubmitError('');
+
+    if (!isOnline) {
+      await addAction('checkout', { visitId: selected.id });
+      setQueued(true);
+      setTimeout(() => {
+        router.replace('/(kiosk)/(tabs)');
+      }, 2000);
+      return;
+    }
+
     try {
       await checkoutVisit(selected.id);
       setSuccess(true);
@@ -64,7 +78,22 @@ export default function CheckOutScreen() {
         router.replace('/(kiosk)/(tabs)');
       }, 1800);
     } catch (err: any) {
-      setSubmitError(err?.message || t('checkOut.errorCheckOut'));
+      const msg = (err?.message || '').toLowerCase();
+      const isNetErr =
+        msg.includes('network') ||
+        msg.includes('fetch') ||
+        msg.includes('failed') ||
+        err?.name === 'TypeError';
+
+      if (isNetErr) {
+        await addAction('checkout', { visitId: selected.id });
+        setQueued(true);
+        setTimeout(() => {
+          router.replace('/(kiosk)/(tabs)');
+        }, 2000);
+      } else {
+        setSubmitError(err?.message || t('checkOut.errorCheckOut'));
+      }
     }
   }
 
@@ -114,6 +143,37 @@ export default function CheckOutScreen() {
           </Text>
           <Text className="text-lg text-teal-600 text-center">
             {t('success.checkOutMessage', { visitorName: `${selected?.visitor.firstName} ${selected?.visitor.lastName}` })}
+          </Text>
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
+  if (queued) {
+    return (
+      <ScreenWrapper className="justify-center items-center">
+        <View className="items-center gap-4">
+          <View className="w-20 h-20 rounded-full bg-amber-100 items-center justify-center">
+            <Svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <Path
+                d="M12 8v4l3 3"
+                stroke="#92400E"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <Path
+                d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"
+                stroke="#92400E"
+                strokeWidth="2"
+              />
+            </Svg>
+          </View>
+          <Text className="text-3xl font-black text-amber-900 text-center">
+            {t('queuedSuccess.checkOutTitle')}
+          </Text>
+          <Text className="text-lg text-amber-700 text-center">
+            {t('queuedSuccess.checkOutMessage')}
           </Text>
         </View>
       </ScreenWrapper>

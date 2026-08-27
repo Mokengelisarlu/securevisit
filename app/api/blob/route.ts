@@ -1,11 +1,29 @@
 import { NextResponse } from 'next/server';
 
+const ALLOWED_BLOB_HOSTS = [
+  'blob.vercel-storage.com',
+  'vercel-storage.com',
+];
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get('url');
 
     if (!url) {
         return new NextResponse('Missing url parameter', { status: 400 });
+    }
+
+    // Validate that the URL is from an allowed blob host
+    try {
+        const parsedUrl = new URL(url);
+        const isAllowed = ALLOWED_BLOB_HOSTS.some(
+            (host) => parsedUrl.hostname === host || parsedUrl.hostname.endsWith(`.${host}`)
+        );
+        if (!isAllowed) {
+            return new NextResponse('Forbidden: url host not allowed', { status: 403 });
+        }
+    } catch {
+        return new NextResponse('Invalid url parameter', { status: 400 });
     }
 
     try {

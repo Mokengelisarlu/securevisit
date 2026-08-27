@@ -18,7 +18,8 @@ import {
     UserPlus,
     Globe,
     Car,
-    Building2
+    Building2,
+    ScrollText
 } from "lucide-react";
 import { useTenant } from "@/lib/tenant-provider";
 
@@ -111,6 +112,7 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
                         <SidebarCategory label="Dispositif" collapsed={isSidebarCollapsed} />
                         <SidebarLink href="/dispositif" icon={<Monitor className="w-5 h-5" />} label="Dispositif" active={pathname.includes("/dispositif")} collapsed={isSidebarCollapsed} />
+                        <SidebarLink href="/logs" icon={<ScrollText className="w-5 h-5" />} label="Journal d'activité" active={pathname.includes("/logs")} collapsed={isSidebarCollapsed} />
 
                         <SidebarCategory label="Paramètres" collapsed={isSidebarCollapsed} />
                         <SidebarLink href="/paramettres/generales" icon={<Settings className="w-5 h-5" />} label="Générales" active={pathname.includes("/paramettres/generales")} collapsed={isSidebarCollapsed} />

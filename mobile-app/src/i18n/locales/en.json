@@ -266,7 +266,7 @@
     "invalidSlug": "Slug must only contain lowercase letters, numbers, and hyphens",
     "serverUrlUpdated": "Server URL updated."
   }
-  ,"visitDetail": {
+  ,  "visitDetail": {
     "title": "Visit Detail",
     "visitor": "Visitor",
     "host": "Host",
@@ -275,5 +275,37 @@
     "type": "Type",
     "passengers": "Passengers",
     "duration": "Duration"
+  },
+  "offline": {
+    "title": "Offline Queue",
+    "banner": "OFFLINE",
+    "onlineMessage": "You are back online. Queued actions can be synced.",
+    "offlineMessage": "Actions are queued locally until connection is restored.",
+    "offlineWarning": "No internet connection. Actions will be saved and synced when you reconnect.",
+    "onlineWarning": "Connected. Queued actions will sync automatically.",
+    "total": "Total",
+    "pending": "Pending",
+    "failed": "Failed",
+    "retryAll": "Sync All",
+    "retryFailed": "Retry Failed",
+    "emptyTitle": "No queued actions",
+    "emptySubtitle": "All actions have been synced successfully.",
+    "actionCheckIn": "Check-In",
+    "actionCheckout": "Check-Out",
+    "statusPending": "Pending",
+    "statusSyncing": "Syncing…",
+    "statusFailed": "Failed",
+    "syncSuccess": "Sync complete!",
+    "syncFailed": "Sync failed. Will retry automatically.",
+    "allSynced": "{{count}} action(s) synced successfully.",
+    "partialSync": "{{synced}} synced, {{failed}} failed.",
+    "queuedTitle": "Action Queued",
+    "queuedMessage": "Your action has been saved and will sync when you reconnect."
+  },
+  "queuedSuccess": {
+    "checkInTitle": "Check-In Queued",
+    "checkInMessage": "{{visitorName}} will be checked in when connection is restored.",
+    "checkOutTitle": "Check-Out Queued",
+    "checkOutMessage": "Checkout will be processed when connection is restored."
   }
 }

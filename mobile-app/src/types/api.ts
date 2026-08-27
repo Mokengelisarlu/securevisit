@@ -218,3 +218,32 @@ export interface ErrorResponse {
   message?: string;
   code?: string;
 }
+
+export type CommandType =
+  | "CONFIG_UPDATE"
+  | "REBOOT"
+  | "EMERGENCY_MESSAGE"
+  | "CLEAR_CACHE"
+  | "REFRESH_SETTINGS";
+
+export type CommandPriority = "low" | "medium" | "high" | "critical";
+
+export type CommandStatus = "pending" | "acked" | "applied" | "failed";
+
+export interface Command {
+  id: string;
+  deviceId: string;
+  type: CommandType;
+  payload: Record<string, any> | null;
+  status: CommandStatus;
+  priority: CommandPriority;
+  ackAt: string | null;
+  appliedAt: string | null;
+  error: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface CommandsQueueResponse {
+  commands: Command[];
+}

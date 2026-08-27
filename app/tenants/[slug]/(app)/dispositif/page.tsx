@@ -28,10 +28,12 @@ import {
     WifiOff,
     Edit2,
     RefreshCw,
+    Send,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { Modal } from "@/components/ui/custom-modal";
+import { DeviceControlPanel } from "@/components/DeviceControlPanel";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -85,6 +87,9 @@ export default function DispositifPage() {
 
     // Delete confirmation state
     const [deleteTarget, setDeleteTarget] = useState<Device | null>(null);
+
+    // Control panel (send command) state
+    const [controlTarget, setControlTarget] = useState<Device | null>(null);
 
     const { data: devices, isLoading } = useGetDevices(slug);
     const pairMutation = usePairDevice(slug);
@@ -308,6 +313,15 @@ export default function DispositifPage() {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
+                                                    className="h-8 w-8 text-gray-400 hover:text-blue-600"
+                                                    onClick={() => setControlTarget(device)}
+                                                    title="Envoyer une commande"
+                                                >
+                                                    <Send className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     className="h-8 w-8 text-gray-400 hover:text-green-600"
                                                     onClick={() => setReconnectTarget(device)}
                                                     title="Re-connecter un appareil"
@@ -439,6 +453,14 @@ export default function DispositifPage() {
                 description={`Voulez-vous vraiment révoquer l'accès pour "${deleteTarget?.name}" ?`}
                 confirmText="Supprimer"
                 variant="destructive"
+            />
+
+            {/* Device Control Panel (send command) */}
+            <DeviceControlPanel
+                isOpen={!!controlTarget}
+                onClose={() => setControlTarget(null)}
+                device={controlTarget}
+                tenantSlug={slug}
             />
         </div>
     );

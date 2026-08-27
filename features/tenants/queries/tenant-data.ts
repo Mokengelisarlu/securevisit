@@ -1,8 +1,8 @@
 "use server";
 
 import { getTenantDbBySlug } from "@/db/tenants";
-import { departments, hosts, visitors, users, services, visitorTypes, visits, devices, settings, vehicles, authorizedUsers, businessSettings } from "@/db/tenants/schema";
-import { and, gte, lte, eq, between, desc, or, ilike, asc, isNotNull, inArray } from "drizzle-orm";
+import { departments, hosts, visitors, users, services, visitorTypes, visits, devices, settings, vehicles, authorizedUsers, businessSettings, commands, deviceEvents, deviceEventTypeEnum } from "@/db/tenants/schema";
+import { and, gte, lte, eq, between, desc, or, ilike, asc, isNotNull, inArray, lt } from "drizzle-orm";
 import { format, addMinutes } from "date-fns";
 import { master_db } from "@/db/master";
 import { tenants } from "@/db/master/schema";
@@ -64,6 +64,37 @@ export async function pingDevice(tenantSlug: string, deviceToken: string) {
   } catch {
     return { ok: false };
   }
+}
+
+/**
+ * [PUBLIC/SECURE] Record a device event (from the kiosk itself).
+ * Verifies the device token, then inserts into `device_events`.
+ */
+export async function recordDeviceEvent(
+  tenantSlug: string,
+  deviceToken: string,
+  input: {
+    type: (typeof deviceEventTypeEnum.enumValues)[number];
+    severity?: "info" | "warning" | "error";
+    message?: string | null;
+    metadata?: Record<string, unknown> | null;
+  }
+) {
+  const device = await verifyDeviceToken(tenantSlug, deviceToken);
+
+  const db = await getTenantDbBySlug(tenantSlug);
+  const [event] = await db
+    .insert(deviceEvents)
+    .values({
+      deviceId: device.id,
+      type: input.type,
+      severity: input.severity ?? "info",
+      message: input.message ?? null,
+      metadata: input.metadata ?? undefined,
+    })
+    .returning();
+
+  return event;
 }
 
 /**
@@ -324,6 +355,116 @@ export async function deleteDevice(tenantSlug: string, deviceId: string) {
   const db = await getTenantDbBySlug(tenantSlug);
   await db.delete(devices).where(eq(devices.id, deviceId));
   return { success: true };
+}
+
+/**
+ * [ADMIN] Send a command to a device via the admin API.
+ * Calls POST /api/admin/commands (Clerk session-authenticated).
+ */
+export async function sendDeviceCommand(
+  tenantSlug: string,
+  deviceId: string,
+  type: string,
+  payload: Record<string, unknown> | null,
+  priority: "low" | "medium" | "high" | "critical" = "medium"
+) {
+  const response = await fetch("/api/admin/commands", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tenantSlug, deviceId, type, payload, priority }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data?.error || `Failed to send command (HTTP ${response.status})`);
+  }
+  return data?.data ?? data;
+}
+
+/**
+ * [ADMIN] Fetch recent device command logs.
+ * Calls GET /api/admin/logs (Clerk session-authenticated).
+ */
+export async function getCommandLogs(
+  tenantSlug: string,
+  params: { deviceId?: string | null; status?: string | null; limit?: number } = {}
+) {
+  const search = new URLSearchParams();
+  search.set("tenantSlug", tenantSlug);
+  if (params.deviceId) search.set("deviceId", params.deviceId);
+  if (params.status) search.set("status", params.status);
+  if (params.limit) search.set("limit", String(params.limit));
+
+  const response = await fetch(`/api/admin/logs?${search.toString()}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data?.error || `Failed to fetch logs (HTTP ${response.status})`);
+  }
+  return data?.data ?? [];
+}
+
+/**
+ * [ADMIN] Fetch device events for the activity feed.
+ * Calls GET /api/admin/events (Clerk session-authenticated).
+ */
+export async function getDeviceEvents(
+  tenantSlug: string,
+  params: { deviceId?: string | null; type?: string | null; limit?: number } = {}
+) {
+  const search = new URLSearchParams();
+  search.set("tenantSlug", tenantSlug);
+  if (params.deviceId) search.set("deviceId", params.deviceId);
+  if (params.type) search.set("type", params.type);
+  if (params.limit) search.set("limit", String(params.limit));
+
+  const response = await fetch(`/api/admin/events?${search.toString()}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data?.error || `Failed to fetch events (HTTP ${response.status})`);
+  }
+  return data?.data ?? [];
+}
+
+/**
+ * [ADMIN] Fetch device events for the activity feed.
+ */
+export async function getDeviceEventsQuery(
+  tenantSlug: string,
+  params: { deviceId?: string | null; type?: string | null; limit?: number } = {}
+) {
+  await verifyTenantOwnership(tenantSlug);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const limit = Math.min(Math.max(params.limit ?? 100, 1), 500);
+
+  const conditions = [];
+  if (params.deviceId) conditions.push(eq(deviceEvents.deviceId, params.deviceId));
+  if (params.type) conditions.push(eq(deviceEvents.type, params.type as (typeof deviceEventTypeEnum.enumValues)[number]));
+
+  const rows = await db
+    .select({
+      id: deviceEvents.id,
+      deviceId: deviceEvents.deviceId,
+      deviceName: devices.name,
+      deviceLocation: devices.location,
+      type: deviceEvents.type,
+      severity: deviceEvents.severity,
+      message: deviceEvents.message,
+      metadata: deviceEvents.metadata,
+      createdAt: deviceEvents.createdAt,
+    })
+    .from(deviceEvents)
+    .innerJoin(devices, eq(deviceEvents.deviceId, devices.id))
+    .where(conditions.length ? and(...conditions) : undefined)
+    .orderBy(desc(deviceEvents.createdAt))
+    .limit(limit);
+
+  return rows;
 }
 
 /* =======================================
@@ -1908,4 +2049,87 @@ export async function getPublicActivityCheck(tenantSlug: string, deviceToken: st
     departedToday: departedToday.length,
     ts: Date.now(),
   };
+}
+
+/* =======================================
+   COMMANDS (Admin → Device)
+====================================== */
+
+export async function createCommand(
+  tenantSlug: string,
+  deviceId: string,
+  type: string,
+  payload: Record<string, any> | null,
+  priority: "low" | "medium" | "high" | "critical" = "medium"
+) {
+  await verifyTenantOwnership(tenantSlug);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const device = await db.query.devices.findFirst({
+    where: eq(devices.id, deviceId),
+    columns: { id: true },
+  });
+  if (!device) {
+    throw new Error("Device not found");
+  }
+
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+  const [command] = await db
+    .insert(commands)
+    .values({
+      deviceId,
+      type,
+      payload: payload ?? undefined,
+      priority,
+      expiresAt,
+    })
+    .returning();
+
+  return command;
+}
+
+export async function getCommandsQueue(tenantSlug: string, deviceToken: string) {
+  const device = await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const pending = await db.query.commands.findMany({
+    where: and(
+      eq(commands.deviceId, device.id),
+      eq(commands.status, "pending"),
+      gte(commands.expiresAt, new Date())
+    ),
+    orderBy: [asc(commands.createdAt)],
+  });
+
+  return pending;
+}
+
+export async function ackCommand(
+  tenantSlug: string,
+  deviceToken: string,
+  commandId: string
+) {
+  const device = await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const command = await db.query.commands.findFirst({
+    where: and(
+      eq(commands.id, commandId),
+      eq(commands.deviceId, device.id),
+      eq(commands.status, "pending")
+    ),
+  });
+
+  if (!command) {
+    throw new Error("Command not found or already processed");
+  }
+
+  const [updated] = await db
+    .update(commands)
+    .set({ status: "acked", ackAt: new Date() })
+    .where(eq(commands.id, commandId))
+    .returning();
+
+  return updated;
 }

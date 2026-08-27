@@ -266,7 +266,7 @@
     "invalidSlug": "L'identifiant doit contenir uniquement des minuscules, des chiffres et des tirets",
     "serverUrlUpdated": "URL du serveur mise à jour."
   }
-  ,"visitDetail": {
+  ,  "visitDetail": {
     "title": "Détail de la visite",
     "visitor": "Visiteur",
     "host": "Hôte",
@@ -275,5 +275,37 @@
     "type": "Type",
     "passengers": "Passagers",
     "duration": "Durée"
+  },
+  "offline": {
+    "title": "File d'attente hors ligne",
+    "banner": "HORS LIGNE",
+    "onlineMessage": "Vous êtes de retour en ligne. Les actions en file peuvent être synchronisées.",
+    "offlineMessage": "Les actions sont enregistrées localement jusqu'à la reconnexion.",
+    "offlineWarning": "Aucune connexion Internet. Les actions seront enregistrées et synchronisées à la reconnexion.",
+    "onlineWarning": "Connecté. Les actions en file seront synchronisées automatiquement.",
+    "total": "Total",
+    "pending": "En attente",
+    "failed": "Échoué",
+    "retryAll": "Tout synchroniser",
+    "retryFailed": "Réessayer les échoués",
+    "emptyTitle": "Aucune action en file",
+    "emptySubtitle": "Toutes les actions ont été synchronisées.",
+    "actionCheckIn": "Enregistrement",
+    "actionCheckout": "Libération",
+    "statusPending": "En attente",
+    "statusSyncing": "Synchronisation…",
+    "statusFailed": "Échoué",
+    "syncSuccess": "Synchronisation terminée !",
+    "syncFailed": "Échec de la synchronisation. Nouvelle tentative automatique.",
+    "allSynced": "{{count}} action(s) synchronisée(s) avec succès.",
+    "partialSync": "{{synced}} synchronisée(s), {{failed}} échouée(s).",
+    "queuedTitle": "Action en file",
+    "queuedMessage": "Votre action a été enregistrée et sera synchronisée à la reconnexion."
+  },
+  "queuedSuccess": {
+    "checkInTitle": "Enregistrement en file",
+    "checkInMessage": "{{visitorName}} sera enregistré(e) lorsque la connexion sera rétablie.",
+    "checkOutTitle": "Libération en file",
+    "checkOutMessage": "La libération sera traitée lorsque la connexion sera rétablie."
   }
 }

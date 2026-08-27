@@ -1,6 +1,8 @@
 import { Stack, Redirect } from 'expo-router';
+import { View } from 'react-native';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
+import { OfflineBanner } from '@/src/components/OfflineBanner';
 
 export default function KioskLayout() {
   const { deviceToken, isCheckingToken } = useAuth();
@@ -12,11 +14,14 @@ export default function KioskLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <View style={{ flex: 1 }}>
+      <OfflineBanner />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </View>
   );
 }
 

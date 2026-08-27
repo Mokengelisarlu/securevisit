@@ -3,16 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { master_db } from "@/db/master";
 import { users, tenants } from "@/db/master/schema";
 import { count } from "drizzle-orm";
-
-async function verifyAdminAccess(userId: string | null) {
-  if (!userId) {
-    return false;
-  }
-
-  // MVP: Any authenticated user has access
-  // TODO: Implement proper admin role verification
-  return true;
-}
+import { verifyAdminAccess } from "@/features/tenants/server/authorization";
 
 export async function GET() {
   try {
@@ -25,7 +16,7 @@ export async function GET() {
       );
     }
 
-    const isAdmin = await verifyAdminAccess(userId);
+    const isAdmin = await verifyAdminAccess();
     if (!isAdmin) {
       return NextResponse.json(
         { error: "Forbidden" },

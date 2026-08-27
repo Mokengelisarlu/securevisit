@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadToBlob } from "@/features/tenants/server/upload";
-
-function getBearerToken(request: NextRequest) {
-  const auth = request.headers.get("authorization") || request.headers.get("Authorization");
-  return auth?.startsWith("Bearer ") ? auth.slice(7) : null;
-}
+import { getBearerToken } from "@/lib/device-auth";
 
 export async function POST(
   request: NextRequest,

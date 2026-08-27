@@ -6,9 +6,11 @@ import Svg, { Path } from 'react-native-svg';
 import { ScreenWrapper, Card, Button } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
+import { useNetwork } from '@/src/contexts/NetworkContext';
 import { useVisitDraft } from '@/src/contexts/VisitDraftContext';
 import { useCreatePublicVisit } from '@/src/hooks/useVisits';
 import { uploadFile } from '@/src/api/client';
+import { addAction } from '@/src/lib/offline-queue';
 
 function isLocalFileUri(uri?: string | null) {
   return !!uri && (uri.startsWith('file://') || uri.startsWith('content://') || uri.startsWith('blob:'));
@@ -19,9 +21,11 @@ export default function ReviewScreen() {
   const { deviceToken } = useAuth();
   const { draft, resetDraft } = useVisitDraft();
   const { tenantSlug, apiBaseUrl } = useApi();
+  const { isOnline } = useNetwork();
   const { createVisit, isLoading } = useCreatePublicVisit(deviceToken);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [queued, setQueued] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const progressRef = useRef<number[]>([]);
 
@@ -45,6 +49,50 @@ export default function ReviewScreen() {
     let visitorPhotoUrl = draft.visitorPhotoUrl;
     let vehiclePhotoUrl = draft.vehiclePhotoUrl;
     let signatureData = draft.signatureData;
+
+    if (!isOnline) {
+      const filesToUpload = files.map((f) => ({
+        key: f.key,
+        uri: f.uri,
+        filename: f.filename,
+        serverUrl: null as string | null,
+      }));
+
+      const visitData = {
+        newVisitor: {
+          firstName: draft.firstName!,
+          lastName: draft.lastName!,
+          phone: draft.phone,
+          company: draft.company,
+          visitorTypeId: draft.visitorTypeId!,
+        },
+        hostId: draft.hostId,
+        departmentId: draft.departmentId,
+        purpose: draft.purpose,
+        ...(draft.vehicle
+          ? {
+              vehicle: {
+                plateNumber: draft.vehicle.plateNumber,
+                type: draft.vehicle.type,
+                brand: draft.vehicle.brand,
+                color: draft.vehicle.color,
+              },
+              passengerCount: draft.vehicle.passengerCount,
+            }
+          : {}),
+        visitorPhotoUrl: visitorPhotoUrl && !isLocalFileUri(visitorPhotoUrl) ? visitorPhotoUrl : undefined,
+        vehiclePhotoUrl: vehiclePhotoUrl && !isLocalFileUri(vehiclePhotoUrl) ? vehiclePhotoUrl : undefined,
+        signatureData: signatureData && !isLocalFileUri(signatureData) ? signatureData : undefined,
+      };
+
+      await addAction('check_in', { filesToUpload, visitData });
+      setQueued(true);
+      setTimeout(() => {
+        resetDraft();
+        router.replace('/(kiosk)/(tabs)');
+      }, 2000);
+      return;
+    }
 
     try {
       for (let i = 0; i < total; i++) {
@@ -99,7 +147,57 @@ export default function ReviewScreen() {
         router.replace('/(kiosk)/(tabs)');
       }, 1800);
     } catch (err: any) {
-      setError(err?.message || t('review.errorSubmit'));
+      const msg = (err?.message || '').toLowerCase();
+      const isNetErr =
+        msg.includes('network') ||
+        msg.includes('fetch') ||
+        msg.includes('failed') ||
+        err?.name === 'TypeError';
+
+      if (isNetErr) {
+        const filesToUpload = files.map((f) => ({
+          key: f.key,
+          uri: f.uri,
+          filename: f.filename,
+          serverUrl: null as string | null,
+        }));
+
+        const visitData = {
+          newVisitor: {
+            firstName: draft.firstName!,
+            lastName: draft.lastName!,
+            phone: draft.phone,
+            company: draft.company,
+            visitorTypeId: draft.visitorTypeId!,
+          },
+          hostId: draft.hostId,
+          departmentId: draft.departmentId,
+          purpose: draft.purpose,
+          ...(draft.vehicle
+            ? {
+                vehicle: {
+                  plateNumber: draft.vehicle.plateNumber,
+                  type: draft.vehicle.type,
+                  brand: draft.vehicle.brand,
+                  color: draft.vehicle.color,
+                },
+                passengerCount: draft.vehicle.passengerCount,
+              }
+            : {}),
+          visitorPhotoUrl: visitorPhotoUrl && !isLocalFileUri(visitorPhotoUrl) ? visitorPhotoUrl : undefined,
+          vehiclePhotoUrl: vehiclePhotoUrl && !isLocalFileUri(vehiclePhotoUrl) ? vehiclePhotoUrl : undefined,
+          signatureData: signatureData && !isLocalFileUri(signatureData) ? signatureData : undefined,
+        };
+
+        await addAction('check_in', { filesToUpload, visitData });
+        setQueued(true);
+        setTimeout(() => {
+          resetDraft();
+          router.replace('/(kiosk)/(tabs)');
+        }, 2000);
+      } else {
+        setError(err?.message || t('review.errorSubmit'));
+      }
     } finally {
       setUploadProgress(null);
     }
@@ -125,6 +223,37 @@ export default function ReviewScreen() {
           </Text>
           <Text className="text-lg text-teal-600 text-center">
             {t('success.checkInMessage', { visitorName: `${draft.firstName} ${draft.lastName}` })}
+          </Text>
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
+  if (queued) {
+    return (
+      <ScreenWrapper className="justify-center items-center">
+        <View className="items-center gap-4">
+          <View className="w-20 h-20 rounded-full bg-amber-100 items-center justify-center">
+            <Svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <Path
+                d="M12 8v4l3 3"
+                stroke="#92400E"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <Path
+                d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"
+                stroke="#92400E"
+                strokeWidth="2"
+              />
+            </Svg>
+          </View>
+          <Text className="text-3xl font-black text-amber-900 text-center">
+            {t('queuedSuccess.checkInTitle')}
+          </Text>
+          <Text className="text-lg text-amber-700 text-center">
+            {t('queuedSuccess.checkInMessage', { visitorName: `${draft.firstName} ${draft.lastName}` })}
           </Text>
         </View>
       </ScreenWrapper>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { pingDevice } from "@/features/tenants/queries/tenant-data";
+import { getBearerToken } from "@/lib/device-auth";
 
 const PingBodySchema = z.object({
   timestamp: z.string().datetime().optional(),
@@ -14,11 +15,6 @@ const PingBodySchema = z.object({
     wifiSignal: z.number().int().optional(),
   }).optional(),
 });
-
-function getBearerToken(request: NextRequest) {
-  const auth = request.headers.get("authorization") || request.headers.get("Authorization");
-  return auth?.startsWith("Bearer ") ? auth.slice(7) : null;
-}
 
 export async function POST(
   request: NextRequest,

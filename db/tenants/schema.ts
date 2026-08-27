@@ -6,6 +6,8 @@ import {
   pgEnum,
   integer,
   unique,
+  jsonb,
+  index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -18,6 +20,7 @@ export const userRoleEnum = pgEnum("user_role", [
   "ADMIN",
   "SECURITY",
   "RECEPTION",
+  "HOST",
 ]);
 
 export const visitStatusEnum = pgEnum("visit_status", [
@@ -25,6 +28,10 @@ export const visitStatusEnum = pgEnum("visit_status", [
   "OUT",
   "CANCELLED",
   "SCHEDULED",
+  "PENDING_APPROVAL",
+  "APPROVED",
+  "POSTPONED",
+  "REJECTED",
 ]);
 
 export const vehicleTypeEnum = pgEnum("vehicle_type", [
@@ -37,6 +44,41 @@ export const vehicleTypeEnum = pgEnum("vehicle_type", [
 export const visitTypeEnum = pgEnum("visit_type", [
   "WALK_IN",
   "PRE_REGISTERED",
+  "GROUP",
+]);
+
+export const participantStatusEnum = pgEnum("participant_status", [
+  "WAITING",
+  "CHECKED_IN",
+  "CHECKED_OUT",
+  "NO_SHOW",
+  "CANCELED",
+]);
+
+export const commandStatusEnum = pgEnum("command_status", [
+  "pending",
+  "acked",
+  "applied",
+  "failed",
+]);
+
+export const commandPriorityEnum = pgEnum("command_priority", [
+  "low",
+  "medium",
+  "high",
+  "critical",
+]);
+
+export const deviceEventTypeEnum = pgEnum("device_event_type", [
+  "CHECK_IN",
+  "CHECKOUT",
+  "ERROR",
+  "SCREEN_CHANGE",
+  "COMMAND_APPLIED",
+  "COMMAND_FAILED",
+  "REBOOT",
+  "ONLINE",
+  "OFFLINE",
 ]);
 
 /* =====================================================
@@ -52,6 +94,9 @@ export const users = pgTable("users", {
   email: text("email").notNull(),
 
   role: userRoleEnum("role").notNull(),
+
+  // V2: Link HOST role users to a hosts record
+  hostId: uuid("host_id"),
 
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -195,6 +240,27 @@ export const visits = pgTable("visits", {
 
   visitorPhotoUrl: text("visitor_photo_url"),
   vehiclePhotoUrl: text("vehicle_photo_url"),
+
+  // --- V2: Approval workflow fields ---
+  groupName: text("group_name"),
+  organization: text("organization"),
+  participantCount: integer("participant_count").default(1),
+  arrivalAt: timestamp("arrival_at"),
+  notes: text("notes"),
+
+  // Approval fields
+  approvedBy: text("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  rejectedBy: text("rejected_by"),
+  rejectedAt: timestamp("rejected_at"),
+  rejectionReason: text("rejection_reason"),
+  postponedBy: text("postponed_by"),
+  postponedAt: timestamp("postponed_at"),
+  postponeReason: text("postpone_reason"),
+  newProposedDate: timestamp("new_proposed_date"),
+  canceledBy: text("canceled_by"),
+  canceledAt: timestamp("canceled_at"),
+  cancelReason: text("cancel_reason"),
 });
 
 /* =====================================================
@@ -232,6 +298,30 @@ export const devices = pgTable(
 );
 
 /* =====================================================
+   DEVICE EVENTS (per-kiosk activity feed)
+===================================================== */
+
+export const deviceEvents = pgTable(
+  "device_events",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    deviceId: uuid("device_id")
+      .notNull()
+      .references(() => devices.id, { onDelete: "cascade" }),
+    type: deviceEventTypeEnum("type").notNull(),
+    severity: text("severity").default("info"), // info | warning | error
+    message: text("message"),
+    metadata: jsonb("metadata"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [
+    index("device_events_device_id_idx").on(t.deviceId),
+    index("device_events_type_idx").on(t.type),
+    index("device_events_created_at_idx").on(t.createdAt),
+  ]
+);
+
+/* =====================================================
    SETTINGS
 ===================================================== */
 
@@ -245,8 +335,78 @@ export const settings = pgTable("settings", {
   requireVehiclePhoto: integer("require_vehicle_photo").default(0), // 0 or 1
   requireVehicleCheck: integer("require_vehicle_check").default(0), // 0 or 1
 
+  // V2: Approval workflow config
+  requireHostApproval: integer("require_host_approval").default(1), // 0=operator bypass, 1=always require
+  waitingWarningMinutes: integer("waiting_warning_minutes").default(15),
+  waitingCriticalMinutes: integer("waiting_critical_minutes").default(30),
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at"),
+});
+
+/* =====================================================
+   V2: VISIT PARTICIPANTS (Group visit members)
+===================================================== */
+
+export const visitParticipants = pgTable("visit_participants", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitId: uuid("visit_id").notNull(),
+  visitorId: uuid("visitor_id").notNull(),
+  status: participantStatusEnum("status").default("WAITING"),
+  checkedInAt: timestamp("checked_in_at"),
+  checkedOutAt: timestamp("checked_out_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+/* =====================================================
+   V2: VISIT STATUS HISTORY (Audit trail)
+===================================================== */
+
+export const visitStatusHistory = pgTable("visit_status_history", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  visitId: uuid("visit_id").notNull(),
+  fromStatus: text("from_status"),
+  toStatus: text("to_status").notNull(),
+  actorId: text("actor_id"),
+  actorRole: text("actor_role"),
+  reason: text("reason"),
+  metadata: text("metadata"), // JSON string
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+/* =====================================================
+   V2: NOTIFICATIONS
+===================================================== */
+
+export const notifications = pgTable("notifications", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  recipientId: text("recipient_id").notNull(),
+  recipientRole: text("recipient_role"),
+  type: text("type").notNull(),
+  title: text("title").notNull(),
+  body: text("body"),
+  visitId: uuid("visit_id"),
+  isRead: integer("is_read").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+/* =====================================================
+   V2: AUDIT LOGS
+===================================================== */
+
+export const auditLogs = pgTable("audit_logs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  actorId: text("actor_id"),
+  actorRole: text("actor_role"),
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull(),
+  entityId: text("entity_id"),
+  previousValue: text("previous_value"), // JSON string
+  newValue: text("new_value"), // JSON string
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 /* =====================================================
@@ -255,6 +415,17 @@ export const settings = pgTable("settings", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   // future: actions, logs, etc.
+}));
+
+export const devicesRelations = relations(devices, ({ many }) => ({
+  events: many(deviceEvents),
+}));
+
+export const deviceEventsRelations = relations(deviceEvents, ({ one }) => ({
+  device: one(devices, {
+    fields: [deviceEvents.deviceId],
+    references: [devices.id],
+  }),
 }));
 
 export const departmentsRelations = relations(departments, ({ many }) => ({
@@ -284,9 +455,10 @@ export const visitorsRelations = relations(visitors, ({ one, many }) => ({
     references: [visitorTypes.id],
   }),
   visits: many(visits),
+  participants: many(visitParticipants),
 }));
 
-export const visitsRelations = relations(visits, ({ one }) => ({
+export const visitsRelations = relations(visits, ({ one, many }) => ({
   visitor: one(visitors, {
     fields: [visits.visitorId],
     references: [visitors.id],
@@ -311,10 +483,38 @@ export const visitsRelations = relations(visits, ({ one }) => ({
     fields: [visits.vehicleId],
     references: [vehicles.id],
   }),
+
+  participants: many(visitParticipants),
+  statusHistory: many(visitStatusHistory),
 }));
 
 export const vehiclesRelations = relations(vehicles, ({ many }) => ({
   visits: many(visits),
+}));
+
+export const visitParticipantsRelations = relations(visitParticipants, ({ one }) => ({
+  visit: one(visits, {
+    fields: [visitParticipants.visitId],
+    references: [visits.id],
+  }),
+  visitor: one(visitors, {
+    fields: [visitParticipants.visitorId],
+    references: [visitors.id],
+  }),
+}));
+
+export const visitStatusHistoryRelations = relations(visitStatusHistory, ({ one }) => ({
+  visit: one(visits, {
+    fields: [visitStatusHistory.visitId],
+    references: [visits.id],
+  }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  visit: one(visits, {
+    fields: [notifications.visitId],
+    references: [visits.id],
+  }),
 }));
 
 /* =====================================================
@@ -340,3 +540,31 @@ export const businessSettings = pgTable("business_settings", {
   // Meta
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+/* =====================================================
+   COMMANDS (Admin → Device remote control)
+===================================================== */
+
+export const commands = pgTable(
+  "commands",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    deviceId: uuid("device_id")
+      .notNull()
+      .references(() => devices.id, { onDelete: "cascade" }),
+    type: text("type").notNull(), // CONFIG_UPDATE | REBOOT | EMERGENCY_MESSAGE | CLEAR_CACHE | REFRESH_SETTINGS
+    payload: jsonb("payload"),
+    status: commandStatusEnum("status").notNull().default("pending"),
+    priority: commandPriorityEnum("priority").notNull().default("medium"),
+    ackAt: timestamp("ack_at"),
+    appliedAt: timestamp("applied_at"),
+    error: text("error"),
+    expiresAt: timestamp("expires_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [
+    index("commands_device_id_idx").on(t.deviceId),
+    index("commands_status_idx").on(t.status),
+    index("commands_expires_at_idx").on(t.expiresAt),
+  ]
+);

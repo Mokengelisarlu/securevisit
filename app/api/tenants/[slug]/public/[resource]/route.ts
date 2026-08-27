@@ -18,14 +18,7 @@ import {
   getPublicRecentVisits,
   getPublicVisitorKpis,
 } from "@/features/tenants/queries/tenant-data";
-
-function getBearerToken(request: NextRequest) {
-  const auth = request.headers.get("authorization") || request.headers.get("Authorization");
-  if (!auth?.startsWith("Bearer ")) {
-    return null;
-  }
-  return auth.slice(7);
-}
+import { getBearerToken } from "@/lib/device-auth";
 
 function jsonResponse(data: any, status = 200) {
   return NextResponse.json(data, { status });
@@ -96,7 +89,11 @@ export async function GET(
         return jsonResponse({ error: "Not found" }, 404);
     }
   } catch (error: any) {
-    return jsonResponse({ error: error.message || "Unauthorized" }, error?.message?.includes("Missing") ? 401 : 500);
+    const message = error.message || "Unauthorized";
+    if (message === "Tenant not found") {
+      return jsonResponse({ error: "Organization not found. Please check your server URL or contact support." }, 404);
+    }
+    return jsonResponse({ error: message }, message.includes("Missing") ? 401 : 500);
   }
 }
 
@@ -131,6 +128,9 @@ export async function POST(
     }
   } catch (error: any) {
     const message = error.message || "Request failed";
+    if (message === "Tenant not found") {
+      return jsonResponse({ error: "Organization not found. Please check your server URL or contact support." }, 404);
+    }
     const status = message.includes("Missing") || message.includes("Invalid") ? 400 : 500;
     return jsonResponse({ error: message }, status);
   }

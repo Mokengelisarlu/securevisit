@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyDeviceToken } from "@/features/tenants/queries/tenant-data";
-
-function getBearerToken(request: NextRequest) {
-  const auth = request.headers.get("authorization") || request.headers.get("Authorization");
-  return auth?.startsWith("Bearer ") ? auth.slice(7) : null;
-}
+import { deviceAuth } from "@/lib/device-auth";
 
 export async function GET(
   request: NextRequest,
@@ -12,13 +7,7 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    const token = getBearerToken(request);
-
-    if (!token) {
-      return NextResponse.json({ ok: false, error: "Missing Authorization header" }, { status: 401 });
-    }
-
-    const device = await verifyDeviceToken(slug, token);
+    const device = await deviceAuth(request, slug);
 
     return NextResponse.json({
       ok: true,
@@ -27,9 +16,10 @@ export async function GET(
       lastActiveAt: device.lastActiveAt,
     });
   } catch (error: any) {
+    const status = error?.message === "Missing Authorization header" ? 401 : 401;
     return NextResponse.json(
       { ok: false, error: error?.message || "Unauthorized" },
-      { status: 401 }
+      { status }
     );
   }
 }

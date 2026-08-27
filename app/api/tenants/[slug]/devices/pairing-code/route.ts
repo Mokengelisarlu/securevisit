@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { generatePairingCode } from "@/features/tenants/queries/tenant-data";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(
   request: Request,
@@ -7,6 +8,27 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
+
+    // Rate limit: 5 pairing code requests per 10 minutes per IP per tenant
+    const ip = getClientIp(request);
+    const rateKey = `pairing-code:${slug}:${ip}`;
+    const rateResult = checkRateLimit(rateKey, {
+      maxRequests: 5,
+      windowMs: 10 * 60 * 1000,
+    });
+
+    if (!rateResult.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests. Try again later." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil((rateResult.resetAt - Date.now()) / 1000)),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     // Accept either new `deviceId` or legacy `diviceId` key from older clients
     const deviceId = body.deviceId || body.diviceId;

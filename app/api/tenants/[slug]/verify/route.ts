@@ -61,6 +61,11 @@ export async function GET(
 
     } catch (error: any) {
         console.error("Access verification error:", error);
-        return NextResponse.json({ authorized: false, error: error.message }, { status: 500 });
+        const message = error.message || "Verification failed";
+        const status = message === "Tenant not found" ? 404 : 500;
+        const friendly = message === "Tenant not found"
+            ? "Organization not found. Please check your workspace URL."
+            : message;
+        return NextResponse.json({ authorized: false, error: friendly }, { status });
     }
 }

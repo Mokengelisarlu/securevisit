@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { master_db } from "@/db/master";
-import { tenants } from "@/db/master/schema";
+import { tenants, users as masterUsers } from "@/db/master/schema";
 import { eq } from "drizzle-orm";
 
 import { getTenantDbBySlug } from "@/db/tenants";
@@ -81,4 +81,63 @@ export async function getUserTenants() {
     .select()
     .from(tenants)
     .where(eq(tenants.ownerId, userId));
+}
+
+/**
+ * Verify that the current user is a platform admin (SUPER or Admin role in master DB).
+ * Used to protect /api/admin/* routes.
+ */
+export async function verifyAdminAccess(): Promise<boolean> {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return false;
+  }
+
+  const [user] = await master_db
+    .select({ role: masterUsers.role })
+    .from(masterUsers)
+    .where(eq(masterUsers.id, userId))
+    .limit(1);
+
+  if (!user) {
+    return false;
+  }
+
+  return user.role === "SUPER" || user.role === "Admin";
+}
+
+/**
+ * Get the current user's role within a tenant.
+ * Returns null if the user is not a member of the tenant.
+ */
+export async function getCurrentUserRole(tenantSlug: string): Promise<string | null> {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return null;
+  }
+
+  // Check if owner
+  const [tenant] = await master_db
+    .select({ ownerId: tenants.ownerId })
+    .from(tenants)
+    .where(eq(tenants.slug, tenantSlug))
+    .limit(1);
+
+  if (!tenant) {
+    return null;
+  }
+
+  if (tenant.ownerId === userId) {
+    return "ROOT";
+  }
+
+  // Check tenant DB
+  const db = await getTenantDbBySlug(tenantSlug);
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, userId),
+  });
+
+  return user?.role ?? null;
 }

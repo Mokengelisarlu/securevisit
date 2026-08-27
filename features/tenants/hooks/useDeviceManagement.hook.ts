@@ -10,7 +10,62 @@ import {
     deleteDevice,
     updateDevice,
     reconnectDevice,
+    sendDeviceCommand,
+    getCommandLogs,
+    getDeviceEvents,
 } from "../queries/tenant-data";
+
+export const COMMAND_TYPES = [
+    "CONFIG_UPDATE",
+    "REBOOT",
+    "EMERGENCY_MESSAGE",
+    "CLEAR_CACHE",
+    "REFRESH_SETTINGS",
+] as const;
+
+export const COMMAND_PRIORITIES = ["low", "medium", "high", "critical"] as const;
+
+export const EVENT_TYPES = [
+    "CHECK_IN",
+    "CHECKOUT",
+    "ERROR",
+    "SCREEN_CHANGE",
+    "COMMAND_APPLIED",
+    "COMMAND_FAILED",
+    "REBOOT",
+    "ONLINE",
+    "OFFLINE",
+] as const;
+
+export type DeviceEventTypeOption = (typeof EVENT_TYPES)[number];
+
+export type CommandTypeOption = (typeof COMMAND_TYPES)[number];
+export type CommandPriorityOption = (typeof COMMAND_PRIORITIES)[number];
+
+/**
+ * [ADMIN] Send a command to a device. The device picks it up via its
+ * 10-second command polling (see mobile-app/src/lib/command-polling.ts).
+ */
+export function useSendCommand(tenantSlug: string) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+            deviceId,
+            type,
+            payload,
+            priority,
+        }: {
+            deviceId: string;
+            type: CommandTypeOption;
+            payload?: Record<string, unknown>;
+            priority?: CommandPriorityOption;
+        }) =>
+            sendDeviceCommand(tenantSlug, deviceId, type, payload ?? null, priority ?? "medium"),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["devices", tenantSlug] });
+        },
+    });
+}
 
 export function useGeneratePairingCode(tenantSlug: string) {
     return useMutation({
@@ -98,5 +153,35 @@ export function useReconnectDevice(tenantSlug: string) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["devices", tenantSlug] });
         },
+    });
+}
+
+/**
+ * [ADMIN] Fetch recent device command logs (activity feed).
+ * Polls every 10s so new commands/acks show up.
+ */
+export function useGetCommandLogs(
+    tenantSlug: string,
+    filters: { deviceId?: string | null; status?: string | null; limit?: number } = {}
+) {
+    return useQuery({
+        queryKey: ["command-logs", tenantSlug, filters.deviceId ?? null, filters.status ?? null, filters.limit ?? 100],
+        queryFn: () => getCommandLogs(tenantSlug, filters),
+        refetchInterval: 10_000,
+    });
+}
+
+/**
+ * [ADMIN] Fetch device events for the activity feed.
+ * Polls every 10s so new events/lets-keep-live flows show up.
+ */
+export function useGetDeviceEvents(
+    tenantSlug: string,
+    filters: { deviceId?: string | null; type?: string | null; limit?: number } = {}
+) {
+    return useQuery({
+        queryKey: ["device-events", tenantSlug, filters.deviceId ?? null, filters.type ?? null, filters.limit ?? 100],
+        queryFn: () => getDeviceEvents(tenantSlug, filters),
+        refetchInterval: 10_000,
     });
 }
