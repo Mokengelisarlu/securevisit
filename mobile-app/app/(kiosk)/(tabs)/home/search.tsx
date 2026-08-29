@@ -1,6 +1,7 @@
 import { View, Text, FlatList, Image, Pressable, ActivityIndicator } from 'react-native';
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, TextInput } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -21,6 +22,7 @@ export default function SearchScreen() {
   const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
+  const router = useRouter();
   const { results, isSearching, search } = useSearchPublicVisitors(deviceToken);
   const [query, setQuery] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -40,13 +42,29 @@ export default function SearchScreen() {
   return (
     <ScreenWrapper padX={false}>
       <View className="flex-1 px-6 pt-8">
-        <Text className="text-2xl font-black text-teal-900 mb-4">{t('visitorSearch.searchTitle')}</Text>
+        <View className="flex-row items-center justify-between mb-4">
+          <Pressable onPress={() => router.back()} className="flex-row items-center" hitSlop={12}>
+            <Ionicons name="arrow-back" size={20} color="#0F766E" />
+            <Text className="ml-1 text-teal-700 text-base font-semibold">{t('common.back')}</Text>
+          </Pressable>
+          <Text className="text-2xl font-black text-teal-900">{t('visitorSearch.searchTitle')}</Text>
+          <View className="w-10" />
+        </View>
         <TextInput
           placeholder={t('visitorSearch.searchPlaceholder')}
           value={query}
           onChangeText={handleSearch}
           autoCapitalize="words"
+          autoFocus
         />
+
+        <Pressable
+          onPress={() => router.push('/(kiosk)/check-in/type' as any)}
+          className="bg-teal-700 rounded-2xl py-3.5 mt-3 flex-row items-center justify-center gap-2 active:bg-teal-800 active:scale-95"
+        >
+          <Ionicons name="add" size={20} color="#FFFFFF" />
+          <Text className="text-white text-base font-black">{t('visitorSearch.newVisitor')}</Text>
+        </Pressable>
 
         <View className="flex-1 mt-4">
           {isSearching ? (

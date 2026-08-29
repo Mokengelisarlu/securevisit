@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiCall } from '@/src/api/client';
 import { useApi } from '@/src/contexts/ApiContext';
+import { isDeepEqual } from '@/src/utils/deepEqual';
 import {
   Visitor,
   Host,
+  HostSummary,
   Department,
   Service,
   VisitorType,
@@ -130,6 +132,76 @@ export function useGetPublicHosts(deviceToken: string | null) {
   }, [deviceToken, tenantSlug, apiBaseUrl]);
 
   return { data, isLoading, error };
+}
+
+const hostSummaryCache: { data: HostSummary[]; ts: number } = { data: [], ts: 0 };
+const HOST_SUMMARY_STALE_MS = 60_000;
+
+export function useGetPublicHostSummary(deviceToken: string | null) {
+  const [data, setData] = useState<HostSummary[]>(hostSummaryCache.data);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  useEffect(() => {
+    if (!deviceToken) return;
+
+    let cancelled = false;
+
+    async function fetchFresh() {
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/host-summary`,
+          { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+        );
+        if (cancelled) return;
+        hostSummaryCache.data = response;
+        hostSummaryCache.ts = Date.now();
+        setData(response);
+      } catch (err: any) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    const run = () => {
+      const stale = Date.now() - hostSummaryCache.ts > HOST_SUMMARY_STALE_MS;
+      if (hostSummaryCache.data.length === 0 || stale) {
+        setIsLoading(hostSummaryCache.data.length === 0);
+        fetchFresh();
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    run();
+
+    return () => { cancelled = true; };
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+  const refetch = useCallback(() => {
+    setError(null);
+    setIsLoading(true);
+    apiCall(
+      `/api/tenants/${tenantSlug}/public/host-summary`,
+      { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
+    )
+      .then((response) => {
+        hostSummaryCache.data = response;
+        hostSummaryCache.ts = Date.now();
+        setData(response);
+      })
+      .catch((err: any) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [deviceToken, tenantSlug, apiBaseUrl]);
+
+  return { data, isLoading, error, refetch };
 }
 
 export function useGetPublicDepartments(deviceToken: string | null) {
@@ -274,18 +346,22 @@ export function useGetPublicSettings(deviceToken: string | null, pollIntervalMs?
     if (!deviceToken) return;
 
     let cancelled = false;
+    const hasLoaded = { current: false };
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     async function fetch() {
-      setIsLoading(true);
-      setError(null);
+      if (!hasLoaded.current) setIsLoading(true);
       try {
         const response = await apiCall(
           `/api/tenants/${tenantSlug}/public/settings`,
           { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
         );
-        if (!cancelled) setData(response as KioskSettings);
+        if (cancelled) return;
+        hasLoaded.current = true;
+        setData((prev) => (isDeepEqual(prev, response) ? prev : response));
+        setError((prev) => (prev === null ? prev : null));
       } catch (err: any) {
-        if (!cancelled) setError(err.message);
+        if (!cancelled) setError((prev) => (prev === err.message ? prev : err.message));
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -293,7 +369,6 @@ export function useGetPublicSettings(deviceToken: string | null, pollIntervalMs?
 
     fetch();
 
-    let interval: ReturnType<typeof setInterval> | null = null;
     if (pollIntervalMs) {
       interval = setInterval(fetch, pollIntervalMs);
     }
@@ -320,14 +395,14 @@ export function useGetPublicOnSiteVisitors(deviceToken: string | null, pollInter
 
     try {
       if (!silent) setIsLoading(true);
-      setError(null);
+      setError((prev) => (prev === null ? prev : null));
       const response = await apiCall(
         `/api/tenants/${tenantSlug}/public/on-site-visitors`,
         { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
       );
-      setData(response);
+      setData((prev) => (isDeepEqual(prev, response) ? prev : response));
     } catch (err: any) {
-      setError(err.message);
+      setError((prev) => (prev === err.message ? prev : err.message));
     } finally {
       if (!silent) setIsLoading(false);
     }
@@ -488,14 +563,14 @@ export function useGetPublicVisitorKpis(deviceToken: string | null, pollInterval
 
     try {
       if (!silent) setIsLoading(true);
-      setError(null);
+      setError((prev) => (prev === null ? prev : null));
       const response = await apiCall(
         `/api/tenants/${tenantSlug}/public/visitor-kpis`,
         { deviceToken: deviceToken ?? undefined, baseUrl: apiBaseUrl }
       );
-      setData(response);
+      setData((prev) => (isDeepEqual(prev, response) ? prev : response));
     } catch (err: any) {
-      setError(err.message);
+      setError((prev) => (prev === err.message ? prev : err.message));
     } finally {
       if (!silent) setIsLoading(false);
     }

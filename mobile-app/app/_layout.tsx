@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
 import { KioskProvider } from '@/src/contexts/KioskContext';
 import { ApiProvider, useApi } from '@/src/contexts/ApiContext';
 import { VisitDraftProvider } from '@/src/contexts/VisitDraftContext';
+import { GroupDraftProvider } from '@/src/contexts/GroupDraftContext';
 import { NetworkProvider, useNetwork } from '@/src/contexts/NetworkContext';
 import { ReactQueryProvider } from '@/src/lib/react-query-provider';
 import { useKioskHeartbeat } from '@/src/hooks/useHeartbeat';
@@ -84,9 +85,11 @@ export default function RootLayout() {
             <NetworkProvider>
               <KioskProvider>
                 <VisitDraftProvider>
-                  <ReactQueryProvider>
-                    <RootContent />
-                  </ReactQueryProvider>
+                  <GroupDraftProvider>
+                    <ReactQueryProvider>
+                      <RootContent />
+                    </ReactQueryProvider>
+                  </GroupDraftProvider>
                 </VisitDraftProvider>
               </KioskProvider>
             </NetworkProvider>

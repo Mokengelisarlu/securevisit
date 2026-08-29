@@ -18,8 +18,9 @@ import {
     LogOut
 } from "lucide-react";
 import { Modal } from "@/components/ui/custom-modal";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { VisitStatusBadge, ParticipantStatusBadge, visitStatusConfig } from "../components/host/HostStatusBadge";
+import { HostVisitActions } from "../components/host/HostVisitActions";
 
 interface VisitDetailsModalProps {
     isOpen: boolean;
@@ -30,14 +31,8 @@ interface VisitDetailsModalProps {
 export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalProps) {
     if (!visit) return null;
 
-    const statusConfig = {
-        IN: { label: "Sur place", color: "bg-green-100 text-green-700 border-green-200" },
-        OUT: { label: "Sorti", color: "bg-gray-100 text-gray-700 border-gray-200" },
-        CANCELLED: { label: "Annulé", color: "bg-red-100 text-red-700 border-red-200" },
-        SCHEDULED: { label: "Prévu", color: "bg-amber-100 text-amber-700 border-amber-200" },
-    };
-
-    const config = statusConfig[visit.status as keyof typeof statusConfig] || statusConfig.IN;
+    const participants = visit.participants ?? [];
+    const statusHistory = visit.statusHistory ?? [];
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={`Détails de la visite: ${visit.visitNumber}`}>
@@ -50,9 +45,7 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-gray-900">{visit.visitor.firstName} {visit.visitor.lastName}</h3>
-                            <Badge className={`${config.color} px-2 py-0.5 text-[10px] uppercase font-black tracking-widest mt-0.5`}>
-                                {config.label}
-                            </Badge>
+                            <VisitStatusBadge status={visit.status} className="mt-1" />
                         </div>
                     </div>
                     <div className="text-right">
@@ -60,6 +53,21 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                         <p className="font-mono font-bold text-gray-700">{visit.visitNumber}</p>
                     </div>
                 </div>
+
+                {/* Decision actions for pending visits */}
+                {visit.status === "PENDING_APPROVAL" && (
+                    <div className="p-4 bg-violet-50 border border-violet-100 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div className="flex-1">
+                            <p className="text-xs font-black uppercase tracking-widest text-violet-700">
+                                Demande d'approbation
+                            </p>
+                            <p className="text-sm text-violet-700/70 mt-0.5">
+                                Approuvez, refusez ou reportez cette demande de visite.
+                            </p>
+                        </div>
+                        <HostVisitActions visit={visit} />
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Visitor Info */}
@@ -111,6 +119,31 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                     </div>
                 </div>
 
+                {/* Participants */}
+                {participants.length > 0 && (
+                    <div className="space-y-4">
+                        <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                            <User className="w-4 h-4 text-teal-500" /> Participants ({participants.length})
+                        </h4>
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-100">
+                            {participants.map((p: any) => (
+                                <div key={p.id} className="flex items-center gap-3 p-4">
+                                    <div className="w-10 h-10 rounded-full bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center font-black shrink-0">
+                                        {p.visitor?.firstName?.[0]}{p.visitor?.lastName?.[0]}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-bold text-gray-900 truncate">
+                                            {p.visitor ? `${p.visitor.firstName} ${p.visitor.lastName}` : "Participant"}
+                                        </p>
+                                        <p className="text-xs text-gray-500">{p.visitor?.company || "—"}</p>
+                                    </div>
+                                    <ParticipantStatusBadge status={p.status} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Timeline */}
                 <div className="space-y-4">
                     <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
@@ -141,6 +174,48 @@ export function VisitDetailsModal({ isOpen, onClose, visit }: VisitDetailsModalP
                         </div>
                     </div>
                 </div>
+
+                {/* Audit / Status History */}
+                {statusHistory.length > 0 && (
+                    <div className="space-y-4">
+                        <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                            <Shield className="w-4 h-4 text-teal-500" /> Audit du statut
+                        </h4>
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                            <div className="space-y-0">
+                                {[...statusHistory]
+                                    .sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                                    .map((h: any, i: number) => (
+                                        <div key={h.id} className="flex gap-4">
+                                            <div className="flex flex-col items-center">
+                                                <div className={`w-3.5 h-3.5 rounded-full border-2 mt-1.5 ${i === 0 ? "bg-teal-500 border-teal-200" : "bg-white border-gray-300"}`} />
+                                                {i < statusHistory.length - 1 && <div className="w-px flex-1 bg-gray-200" />}
+                                            </div>
+                                            <div className="pb-6">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="text-sm font-black text-gray-900">
+                                                        {h.fromStatus ? `${visitStatusConfig(h.fromStatus).label} → ` : ""}
+                                                        {h.toStatus ? visitStatusConfig(h.toStatus).label : "—"}
+                                                    </span>
+                                                    {h.actorRole && (
+                                                        <span className="text-[9px] font-black uppercase tracking-widest bg-gray-100 text-gray-500 rounded-lg px-2 py-0.5">
+                                                            par {h.actorRole}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="text-xs text-gray-400 mt-0.5">
+                                                    {format(new Date(h.createdAt), "dd MMM yyyy · HH:mm", { locale: fr })}
+                                                </p>
+                                                {h.reason && (
+                                                    <p className="text-xs text-gray-500 italic mt-1">"{h.reason}"</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Compliance & Signature */}
                 {visit.signatureData && (

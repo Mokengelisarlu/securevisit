@@ -16,11 +16,15 @@ import {
     UserPlus,
     CalendarCheck2,
     Car,
-    Footprints
+    Footprints,
+    Hourglass
 } from "lucide-react";
 import { format, startOfToday, endOfToday, startOfYesterday, endOfYesterday, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subDays } from "date-fns";
 import { useTenant } from "@/lib/tenant-provider";
 import { useGetVisits } from "../hooks/useGetTenantData";
+import { useGetWaitingVisits } from "../hooks/useHostPortal.hook";
+import { VisitStatusBadge } from "../components/host/HostStatusBadge";
+import { HostVisitActions } from "../components/host/HostVisitActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -49,7 +53,7 @@ import { VisitDetailsModal } from "../modals/VisitDetailsModal";
 import { Eye } from "lucide-react";
 import { getBlobUrl } from "@/lib/utils";
 
-type TabType = "today" | "on-site" | "exited" | "scheduled";
+type TabType = "today" | "on-site" | "exited" | "scheduled" | "pending";
 
 export function TabbedVisitsList() {
     const { slug: tenantSlug } = useTenant();
@@ -99,10 +103,11 @@ export function TabbedVisitsList() {
                 break;
         }
 
-        let status: "IN" | "OUT" | "SCHEDULED" | undefined;
+        let status: "IN" | "OUT" | "SCHEDULED" | "PENDING_APPROVAL" | Array<"IN" | "OUT" | "CANCELLED" | "SCHEDULED" | "PENDING_APPROVAL" | "APPROVED" | "POSTPONED" | "REJECTED"> | undefined;
         if (activeTab === "on-site") status = "IN";
         if (activeTab === "exited") status = "OUT";
-        if (activeTab === "scheduled") status = "SCHEDULED";
+        if (activeTab === "scheduled") status = ["SCHEDULED", "APPROVED", "POSTPONED"];
+        if (activeTab === "pending") status = "PENDING_APPROVAL";
 
         return { startDate, endDate, status };
     }, [activeTab, dateFilter, customStartDate, customEndDate]);
@@ -203,8 +208,21 @@ export function TabbedVisitsList() {
                         <CalendarCheck2 className="w-4 h-4" />
                         Visites prévues
                     </button>
+                    <button
+                        onClick={() => setActiveTab("pending")}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "pending"
+                            ? "bg-white text-violet-600 shadow-sm border border-gray-100"
+                            : "text-gray-500 hover:bg-white/50"
+                            }`}
+                    >
+                        <Hourglass className="w-4 h-4" />
+                        En attente
+                    </button>
                 </div>
             </div>
+
+            {/* Row 2.5: Waiting banner */}
+            {activeTab === "today" && <VisitsWaitingBanner tenantSlug={tenantSlug!} />}
 
             <VisitFormModal
                 isOpen={isModalOpen}
@@ -361,8 +379,8 @@ export function TabbedVisitsList() {
                                     </TableCell>
                                     <TableCell className="py-4 px-6 text-sm text-gray-600 font-medium">
                                         <div className="flex items-center gap-2">
-                                            <Clock className={`w-3.5 h-3.5 ${visit.status === "SCHEDULED" ? "text-amber-400" : "text-teal-400"}`} />
-                                            {visit.status === "SCHEDULED" ? (
+                                            <Clock className={`w-3.5 h-3.5 ${["SCHEDULED", "APPROVED", "POSTPONED"].includes(visit.status) ? "text-amber-400" : "text-teal-400"}`} />
+                                            {["SCHEDULED", "APPROVED", "POSTPONED"].includes(visit.status) ? (
                                                 <span>{new Date(visit.visitDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                             ) : visit.checkInAt ? (
                                                 <span>{new Date(visit.checkInAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
@@ -371,7 +389,7 @@ export function TabbedVisitsList() {
                                             )}
                                         </div>
                                         <div className="text-[10px] text-gray-400 ml-5">
-                                            {visit.status === "SCHEDULED"
+                                            {["SCHEDULED", "APPROVED", "POSTPONED"].includes(visit.status)
                                                 ? new Date(visit.visitDate).toLocaleDateString()
                                                 : visit.checkInAt
                                                     ? new Date(visit.checkInAt).toLocaleDateString()
@@ -390,18 +408,7 @@ export function TabbedVisitsList() {
                                         )}
                                     </TableCell>
                                     <TableCell className="py-4 px-6">
-                                        <Badge
-                                            className={`
-                        ${visit.status === "IN" ? "bg-green-100 text-green-700 border-green-200" : ""}
-                        ${visit.status === "OUT" ? "bg-gray-100 text-gray-700 border-gray-200" : ""}
-                        ${visit.status === "CANCELLED" ? "bg-red-100 text-red-700 border-red-200" : ""}
-                        ${visit.status === "SCHEDULED" ? "bg-amber-100 text-amber-700 border-amber-200" : ""}
-                        px-3 py-1 font-bold text-[10px] uppercase tracking-wider
-                      `}
-                                            variant="outline"
-                                        >
-                                            {visit.status === "IN" ? "Sur place" : visit.status === "OUT" ? "Sorti" : visit.status === "CANCELLED" ? "Annulé" : "Prévu"}
-                                        </Badge>
+                                        <VisitStatusBadge status={visit.status} />
                                     </TableCell>
                                     <TableCell className="py-4 px-6 text-right">
                                         <div className="flex items-center justify-end gap-2">
@@ -415,7 +422,10 @@ export function TabbedVisitsList() {
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
                                             </Link>
-                                            {visit.status === "SCHEDULED" && (
+                                            {visit.status === "PENDING_APPROVAL" && (
+                                                <HostVisitActions visit={visit} />
+                                            )}
+                                            {(visit.status === "SCHEDULED" || visit.status === "APPROVED") && (
                                                 <Button
                                                     size="sm"
                                                     onClick={async () => {
@@ -480,6 +490,42 @@ export function TabbedVisitsList() {
                     </div>
                 </div>
             )}
+        </div>
+    );
+}
+
+function VisitsWaitingBanner({ tenantSlug }: { tenantSlug: string }) {
+    const { data: waiting } = useGetWaitingVisits(tenantSlug);
+
+    if (!waiting || waiting.length === 0) return null;
+
+    return (
+        <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-2xl animate-in fade-in slide-in-from-top-2">
+            <div className="w-11 h-11 rounded-xl bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                <Hourglass className="w-5 h-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-black text-green-800">
+                    {waiting.length} visiteur{waiting.length > 1 ? "s" : ""} attend{waiting.length > 1 ? "ent" : ""} à l'accueil
+                </p>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    {waiting.slice(0, 5).map((v: any) => (
+                        <span key={v.id} className="text-xs font-bold text-green-700 bg-white border border-green-100 rounded-lg px-2 py-0.5">
+                            {v.visitor?.firstName} {v.visitor?.lastName}
+                        </span>
+                    ))}
+                    {waiting.length > 5 && (
+                        <span className="text-xs font-bold text-green-600">+{waiting.length - 5} autres</span>
+                    )}
+                </div>
+            </div>
+            <Link
+                href="/visiteurs/register"
+                className="shrink-0 px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs font-black uppercase tracking-widest shadow-sm transition-all flex items-center gap-2"
+            >
+                <UserPlus className="w-4 h-4" />
+                Accueillir
+            </Link>
         </div>
     );
 }

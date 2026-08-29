@@ -40,29 +40,46 @@ Update this file after every meaningful implementation change.
 **Status**: Architecture Planning  
 
 ### 3. Visitor Lifecycle & Host Portal (v2 workstream)
-**Status**: Phase 1 (Domain Foundation) + Phase 2 (Operator Mobile) — COMPLETE. Now implementing Phase 3 (Host Portal, web).  
-**Plan**: [context/visitor-lifecycle-plan.md](./visitor-lifecycle-plan.md) (mandatory read before implementation)  
+**Status**: Phases 1–4 (Domain Foundation + Operator Mobile + Host Portal web + Notifications) — COMPLETE. Phase 5 (Advanced) deferred.
+**Plan**: [context/visitor-lifecycle-plan.md](./visitor-lifecycle-plan.md) (mandatory read before implementation)
 **Summary**: Controlled evolution of the MVP → request → approval → check-in → check-out workflow with
 individual, group, pre-registered, walk-in visits; host portal/PWA; per-member accountability;
 notifications; audit. Pure implementation gap over the existing v2 schema (`visits`, `visitParticipants`,
 `visitStatusHistory`, `auditLogs`, `notifications` already exist). Five phases, backend-first, verify per
 phase, await approval between phases.
 
-**Recent Change — Phase 1 (Domain Foundation) backend complete**: Implemented the full visit-lifecycle
-domain layer and API surface. **Schema** (`db/tenants/schema.ts`): added `EXPECTED` to
-`participantStatusEnum`; added `notificationTypeEnum` (8 values) and switched `notifications.type` to use it;
-added `visitParticipants` unique `(visit_id, visitor_id)` + index; added `visitStatusHistory` FK
-`visit_id → visits(id)` cascade + index; added `notifications.readAt` + FK `visit_id → visits(id)` cascade +
-`recipient` index. Migration `db/tenants/migrations/0022_reflective_rachel_grey.sql` generated (additive only,
-NOT applied). **Server** (`features/tenants/queries/visits-lifecycle.ts`, `"use server"`): actor resolution
-(`getActor`), ownership/state-machine guards (`assertHostOwnsVisit`), and the full lifecycle — `createVisitRequest`,
-`approveVisit`, `rejectVisit`, `postponeVisit`, `cancelVisit`, `addVisitParticipant`, `setParticipantStatus`,
-bulk `checkInVisitParticipants`/`checkOutVisitParticipants`, plus reads `getPendingVisitRequests`, `getExpectedVisits`,
-`getWaitingVisits` (normal|warning|critical escalation), `getCurrentlyInside`, `getVisitDetail`,
-`getMyNotifications`, `markNotificationRead`; internal helpers `insertNotification`/`insertAudit`/`insertStatusHistory`.
-**API** (`app/api/tenants/[slug]/visits/*` + `notifications/*`): 14 routes wired to the lifecycle module with
-`_helpers.ts` (`jsonResponse`, `handleError` → 401/403/400/404/500). Verified: `tsc --noEmit` clean, eslint clean
-on new files, `next build` exit 0 with all 16 new routes compiling. Awaiting approval before Phase 2.
+**Recent Change — Phase 3 (Host Portal, web) complete**: Added `getHostPortalData`
+(role-gated HOST/ADMIN/ROOT; HOST scoped to own `hostId`, admins see all; pending/upcoming/inside/history/
+counts/notifications snapshot with 15s polling) and `createHostPreRegistration` (HOST auto-assigns itself,
+ROOT/ADMIN pick `hostId`; resolves to APPROVED via `createVisitRequest`) in `visits-lifecycle.ts`. Widened
+`tenant-data.ts`: `getVisits` status filter supports lifecycle statuses incl. arrays (`inArray`),
+`getVisitById` now returns `participants{visitor}` + `statusHistory`, `authorizeUser`/`updateUserRole`
+accept `"HOST"`. Auto-link `users.hostId` by email in `syncTenantUser.ts` (HOST role). New client hooks
+`useHostPortal.hook.ts` (data + approve/reject/postpone/cancel/mark-read/pre-registration mutations;
+operator reads `useGetWaitingVisits`/`useGetPendingApprovals`/`useGetCurrentlyInside`). UI: shared status
+contract `HostStatusBadge` (all 8 visit + 6 participant statuses), `VisitDecisionModal` (reject/postpone/
+cancel with reason), `HostVisitActions` (approve/reject/postpone/cancel), `NotificationsBell` (unread badge).
+New pages under `(app)/hote/visits/*` with role-gated layout + subnav: dashboard (stat cards + previews),
+`en-attente` (full decisions), `a-venir` (approved + participant badges), `sur-place` (participants +
+walk-ins), `historique`, `pre-inscription` (host auto-link form), `notifications` (mark-read), `profil`.
+Sidebar "Mes visites" link + header bell in `AppLayoutContent.tsx`. Admin `visiteurs`: `UserInviteForm`
+gains HOST role; `TabbedVisitsList` gains "En attente" tab, waiting banner, full status badges; `VisitDetailsModal`
++ `visiteurs/list/[id]/page.tsx` show participants + audit status timeline + inline approve/reject/postpone.
+Verified: `tsc --noEmit` clean, `npm run build` exit 0 (all 8 new hote/visits routes compile). Async issue
+fixed (bell reads tolerate 403): portal HOST without linked `hosts` record sees a link banner on Profil.
+
+**Recent Change — Phase 4 (Notifications) complete**: Closed the remaining notification gaps in
+`features/tenants/queries/visits-lifecycle.ts` so every lifecycle mutation emits a notification:
+(1) added a shared `notifyOperators(tx, …)` helper (SECURITY/RECEPTION/ADMIN/ROOT batch write) replacing the
+repeated inline operator loops; (2) `addVisitParticipant` now notifies operators on new participant
+(`VISIT_REQUEST_CREATED`); (3) `setParticipantStatus` now emits `VISITOR_NO_SHOW` (previously a dead enum
+value) — single-participant check-in/check-out refactored onto the helper; (4) bulk group
+`checkInVisitParticipants`/`checkOutVisitParticipants` now notify operators (`VISITOR_CHECKED_IN`/
+`VISITOR_CHECKED_OUT`). Fixed the host-portal unread-count undercount: `counts.unreadNotifications` in
+`getHostPortalData` now uses a SQL `COUNT(*)` (was filter over a `limit: 100` list fetch, which undercounted
+past 100 notifications). List/read API (`GET /notifications`, `POST /notifications/[id]/read`), bell unread
+badge, dashboard unread stat and notifications list page were already wired and remain intact. Verified:
+`tsc --noEmit` clean, eslint clean on modified file, `next build` exit 0 (3 notification routes compile).
 
 ---
 
@@ -129,3 +146,26 @@ Documentation-first implementation strategy adopted
 - Fixed duplicate `createVisit` call in `mobile-app/app/(kiosk)/check-in/review/index.tsx` (a single call now). Root cause: an earlier edit left two calls — the first created the PENDING visit, the second tripped the dedup guard ("visiteur a déjà une demande"), breaking the flow and leaving the UI showing checked-in/error instead of the pending "Request submitted / waiting" screen.
 - Verified: `lint:ts` exit 0, eslint 0 errors on review screen; exactly one `createVisit` call remains.
 - walk-in -> lobby (PENDING) is a Phase 2 (kiosk) behavior and DOES NOT require Phase 3; only host approve/reject (PENDING->APPROVED/inside) requires Phase 3.
+
+## Group visit form (mobile kiosk) + single/group chooser
+- The "New Visitor" button on the search screen (`home/search.tsx`) now opens a new chooser screen `check-in/type.tsx` with two options: **Single Visitor** (routes to the existing `/(kiosk)/check-in` start flow unchanged) and **Group Visit** (routes to the new `/(kiosk)/check-in/group` form).
+- New **group visit form** `check-in/group/index.tsx`: collects `groupName` (required), `organization`, optional host (via existing `select-host` picker, auto-fills department), department, purpose, plus a member list. Submit posts to the existing `createPublicVisitRequest` GROUP path: `POST /public/visits` with `visitType:'GROUP'`, `groupName`, `organization`, `participantCount`, `participants:[{visitorId}]` (first member as root `visitorId` + all members in `participants`; backend dedupes the primary). Success/approval semantics preserved (PENDING_APPROVAL when host-approval gate is on).
+- New **add-member** flow `check-in/group/add-members.tsx`: toggle between **Existing Visitor** (search via `useSearchPublicVisitors`, tap to add) and **New Visitor** (inline first/last name, phone, company, visitor type → creates a visitor record, then adds it). Added a public device-token endpoint `createPublicVisitor` (`features/tenants/queries/tenant-data.ts`) + `POST .../public/visitors` case in the catch-all public route so brand-new members are registered as visitor records before being added to the group `participants` (this matches the backend requirement that every participant is an existing `visitorId`).
+- New shared `GroupDraftContext` (`mobile-app/src/contexts/GroupDraftContext.tsx`, provider wired in `app/_layout.tsx`) holds `groupName`, `organization`, `hostId`/`departmentId`/`purpose` + `members: Visitor[]` and exposes `addMember`/`removeMember`/`updateDraft`/`resetDraft`, shared between the group form and the add-member screen.
+- New `useCreatePublicVisitor` hook in `mobile-app/src/hooks/useVisits.ts` (POSTs to `.../public/visitors`). Added `checkInType` + `group` i18n namespaces (en/fr).
+- Verified: mobile `tsc --noEmit` exit 0, eslint 0 errors on all new/edited files, `expo export` exit 0 (routes `/check-in/type`, `/check-in/group`, `/check-in/group/add-members` bundle), backend `tsc --noEmit` exit 0. (Pre-existing `no-explicit-any` errors in `tenant-data.ts`/public route and `generate-icons.js __dirname` remain baseline, unrelated to this change.)
+
+## Polling optimization (mobile dashboard + host portal)
+- Mobile dashboard: `useGetPublicOnSiteVisitors`, `useGetPublicVisitorKpis` (usePublicData.ts) and `useGetWaitingVisits`, `useGetExpectedVisits` (useVisits.ts) now skip state updates when the payload is deep-equal (`mobile-app/src/utils/deepEqual.ts`), so 10s polling no longer re-renders/replaces data every tick; silent polls no longer flip loading/error. `useGetPublicSettings` no longer toggles loading on every poll.
+- Dashboard polling is now paused while the tab is not focused (`useIsFocused` from @react-navigation/native) — background tabs no longer fire 4 poll requests every 10s; focus still triggers a one-shot refetch via existing `useFocusEffect`.
+- Host portal (web, react-query): `useHostPortalData` (15s) + `useGetWaitingVisits`/`useGetPendingApprovals`/`useGetCurrentlyInside` (30s) now use `refetchInterval` function form (`refetchIntervalWhenStale`) + `staleTime: 10000` — `refetchInterval` ignores `staleTime`, so without this it re-ran the queryFn every tick even right after a mutation invalidation. Mutations still invalidate portal queries immediately.
+- Verified: root `tsc --noEmit` clean; mobile `pnpm exec tsc --noEmit` clean; eslint 0 errors on all changed files.
+
+## Host tab screen (kiosk) — host list + host details
+- The Host tab (`app/(kiosk)/(tabs)/host/`) is now a real screen instead of an empty placeholder. It was converted from a single `host.tsx` into a folder with a nested Stack layout (`_layout.tsx`), an `index.tsx` list, and a `[id].tsx` details screen (mirroring the `home/` tab structure).
+- New backend public endpoint `getPublicHostSummary` (`features/tenants/queries/tenant-data.ts`) + `GET .../public/host-summary` case in the catch-all public route. It verifies the device token, returns each active host (with department) plus per-host aggregates for today: `totalToday` (all visits whose `visitDate` is today), `expected` (today's APPROVED), `waiting` (PENDING_APPROVAL). Counts are computed in one today-scoped visit query grouped in JS.
+- New `HostSummary` type (`mobile-app/src/types/api.ts`, extends `Host` with the three counts) and `useGetPublicHostSummary` hook (`mobile-app/src/hooks/usePublicData.ts`) with a 60s in-memory cache and an exposed `refetch`.
+- Host list (`index.tsx`): responsive grid — 2 columns on tablets (`useWindowDimensions` width >= 768), 1 column on phones. Each card shows host avatar/initials, name, department, and three count stats (today/expected/waiting); tapping navigates to the host details screen with `router.push`.
+- Host details (`[id].tsx`): header with back link, host info card (avatar, name, department, email, phone, stats), plus the host's "waiting for approval" and "expected for today" visit lists — filtered by `hostId` from the existing `useGetWaitingVisits`/`useGetExpectedVisits` hooks.
+- Added a `host` i18n namespace (en/fr) for titles, count labels, empty/error states, and section headings.
+- Verified: mobile `tsc --noEmit` exit 0, eslint 0 errors on all new/edited files, `expo export` exit 0 (routes `/host`, `/host/[id]` bundle), backend `tsc --noEmit` exit 0.

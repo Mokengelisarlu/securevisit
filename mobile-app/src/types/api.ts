@@ -24,6 +24,12 @@ export interface Host {
   department?: Department | null;
 }
 
+export interface HostSummary extends Host {
+  totalToday: number;
+  expected: number;
+  waiting: number;
+}
+
 export interface Department {
   id: string;
   name: string;

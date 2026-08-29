@@ -26,6 +26,15 @@ export default function WaitingScreen() {
   const { deviceToken } = useAuth();
   const { data, isLoading, error, refetch } = useGetWaitingVisits(deviceToken, 10_000);
 
+  const pendingList = data
+    .filter((v: WaitingVisit) => v.status === 'PENDING_APPROVAL')
+    .sort((a, b) => {
+      const am = a.waitingMinutes ?? 0;
+      const bm = b.waitingMinutes ?? 0;
+      if (am !== bm) return bm - am;
+      return new Date(a.arrivalAt ?? 0).getTime() - new Date(b.arrivalAt ?? 0).getTime();
+    });
+
   return (
     <ScreenWrapper padX={false}>
       <View className="px-6 pt-8 pb-4">
@@ -34,7 +43,7 @@ export default function WaitingScreen() {
         </Pressable>
         <Text className="text-3xl font-black text-teal-900">{t('operator.waitingSection')}</Text>
         <Text className="text-base text-teal-600 mt-1">
-          {data.length > 0 ? `${data.length} en attente` : t('operator.waitingEmpty')}
+          {pendingList.length > 0 ? `${pendingList.length} en attente` : t('operator.waitingEmpty')}
         </Text>
       </View>
 
@@ -49,13 +58,13 @@ export default function WaitingScreen() {
             <Text className="text-teal-700 font-bold">{t('common.retry')}</Text>
           </Pressable>
         </Card>
-      ) : data.length === 0 ? (
+      ) : pendingList.length === 0 ? (
         <View className="items-center py-12">
           <Text className="text-slate-400 text-center">{t('operator.waitingEmpty')}</Text>
         </View>
       ) : (
         <ScrollView className="flex-1 px-6" contentContainerStyle={{ paddingBottom: 40 }}>
-          {data.map((v: WaitingVisit) => {
+          {pendingList.map((v: WaitingVisit) => {
             const c = escalationColor(v.escalation);
             return (
               <Pressable

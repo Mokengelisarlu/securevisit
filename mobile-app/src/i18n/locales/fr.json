@@ -62,7 +62,25 @@
   "tabs": {
     "home": "Accueil",
     "search": "Recherche",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "host": "Hôte"
+  },
+  "host": {
+    "title": "Hôtes",
+    "totalToday": "Aujourd'hui",
+    "expected": "Attendus",
+    "waiting": "En attente",
+    "department": "Département",
+    "empty": "Aucun hôte disponible",
+    "unableToLoad": "Impossible de charger les hôtes.",
+    "details": "Détails de l'hôte",
+    "noHost": "Hôte introuvable",
+    "expectedSection": "Attendus aujourd'hui",
+    "waitingSection": "En attente d'approbation",
+    "noExpected": "Aucune visite attendue",
+    "noWaiting": "Aucune visite en attente",
+    "today": "Visites aujourd'hui",
+    "none": "Aucun"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -79,7 +97,14 @@
     "checkIn": "Arrivée",
     "checkOut": "Départ",
     "unableToLoadKpis": "Impossible de charger les indicateurs des visiteurs.",
-    "retryKpis": "Réessayer"
+    "retryKpis": "Réessayer",
+    "kpiExpected": "Attendus aujourd'hui",
+    "kpiExpectedSub": "visiteurs attendus aujourd'hui",
+    "kpiWaitingApproval": "En attente d'approbation",
+    "kpiApproved": "Approuvés",
+    "kpiCurrentlyInside": "Présents à l'intérieur",
+    "kpiInsideSub": "enregistrés, pas encore sortis",
+    "kpiTotal": "Visites totales"
   },
   "visitorSearch": {
     "title": "Qui vient visiter ?",
@@ -195,6 +220,7 @@
     "checkOutTitle": "Libéré",
     "checkOutMessage": "Au revoir, {{visitorName}} !",
     "checkedInAt": "Enregistré le",
+    "checkedInAtTime": "Enregistré à :",
     "checkedOutAt": "Libéré le",
     "autoRedirectNotice": "Retour au menu principal…",
     "today": "Aujourd'hui",
@@ -341,5 +367,36 @@
     "insideCount": "à l'intérieur",
     "viewList": "Voir la liste",
     "waiting": "En attente"
+  },
+  "checkInType": {
+    "singleVisitor": "Visiteur unique",
+    "singleVisitorDescription": "Utiliser le formulaire d'enregistrement standard",
+    "groupVisit": "Visite de groupe",
+    "groupVisitDescription": "Enregistrer plusieurs visiteurs en une fois",
+    "chooseLabel": "Comment souhaitez-vous vous enregistrer ?"
+  },
+  "group": {
+    "title": "Visite de groupe",
+    "subtitle": "Enregistrer un groupe de visiteurs",
+    "groupName": "Nom du groupe",
+    "groupNamePlaceholder": "ex. Délégation ACME",
+    "organization": "Organisation",
+    "organizationPlaceholder": "ex. ACME Corp",
+    "members": "Membres",
+    "addMember": "Ajouter un membre",
+    "removeMember": "Retirer",
+    "memberCount": "{{count}} membres",
+    "noMembers": "Aucun membre pour l'instant. Ajoutez au moins un visiteur.",
+    "addMemberTitle": "Ajouter un membre",
+    "existingUser": "Visiteur existant",
+    "existingUserDescription": "Rechercher un visiteur déjà enregistré",
+    "newUser": "Nouveau visiteur",
+    "newUserDescription": "Enregistrer un tout nouveau visiteur",
+    "requiredGroupName": "Le nom du groupe est requis",
+    "requiredMembers": "Ajoutez au moins un membre",
+    "submitGroup": "Valider le groupe",
+    "submitError": "Échec de la validation. Veuillez réessayer.",
+    "submittedTitle": "Groupe validé",
+    "submittedMessage": "Votre demande de visite de groupe a été envoyée."
   }
 }

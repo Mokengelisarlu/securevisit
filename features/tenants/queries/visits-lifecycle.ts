@@ -15,10 +15,11 @@ import {
   auditLogs,
   notifications,
   users,
+  hosts,
   notificationTypeEnum,
   participantStatusEnum,
 } from "@/db/tenants/schema";
-import { and, eq, inArray, isNotNull, desc, asc, gte, lte } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, desc, asc, gte, lte, count } from "drizzle-orm";
 import { requireRole } from "../server/authorization";
 
 /* =====================================================
@@ -48,6 +49,31 @@ async function insertNotification(
     body: input.body ?? null,
     visitId: input.visitId ?? null,
   });
+}
+
+/** Notify every operator (SECURITY/RECEPTION/ADMIN/ROOT) within the current tx. */
+async function notifyOperators(
+  tx: any,
+  input: {
+    type: NotificationType;
+    title: string;
+    body?: string | null;
+    visitId?: string | null;
+  }
+) {
+  const opUsers = await tx.query.users.findMany({
+    where: inArray(users.role, ["SECURITY", "RECEPTION", "ADMIN", "ROOT"]),
+  });
+  for (const op of opUsers) {
+    await insertNotification(tx, {
+      recipientId: op.id,
+      recipientRole: op.role,
+      type: input.type,
+      title: input.title,
+      body: input.body ?? null,
+      visitId: input.visitId ?? null,
+    });
+  }
 }
 
 async function insertAudit(
@@ -608,6 +634,13 @@ export async function addVisitParticipant(
     newValue: JSON.stringify({ visitId, visitorId: input.visitorId }),
   });
 
+  await notifyOperators(db, {
+    type: "VISIT_REQUEST_CREATED",
+    title: "Participant added",
+    body: `A participant has been added to visit ${visit.visitNumber}.`,
+    visitId,
+  });
+
   // Update participant count
   const count = await db
     .select({ id: visitParticipants.id })
@@ -684,34 +717,27 @@ export async function setParticipantStatus(
     });
     if (status === "CHECKED_IN" && visit.status !== "IN") {
       await tx.update(visits).set({ status: "IN", checkInAt: now }).where(eq(visits.id, visitId));
-      const opUsers = await tx.query.users.findMany({
-        where: inArray(users.role, ["SECURITY", "RECEPTION", "ADMIN", "ROOT"]),
+      await notifyOperators(tx, {
+        type: "VISITOR_CHECKED_IN",
+        title: "Visitor checked in",
+        body: `A participant of visit ${visit.visitNumber} has checked in.`,
+        visitId,
       });
-      for (const op of opUsers) {
-        await insertNotification(tx, {
-          recipientId: op.id,
-          recipientRole: op.role,
-          type: "VISITOR_CHECKED_IN",
-          title: "Visitor checked in",
-          body: `A participant of visit ${visit.visitNumber} has checked in.`,
-          visitId,
-        });
-      }
     } else if (status === "CHECKED_OUT" && active.length === 0 && visit.status !== "OUT") {
       await tx.update(visits).set({ status: "OUT", checkOutAt: now }).where(eq(visits.id, visitId));
-      const opUsers = await tx.query.users.findMany({
-        where: inArray(users.role, ["SECURITY", "RECEPTION", "ADMIN", "ROOT"]),
+      await notifyOperators(tx, {
+        type: "VISITOR_CHECKED_OUT",
+        title: "Visitor checked out",
+        body: `All participants of visit ${visit.visitNumber} have checked out.`,
+        visitId,
       });
-      for (const op of opUsers) {
-        await insertNotification(tx, {
-          recipientId: op.id,
-          recipientRole: op.role,
-          type: "VISITOR_CHECKED_OUT",
-          title: "Visitor checked out",
-          body: `All participants of visit ${visit.visitNumber} have checked out.`,
-          visitId,
-        });
-      }
+    } else if (status === "NO_SHOW") {
+      await notifyOperators(tx, {
+        type: "VISITOR_NO_SHOW",
+        title: "Visitor did not show",
+        body: `A participant of visit ${visit.visitNumber} did not show.`,
+        visitId,
+      });
     }
 
     return updated;
@@ -770,6 +796,13 @@ export async function checkInVisitParticipants(tenantSlug: string, visitId: stri
       previousValue: { status: visit.status },
       newValue: { status: "IN", participantsCheckedIn: updatedIds.length },
     });
+
+    await notifyOperators(tx, {
+      type: "VISITOR_CHECKED_IN",
+      title: "Group checked in",
+      body: `${updatedIds.length} participant(s) of visit ${visit.visitNumber} checked in.`,
+      visitId,
+    });
   });
 
   return { checkedInCount: updatedIds.length };
@@ -818,6 +851,13 @@ export async function checkOutVisitParticipants(tenantSlug: string, visitId: str
         entityId: visitId,
         previousValue: { status: "IN" },
         newValue: { status: "OUT", participantsCheckedOut: updatedIds.length },
+      });
+
+      await notifyOperators(tx, {
+        type: "VISITOR_CHECKED_OUT",
+        title: "Group checked out",
+        body: `${updatedIds.length} participant(s) of visit ${visitId} checked out.`,
+        visitId,
       });
     }
   });
@@ -943,4 +983,186 @@ export async function markNotificationRead(tenantSlug: string, notificationId: s
     .where(and(eq(notifications.id, notificationId), eq(notifications.recipientId, actor.id)))
     .returning();
   return updated ?? null;
+}
+
+/* =====================================================
+   HOST PORTAL (Phase 3) — role-gated, host-scoped reads
+   - HOST: scoped to their own linked host record.
+   - ROOT / ADMIN: see every host's visits (all-tenant view).
+===================================================== */
+
+export type HostPortalData = {
+  actor: { id: string; role: string; hostId: string | null };
+  host: any | null; // linked hosts record (HOST actor) or null
+  counts: {
+    pending: number;
+    upcoming: number;
+    inside: number;
+    history: number;
+    unreadNotifications: number;
+  };
+  pending: any[];
+  upcoming: any[];
+  inside: { participants: any[]; individuals: any[]; count: number };
+  history: any[];
+  notifications: any[];
+};
+
+/**
+ * Snapshot of everything the host portal needs:
+ * pending approvals, approved/expected visits, who is currently
+ * inside, recent history and the current user's notifications.
+ * Scope: HOST sees only their own visits; ROOT/ADMIN see all.
+ */
+export async function getHostPortalData(tenantSlug: string): Promise<HostPortalData> {
+  const actor = await getActor(tenantSlug);
+  await requireRole(tenantSlug, ["HOST", "ADMIN", "ROOT"]);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const scopeHostId = actor.role === "HOST" ? actor.hostId : null;
+  if (actor.role === "HOST" && !scopeHostId) {
+    throw new Error("Forbidden: No host record is linked to this account");
+  }
+
+  const pendingConditions = [eq(visits.status, "PENDING_APPROVAL")];
+  const upcomingConditions = [eq(visits.status, "APPROVED")];
+  const historyConditions = [inArray(visits.status, ["OUT", "REJECTED", "CANCELLED", "POSTPONED"])];
+  if (scopeHostId) {
+    pendingConditions.push(eq(visits.hostId, scopeHostId));
+    upcomingConditions.push(eq(visits.hostId, scopeHostId));
+    historyConditions.push(eq(visits.hostId, scopeHostId));
+  }
+
+  const pending = await db.query.visits.findMany({
+    where: and(...pendingConditions),
+    with: { visitor: true, host: true, department: true, participants: { with: { visitor: true } } },
+    orderBy: [asc(visits.arrivalAt), asc(visits.id)],
+  });
+
+  const upcoming = await db.query.visits.findMany({
+    where: and(...upcomingConditions),
+    with: { visitor: true, host: true, department: true, participants: { with: { visitor: true } } },
+    orderBy: [asc(visits.visitDate)],
+  });
+
+  // Currently inside (scoped): checked-in group participants + individual WALK_IN visits.
+  let participants: any[] = [];
+  let individuals: any[] = [];
+  if (scopeHostId) {
+    const insideParticipants = await db.query.visitParticipants.findMany({
+      where: eq(visitParticipants.status, "CHECKED_IN"),
+      with: { visit: { with: { host: true, department: true } }, visitor: true },
+    });
+    const insideVisitIds = new Set(
+      insideParticipants
+        .filter((p: any) => p.visit?.hostId === scopeHostId)
+        .map((p: any) => p.visitId)
+    );
+    participants = insideParticipants.filter((p: any) => p.visit?.hostId === scopeHostId);
+    individuals = (
+      await db.query.visits.findMany({
+        where: and(
+          eq(visits.status, "IN"),
+          eq(visits.visitType, "WALK_IN"),
+          eq(visits.hostId, scopeHostId)
+        ),
+        with: { visitor: true, host: true, department: true },
+      })
+    ).filter((v: any) => !insideVisitIds.has(v.id));
+  } else {
+    const result = await getCurrentlyInside(tenantSlug);
+    participants = result.participants;
+    individuals = result.individuals;
+  }
+  const inside = {
+    participants,
+    individuals,
+    count: participants.length + individuals.length,
+  };
+
+  const history = await db.query.visits.findMany({
+    where: and(...historyConditions),
+    with: { visitor: true, host: true, department: true, participants: { with: { visitor: true } } },
+    orderBy: [desc(visits.visitDate)],
+    limit: 50,
+  });
+
+  const myNotifications = await getMyNotifications(tenantSlug);
+
+  const [unreadRow] = await db
+    .select({ value: count() })
+    .from(notifications)
+    .where(and(eq(notifications.recipientId, actor.id), eq(notifications.isRead, 0)));
+
+  let host: any = null;
+  if (actor.hostId) {
+    host =
+      (await db.query.hosts.findFirst({
+        where: eq(hosts.id, actor.hostId),
+        with: { department: true },
+      })) ?? null;
+  }
+
+  return {
+    actor: { id: actor.id, role: actor.role, hostId: actor.hostId },
+    host,
+    counts: {
+      pending: pending.length,
+      upcoming: upcoming.length,
+      inside: inside.count,
+      history: history.length,
+      unreadNotifications: unreadRow?.value ?? 0,
+    },
+    pending,
+    upcoming,
+    inside,
+    history,
+    notifications: myNotifications,
+  };
+}
+
+/**
+ * Host pre-registration. A HOST auto-assigns the visit to themselves
+ * (creator = the host inviting the visitor). ROOT/ADMIN must supply hostId.
+ * Creates the visit in APPROVED state so the operator sees it as "expected".
+ */
+export async function createHostPreRegistration(
+  tenantSlug: string,
+  input: {
+    visitorId?: string;
+    newVisitor?: {
+      firstName: string;
+      lastName: string;
+      phone?: string | null;
+      company?: string | null;
+      visitorTypeId?: string | null;
+    };
+    hostId?: string | null;
+    departmentId?: string | null;
+    serviceId?: string | null;
+    purpose?: string | null;
+    groupName?: string | null;
+    organization?: string | null;
+    participantCount?: number | null;
+    participants?: VisitParticipantInput[];
+    visitDate?: Date;
+    notes?: string | null;
+  }
+) {
+  const actor = await getActor(tenantSlug);
+  await requireRole(tenantSlug, ["HOST", "ADMIN", "ROOT"]);
+
+  let hostId = input.hostId ?? null;
+  if (actor.role === "HOST") {
+    if (!actor.hostId) throw new Error("Forbidden: No host record is linked to this account");
+    hostId = actor.hostId;
+  }
+  if (!hostId) throw new Error("Missing hostId");
+
+  return await createVisitRequest(tenantSlug, {
+    ...input,
+    hostId,
+    visitType: "PRE_REGISTERED",
+    arrivalAt: undefined,
+  });
 }

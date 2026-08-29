@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { apiCall } from '@/src/api/client';
 import { useApi } from '@/src/contexts/ApiContext';
+import { isDeepEqual } from '@/src/utils/deepEqual';
 import {
   Visit,
+  Visitor,
   PublicVisitCreateResult,
   WaitingVisit,
   ExpectedVisit,
@@ -46,6 +48,48 @@ export function useCreatePublicVisit(deviceToken: string | null) {
   );
 
   return { createVisit, isLoading, error };
+}
+
+export function useCreatePublicVisitor(deviceToken: string | null) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const createVisitor = useCallback(
+    async (visitorData: {
+      firstName: string;
+      lastName: string;
+      phone?: string;
+      company?: string;
+      visitorTypeId?: string;
+    }) => {
+      if (!deviceToken) throw new Error('Device not paired');
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visitors`,
+          {
+            method: 'POST',
+            body: visitorData,
+            deviceToken,
+            baseUrl: apiBaseUrl,
+          }
+        );
+        return response as Visitor;
+      } catch (err: any) {
+        setError(err.message);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { createVisitor, isLoading, error };
 }
 
 export function useCheckoutPublicVisit(deviceToken: string | null) {
@@ -98,14 +142,14 @@ export function useGetWaitingVisits(deviceToken: string | null, pollIntervalMs?:
       }
       try {
         if (!silent) setIsLoading(true);
-        setError(null);
+        setError((prev) => (prev === null ? prev : null));
         const response = await apiCall(
           `/api/tenants/${tenantSlug}/public/waiting-visits`,
           { deviceToken, baseUrl: apiBaseUrl }
         );
-        setData(response);
+        setData((prev) => (isDeepEqual(prev, response) ? prev : response));
       } catch (err: any) {
-        setError(err.message);
+        setError((prev) => (prev === err.message ? prev : err.message));
       } finally {
         if (!silent) setIsLoading(false);
       }
@@ -140,14 +184,14 @@ export function useGetExpectedVisits(deviceToken: string | null, pollIntervalMs?
       }
       try {
         if (!silent) setIsLoading(true);
-        setError(null);
+        setError((prev) => (prev === null ? prev : null));
         const response = await apiCall(
           `/api/tenants/${tenantSlug}/public/expected-visits`,
           { deviceToken, baseUrl: apiBaseUrl }
         );
-        setData(response);
+        setData((prev) => (isDeepEqual(prev, response) ? prev : response));
       } catch (err: any) {
-        setError(err.message);
+        setError((prev) => (prev === err.message ? prev : err.message));
       } finally {
         if (!silent) setIsLoading(false);
       }
@@ -187,14 +231,14 @@ export function useGetCurrentlyInside(deviceToken: string | null, pollIntervalMs
       }
       try {
         if (!silent) setIsLoading(true);
-        setError(null);
+        setError((prev) => (prev === null ? prev : null));
         const response = await apiCall(
           `/api/tenants/${tenantSlug}/public/inside`,
           { deviceToken, baseUrl: apiBaseUrl }
         );
-        setData(response);
+        setData((prev) => (isDeepEqual(prev, response) ? prev : response));
       } catch (err: any) {
-        setError(err.message);
+        setError((prev) => (prev === err.message ? prev : err.message));
       } finally {
         if (!silent) setIsLoading(false);
       }

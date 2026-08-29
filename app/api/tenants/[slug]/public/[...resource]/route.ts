@@ -16,6 +16,8 @@ import {
   getPublicVisitHistory,
   getPublicRecentVisits,
   getPublicVisitorKpis,
+  createPublicVisitor,
+  getPublicHostSummary,
 } from "@/features/tenants/queries/tenant-data";
 import {
   createPublicVisitRequest,
@@ -34,14 +36,15 @@ function jsonResponse(data: any, status = 200) {
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ slug: string; resource: string }> }
+  context: { params: Promise<{ slug: string; resource: string | string[] }> }
 ) {
   try {
-    const { slug, resource } = await context.params;
+    const { slug, resource: rawResource } = await context.params;
+    const resource = Array.isArray(rawResource) ? rawResource.join("/") : rawResource;
     const deviceToken = getBearerToken(request);
     const url = new URL(request.url);
 
-    if (deviceToken === null && ["departments", "services", "visitor-types", "hosts", "on-site-visitors", "dashboard", "settings", "search-visitors", "visitors", "visitor-kpis", "visitor-detail", "visit-detail", "recent-visits", "visitor-history", "waiting-visits", "expected-visits", "inside"].includes(resource)) {
+    if (deviceToken === null && ["departments", "services", "visitor-types", "hosts", "host-summary", "on-site-visitors", "dashboard", "settings", "search-visitors", "visitors", "visitor-kpis", "visitor-detail", "visit-detail", "recent-visits", "visitor-history", "waiting-visits", "expected-visits", "inside"].includes(resource)) {
       return jsonResponse({ error: "Missing Authorization header" }, 401);
     }
 
@@ -54,6 +57,8 @@ export async function GET(
         return jsonResponse(await getPublicVisitorTypes(slug, deviceToken!));
       case "hosts":
         return jsonResponse(await getPublicHosts(slug, deviceToken!));
+      case "host-summary":
+        return jsonResponse(await getPublicHostSummary(slug, deviceToken!));
       case "on-site-visitors":
         return jsonResponse(await getPublicOnSiteVisitors(slug, deviceToken!));
       case "dashboard":
@@ -120,10 +125,11 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ slug: string; resource: string }> }
+  context: { params: Promise<{ slug: string; resource: string | string[] }> }
 ) {
   try {
-    const { slug, resource } = await context.params;
+    const { slug, resource: rawResource } = await context.params;
+    const resource = Array.isArray(rawResource) ? rawResource.join("/") : rawResource;
     const deviceToken = getBearerToken(request);
     const body = await request.json();
 
@@ -135,6 +141,13 @@ export async function POST(
       case "visits": {
         const visit = await createPublicVisitRequest(slug, deviceToken, body);
         return jsonResponse(visit);
+      }
+      case "visitors": {
+        if (!body.firstName || !body.lastName) {
+          return jsonResponse({ error: "firstName and lastName are required" }, 400);
+        }
+        const visitor = await createPublicVisitor(slug, deviceToken, body);
+        return jsonResponse(visitor);
       }
       case "checkouts": {
         const { visitId } = body;

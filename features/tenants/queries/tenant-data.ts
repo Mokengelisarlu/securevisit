@@ -735,6 +735,51 @@ export async function getPublicHosts(tenantSlug: string, deviceToken: string) {
   });
 }
 
+/**
+ * [PUBLIC/SECURE] Per-host visit summary for the kiosk host dashboard.
+ * Returns each active host with today's aggregate counts:
+ * - totalToday: visits assigned to this host whose visit date is today
+ * - expected:   today's visits in APPROVED (pre-arranged, not yet arrived)
+ * - waiting:    visits in PENDING_APPROVAL waiting on this host
+ */
+export async function getPublicHostSummary(tenantSlug: string, deviceToken: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const hostList = await db.query.hosts.findMany({
+    where: eq(hosts.isActive, 1),
+    with: { department: true },
+  });
+
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  const todayVisits = await db.query.visits.findMany({
+    where: and(
+      isNotNull(visits.hostId),
+      gte(visits.visitDate, startOfDay),
+      lte(visits.visitDate, endOfDay)
+    ),
+    columns: { hostId: true, status: true },
+  });
+
+  const byHost = new Map<string, { totalToday: number; expected: number; waiting: number }>();
+  for (const v of todayVisits) {
+    if (!v.hostId) continue;
+    const agg = byHost.get(v.hostId) ?? { totalToday: 0, expected: 0, waiting: 0 };
+    agg.totalToday += 1;
+    if (v.status === "APPROVED") agg.expected += 1;
+    if (v.status === "PENDING_APPROVAL") agg.waiting += 1;
+    byHost.set(v.hostId, agg);
+  }
+
+  return hostList.map((h: any) => {
+    const agg = byHost.get(h.id) ?? { totalToday: 0, expected: 0, waiting: 0 };
+    return { ...h, ...agg };
+  });
+}
+
 export async function deleteHost(tenantSlug: string, hostId: string) {
   await verifyTenantOwnership(tenantSlug);
   const db = await getTenantDbBySlug(tenantSlug);
@@ -808,6 +853,40 @@ export async function createVisitor(
       company,
       photoUrl,
       visitorTypeId: visitorTypeId || null,
+    })
+    .returning();
+
+  return visitor;
+}
+
+/**
+ * [PUBLIC/SECURE] Create a standalone visitor record from the kiosk.
+ * Unlike `createVisitor` (Clerk-session), this authenticates via the device
+ * token so the group check-in form can register brand-new members before
+ * adding them to a group visit.
+ */
+export async function createPublicVisitor(
+  tenantSlug: string,
+  deviceToken: string,
+  data: {
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    company?: string;
+    visitorTypeId?: string;
+  }
+) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+
+  const [visitor] = await db
+    .insert(visitors)
+    .values({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone || null,
+      company: data.company || null,
+      visitorTypeId: data.visitorTypeId || null,
     })
     .returning();
 
@@ -949,7 +1028,7 @@ export async function getVisits(
   filters?: {
     startDate?: Date;
     endDate?: Date;
-    status?: "IN" | "OUT" | "CANCELLED" | "SCHEDULED";
+    status?: "IN" | "OUT" | "CANCELLED" | "SCHEDULED" | "PENDING_APPROVAL" | "APPROVED" | "POSTPONED" | "REJECTED" | Array<"IN" | "OUT" | "CANCELLED" | "SCHEDULED" | "PENDING_APPROVAL" | "APPROVED" | "POSTPONED" | "REJECTED">;
     visitorId?: string;
     vehicleId?: string;
   }
@@ -970,7 +1049,11 @@ export async function getVisits(
   }
 
   if (filters?.status) {
-    whereConditions.push(eq(visits.status, filters.status));
+    if (Array.isArray(filters.status)) {
+      whereConditions.push(inArray(visits.status, filters.status));
+    } else {
+      whereConditions.push(eq(visits.status, filters.status));
+    }
   }
 
   if (filters?.visitorId) {
@@ -1748,7 +1831,7 @@ export async function getTenantUsers(tenantSlug: string) {
 export async function authorizeUser(
   tenantSlug: string,
   email: string,
-  role: "ROOT" | "ADMIN" | "SECURITY" | "RECEPTION",
+  role: "ROOT" | "ADMIN" | "SECURITY" | "RECEPTION" | "HOST",
   firstName: string = "",
   lastName: string = "",
   middleName?: string
@@ -1784,7 +1867,7 @@ export async function removeAuthorization(tenantSlug: string, email: string) {
 export async function updateUserRole(
   tenantSlug: string,
   userId: string,
-  role: "ROOT" | "ADMIN" | "SECURITY" | "RECEPTION"
+  role: "ROOT" | "ADMIN" | "SECURITY" | "RECEPTION" | "HOST"
 ) {
   await requireRole(tenantSlug, ["ROOT", "ADMIN"]);
   const db = await getTenantDbBySlug(tenantSlug);
@@ -1907,6 +1990,10 @@ export async function getVisitById(tenantSlug: string, visitId: string) {
       department: true,
       service: true,
       vehicle: true,
+      participants: {
+        with: { visitor: true },
+      },
+      statusHistory: true,
     },
   });
 }

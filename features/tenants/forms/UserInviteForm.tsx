@@ -31,7 +31,7 @@ const formSchema = z.object({
     lastName: z.string().min(1, { message: "Le nom est requis" }),
     middleName: z.string().optional(),
     email: z.string().email({ message: "Email invalide" }),
-    role: z.enum(["ROOT", "ADMIN", "SECURITY", "RECEPTION"], {
+    role: z.enum(["ROOT", "ADMIN", "SECURITY", "RECEPTION", "HOST"], {
         message: "Veuillez sélectionner un rôle",
     }),
 });
@@ -186,6 +186,7 @@ export function UserInviteForm({ onSuccess }: UserInviteFormProps) {
                                     <SelectItem value="ADMIN" className="py-3 font-bold text-teal-700">ADMINISTRATEUR</SelectItem>
                                     <SelectItem value="SECURITY" className="py-3 font-bold text-emerald-700">SÉCURITÉ</SelectItem>
                                     <SelectItem value="RECEPTION" className="py-3 font-bold text-amber-700">RÉCEPTION</SelectItem>
+                                    <SelectItem value="HOST" className="py-3 font-bold text-violet-700">HÔTE</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage className="text-[10px] font-bold uppercase" />

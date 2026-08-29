@@ -62,7 +62,25 @@
   "tabs": {
     "home": "Home",
     "search": "Search",
-    "settings": "Settings"
+    "settings": "Settings",
+    "host": "Host"
+  },
+  "host": {
+    "title": "Hosts",
+    "totalToday": "Today",
+    "expected": "Expected",
+    "waiting": "Waiting",
+    "department": "Department",
+    "empty": "No hosts available",
+    "unableToLoad": "Unable to load hosts.",
+    "details": "Host details",
+    "noHost": "Host not found",
+    "expectedSection": "Expected for today",
+    "waitingSection": "Waiting for approval",
+    "noExpected": "No expected visits",
+    "noWaiting": "No visits waiting",
+    "today": "Visits today",
+    "none": "None"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -79,7 +97,14 @@
     "checkIn": "Check In",
     "checkOut": "Check Out",
     "unableToLoadKpis": "Unable to load visitor KPIs.",
-    "retryKpis": "Retry"
+    "retryKpis": "Retry",
+    "kpiExpected": "Expected Today",
+    "kpiExpectedSub": "visitors expected today",
+    "kpiWaitingApproval": "Waiting Approval",
+    "kpiApproved": "Approved",
+    "kpiCurrentlyInside": "Currently Inside",
+    "kpiInsideSub": "checked in, not yet out",
+    "kpiTotal": "Total Visits"
   },
   "visitorSearch": {
     "title": "Who is visiting?",
@@ -195,6 +220,7 @@
     "checkOutTitle": "Checked Out",
     "checkOutMessage": "Goodbye, {{visitorName}}!",
     "checkedInAt": "Checked in",
+    "checkedInAtTime": "Checked in at:",
     "checkedOutAt": "Checked out",
     "autoRedirectNotice": "Returning to main menu…",
     "today": "Today",
@@ -341,5 +367,36 @@
     "insideCount": "inside",
     "viewList": "View list",
     "waiting": "Waiting"
+  },
+  "checkInType": {
+    "singleVisitor": "Single Visitor",
+    "singleVisitorDescription": "Use the standard check-in form",
+    "groupVisit": "Group Visit",
+    "groupVisitDescription": "Check in multiple visitors at once",
+    "chooseLabel": "How would you like to check in?"
+  },
+  "group": {
+    "title": "Group Visit",
+    "subtitle": "Register a group of visitors",
+    "groupName": "Group Name",
+    "groupNamePlaceholder": "e.g. ACME Delegation",
+    "organization": "Organization",
+    "organizationPlaceholder": "e.g. ACME Corp",
+    "members": "Members",
+    "addMember": "Add Member",
+    "removeMember": "Remove",
+    "memberCount": "{{count}} members",
+    "noMembers": "No members yet. Add at least one visitor.",
+    "addMemberTitle": "Add Member",
+    "existingUser": "Existing Visitor",
+    "existingUserDescription": "Search an already registered visitor",
+    "newUser": "New Visitor",
+    "newUserDescription": "Register a brand new visitor",
+    "requiredGroupName": "Group name is required",
+    "requiredMembers": "Add at least one member",
+    "submitGroup": "Submit Group",
+    "submitError": "Failed to submit. Please try again.",
+    "submittedTitle": "Group Submitted",
+    "submittedMessage": "Your group visit request has been sent."
   }
 }

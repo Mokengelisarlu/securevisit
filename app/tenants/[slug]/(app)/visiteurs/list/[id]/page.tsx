@@ -32,6 +32,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { ImageModal } from "@/features/tenants/components/ImageModal";
 import { cn } from "@/lib/utils";
+import { VisitStatusBadge, ParticipantStatusBadge, visitStatusConfig } from "@/features/tenants/components/host/HostStatusBadge";
+import { HostVisitActions } from "@/features/tenants/components/host/HostVisitActions";
+import { Users, History } from "lucide-react";
 
 export default function VisitDetailsPage() {
     const { slug, id } = useParams() as { slug: string; id: string };
@@ -65,14 +68,8 @@ export default function VisitDetailsPage() {
         );
     }
 
-    const statusConfig = {
-        IN: { label: "Sur place", color: "bg-green-100 text-green-700 border-green-200" },
-        OUT: { label: "Sorti", color: "bg-gray-100 text-gray-700 border-gray-200" },
-        CANCELLED: { label: "Annulé", color: "bg-red-100 text-red-700 border-red-200" },
-        SCHEDULED: { label: "Prévu", color: "bg-amber-100 text-amber-700 border-amber-200" },
-    };
-
-    const config = statusConfig[visit.status as keyof typeof statusConfig] || statusConfig.IN;
+    const participants = visit.participants ?? [];
+    const statusHistory = visit.statusHistory ?? [];
 
     return (
         <div className="space-y-8 py-6 max-w-5xl mx-auto">
@@ -90,13 +87,16 @@ export default function VisitDetailsPage() {
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-3xl font-black text-gray-900 tracking-tight">Détails de la Visite</h1>
-                            <Badge className={`${config.color} px-3 py-1 text-xs uppercase font-black tracking-widest`}>
-                                {config.label}
-                            </Badge>
+                            <VisitStatusBadge status={visit.status} />
                         </div>
                         <p className="text-gray-500 font-medium mt-1">Référence: <span className="font-mono text-teal-600 font-bold">{visit.visitNumber}</span></p>
                     </div>
                 </div>
+                {visit.status === "PENDING_APPROVAL" && (
+                    <div className="bg-violet-50 border border-violet-100 rounded-2xl p-4">
+                        <HostVisitActions visit={visit} />
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -204,6 +204,35 @@ export default function VisitDetailsPage() {
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Participants */}
+                    {participants.length > 0 && (
+                        <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl">
+                            <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6">
+                                <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Users className="w-4 h-4 text-teal-500" /> Participants ({participants.length})
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {participants.map((p: any) => (
+                                        <div key={p.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div className="w-11 h-11 rounded-full bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center font-black shrink-0">
+                                                {p.visitor?.firstName?.[0]}{p.visitor?.lastName?.[0]}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-bold text-gray-900 truncate">
+                                                    {p.visitor ? `${p.visitor.firstName} ${p.visitor.lastName}` : "Participant"}
+                                                </p>
+                                                <p className="text-xs text-gray-500 truncate">{p.visitor?.company || "—"}</p>
+                                            </div>
+                                            <ParticipantStatusBadge status={p.status} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {/* Compliance & Signature */}
                     {visit.signatureData && (
@@ -336,6 +365,42 @@ export default function VisitDetailsPage() {
                                         Historique du Véhicule
                                     </Button>
                                 </Link>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Audit Timeline */}
+                    {statusHistory.length > 0 && (
+                        <Card className="border-none shadow-sm overflow-hidden bg-white rounded-3xl border border-gray-100">
+                            <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-6">
+                                <CardTitle className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <History className="w-4 h-4 text-teal-500" /> Audit du statut
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-8">
+                                <div className="space-y-0">
+                                    {[...statusHistory]
+                                        .sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                                        .map((h: any, i: number) => (
+                                            <div key={h.id} className="flex gap-4">
+                                                <div className="flex flex-col items-center">
+                                                    <div className={`w-3.5 h-3.5 rounded-full border-2 mt-1.5 ${i === statusHistory.length - 1 ? "bg-teal-500 border-teal-200" : "bg-white border-gray-300"}`} />
+                                                    {i < statusHistory.length - 1 && <div className="w-px flex-1 bg-gray-200" />}
+                                                </div>
+                                                <div className="pb-6 min-w-0">
+                                                    <p className="text-sm font-black text-gray-900">
+                                                        {h.fromStatus ? `${visitStatusConfig(h.fromStatus).label} → ` : ""}
+                                                        {h.toStatus ? visitStatusConfig(h.toStatus).label : "—"}
+                                                    </p>
+                                                    <p className="text-xs text-gray-400 mt-0.5">
+                                                        {format(new Date(h.createdAt), "dd MMM yyyy · HH:mm", { locale: fr })}
+                                                        {h.actorRole && <span className="ml-1 text-gray-500">· {h.actorRole}</span>}
+                                                    </p>
+                                                    {h.reason && <p className="text-xs text-gray-500 italic mt-1">"{h.reason}"</p>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
                             </CardContent>
                         </Card>
                     )}

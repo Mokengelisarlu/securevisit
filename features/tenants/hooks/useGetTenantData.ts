@@ -75,7 +75,7 @@ export function useGetVisits(
   filters?: {
     startDate?: Date;
     endDate?: Date;
-    status?: "IN" | "OUT" | "CANCELLED" | "SCHEDULED";
+    status?: "IN" | "OUT" | "CANCELLED" | "SCHEDULED" | "PENDING_APPROVAL" | "APPROVED" | "POSTPONED" | "REJECTED" | Array<"IN" | "OUT" | "CANCELLED" | "SCHEDULED" | "PENDING_APPROVAL" | "APPROVED" | "POSTPONED" | "REJECTED">;
     visitorId?: string;
     vehicleId?: string;
   }

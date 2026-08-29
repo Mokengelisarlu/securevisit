@@ -19,14 +19,19 @@ import {
     Globe,
     Car,
     Building2,
-    ScrollText
+    ScrollText,
+    CalendarCheck2
 } from "lucide-react";
 import { useTenant } from "@/lib/tenant-provider";
+import { useGetCurrentUser } from "@/features/tenants/hooks/useGetTenantData";
+import { NotificationsBell } from "@/features/tenants/components/host/NotificationsBell";
 
 export function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { user } = useUser();
-    const { name: tenantName } = useTenant();
+    const { slug, name: tenantName } = useTenant();
+    const { data: currentUser } = useGetCurrentUser(slug || "");
+    const canViewHostPortal = !!currentUser && ["HOST", "ADMIN", "ROOT"].includes(currentUser.role);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
@@ -71,6 +76,8 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                         </span>
                     </div>
 
+                    {canViewHostPortal && slug && <NotificationsBell slug={slug} />}
+
                     <div className="w-px h-6 bg-slate-200 mx-1" />
 
                     <UserButton
@@ -106,6 +113,7 @@ export function AppLayoutContent({ children }: { children: React.ReactNode }) {
                         <SidebarLink href="/visiteurs/register" icon={<UserPlus className="w-5 h-5" />} label="Enregistrer" active={pathname.includes("/visiteurs/register")} collapsed={isSidebarCollapsed} />
 
                         <SidebarCategory label="Hôte" collapsed={isSidebarCollapsed} />
+                        {canViewHostPortal && <SidebarLink href="/hote/visits" icon={<CalendarCheck2 className="w-5 h-5" />} label="Mes visites" active={pathname.includes("/hote/visits")} collapsed={isSidebarCollapsed} />}
                         <SidebarLink href="/hote/management" icon={<UserCircle className="w-5 h-5" />} label="Gérer les hôtes" active={pathname.includes("/hote/management")} collapsed={isSidebarCollapsed} />
                         <SidebarLink href="/hote/departments" icon={<ClipboardList className="w-5 h-5" />} label="Départements" active={pathname.includes("/hote/departments")} collapsed={isSidebarCollapsed} />
                         <SidebarLink href="/hote/services" icon={<Layout className="w-5 h-5" />} label="Gérer les services" active={pathname.includes("/hote/services")} collapsed={isSidebarCollapsed} />

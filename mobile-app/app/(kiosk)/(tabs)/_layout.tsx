@@ -24,6 +24,12 @@ export default function KioskTabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="home"
+        options={{
           title: t('tabs.home'),
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
@@ -31,11 +37,11 @@ export default function KioskTabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="host"
         options={{
-          title: t('tabs.search'),
+          title: t('tabs.host'),
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'search' : 'search-outline'} size={size} color={color} />
+            <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />
           ),
         }}
       />

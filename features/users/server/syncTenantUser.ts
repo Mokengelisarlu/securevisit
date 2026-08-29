@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { master_db } from "@/db/master";
 import { tenants } from "@/db/master/schema";
 import { getTenantDbBySlug } from "@/db/tenants";
-import { users, authorizedUsers } from "@/db/tenants/schema";
+import { users, authorizedUsers, hosts } from "@/db/tenants/schema";
 import { eq } from "drizzle-orm";
 
 
@@ -84,6 +84,20 @@ export async function syncTenantUser(tenantSlug: string) {
                     lastName: user.lastName || "",
                     email: user.emailAddresses[0].emailAddress.toLowerCase(),
                 }).where(eq(users.id, user.id));
+            }
+
+            // Link HOST-role users to their `hosts` record by email so the
+            // host portal can enforce host-ownership (users.hostId == visits.hostId).
+            const syncUser = await db.query.users.findFirst({
+                where: eq(users.id, user.id)
+            });
+            if (syncUser && syncUser.role === "HOST" && !syncUser.hostId) {
+                const hostRecord = await db.query.hosts.findFirst({
+                    where: eq(hosts.email, syncUser.email.toLowerCase())
+                });
+                if (hostRecord) {
+                    await db.update(users).set({ hostId: hostRecord.id }).where(eq(users.id, user.id));
+                }
             }
 
             return { ok: true };
