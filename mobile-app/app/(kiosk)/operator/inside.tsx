@@ -5,6 +5,7 @@ import { ScreenWrapper, Card } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/contexts/ApiContext';
 import { useGetPublicOnSiteVisitors } from '@/src/hooks/usePublicData';
+import { useCheckOutPublicParticipants } from '@/src/hooks/useVisits';
 import type { OnSiteVisitor } from '@/src/types/api';
 
 function photoSrc(url: string | undefined | null, baseUrl: string): string | undefined {
@@ -27,6 +28,16 @@ export default function InsideScreen() {
   const { deviceToken } = useAuth();
   const { apiBaseUrl } = useApi();
   const { data, isLoading, error, refetch } = useGetPublicOnSiteVisitors(deviceToken, 10_000);
+  const { checkOut, isLoading: isCheckingOut } = useCheckOutPublicParticipants(deviceToken);
+
+  async function handleCheckOut(visitId: string) {
+    try {
+      await checkOut(visitId);
+      await refetch();
+    } catch (err: any) {
+      console.error('Inside visitor check-out failed', err);
+    }
+  }
 
   const visitors = [...data.visitors].sort(
     (a, b) => new Date(b.checkInAt).getTime() - new Date(a.checkInAt).getTime()
@@ -64,34 +75,46 @@ export default function InsideScreen() {
           {visitors.map((v: OnSiteVisitor) => (
             <View
               key={v.id}
-              className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4"
+              className="bg-white rounded-2xl p-4 mb-3 border border-slate-200"
             >
-              {v.visitor.photoUrl ? (
-                <Image
-                  source={{ uri: photoSrc(v.visitor.photoUrl, apiBaseUrl) }}
-                  className="w-12 h-12 rounded-full bg-slate-200"
-                  resizeMode="cover"
-                />
-              ) : (
-                <View className="w-12 h-12 rounded-full bg-teal-100 items-center justify-center">
-                  <Text className="text-teal-600 text-lg font-black">
-                    {v.visitor.firstName[0]}
-                    {v.visitor.lastName[0]}
+              <View className="flex-row items-center gap-4">
+                {v.visitor.photoUrl ? (
+                  <Image
+                    source={{ uri: photoSrc(v.visitor.photoUrl, apiBaseUrl) }}
+                    className="w-12 h-12 rounded-full bg-slate-200"
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View className="w-12 h-12 rounded-full bg-teal-100 items-center justify-center">
+                    <Text className="text-teal-600 text-lg font-black">
+                      {v.visitor.firstName[0]}
+                      {v.visitor.lastName[0]}
+                    </Text>
+                  </View>
+                )}
+                <View className="flex-1">
+                  <Text className="text-base font-bold text-slate-900">
+                    {v.visitor.firstName} {v.visitor.lastName}
+                  </Text>
+                  {v.visitor.company ? <Text className="text-sm text-slate-500">{v.visitor.company}</Text> : null}
+                  <Text className="text-xs text-teal-600 mt-0.5">
+                    {t('success.checkedInAtTime')} {formatTime(v.checkInAt)}
                   </Text>
                 </View>
-              )}
-              <View className="flex-1">
-                <Text className="text-base font-bold text-slate-900">
-                  {v.visitor.firstName} {v.visitor.lastName}
-                </Text>
-                {v.visitor.company ? <Text className="text-sm text-slate-500">{v.visitor.company}</Text> : null}
-                <Text className="text-xs text-teal-600 mt-0.5">
-                  {t('success.checkedInAtTime')} {formatTime(v.checkInAt)}
-                </Text>
+                <View className="bg-teal-100 rounded-full px-3 py-1">
+                  <Text className="text-teal-700 text-xs font-bold">{t('common.onsiteStatus')}</Text>
+                </View>
               </View>
-              <View className="bg-teal-100 rounded-full px-3 py-1">
-                <Text className="text-teal-700 text-xs font-bold">{t('common.onsiteStatus')}</Text>
-              </View>
+
+              <Pressable
+                onPress={() => handleCheckOut(v.id)}
+                disabled={isCheckingOut}
+                className="mt-3 bg-slate-800 rounded-xl px-4 py-2.5 items-center"
+              >
+                <Text className="text-white font-bold text-sm">
+                  {isCheckingOut ? 'Sortie...' : 'Sortie'}
+                </Text>
+              </Pressable>
             </View>
           ))}
         </ScrollView>

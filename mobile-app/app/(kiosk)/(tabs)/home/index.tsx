@@ -319,115 +319,120 @@ export default function DashboardScreen() {
             </View>
           ) : (
             <View className="gap-3">
-              {[
-                {
-                  title: 'Overview',
-                  cards: [
-                    {
-                      value: expectedToday,
-                      label: 'Aujourd’hui',
-                      sub: null,
-                      icon: 'calendar-outline',
-                      primary: true,
-                      attention: false,
-                      metrics: [
-                        { value: expectedToday, label: t('dashboard.kpiExpected'), icon: 'calendar-outline' },
-                        { value: currentlyInside, label: t('dashboard.kpiCurrentlyInside'), icon: 'log-in-outline' },
-                        { value: checkedOut, label: t('dashboard.kpiCheckedOut'), icon: 'log-out-outline' },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  title: 'Approvals',
-                  cards: [
-                    { value: waitingApproval, label: t('dashboard.kpiWaitingApproval'), sub: null, icon: 'time-outline', primary: false, attention: true },
-                    { value: approved, label: t('dashboard.kpiApproved'), sub: null, icon: 'checkmark-circle-outline', primary: false, attention: false },
-                  ],
-                },
-                {
-                  title: 'Volume',
-                  cards: [
-                    { value: totalVisits, label: t('dashboard.kpiTotal'), sub: null, icon: 'people-outline', primary: false, attention: false },
-                  ],
-                },
-              ].map((group) => (
-                <View key={group.title} className="gap-2">
-                  <Text className="px-1 text-[10px] font-bold uppercase tracking-[1.5px] text-slate-500">
-                    {group.title}
-                  </Text>
+              {(() => {
+                const overviewMetrics = [
+                  { value: expectedToday, label: t('dashboard.kpiExpected'), icon: 'calendar-outline' },
+                  { value: currentlyInside, label: t('dashboard.kpiCurrentlyInside'), icon: 'log-in-outline' },
+                  { value: checkedOut, label: t('dashboard.kpiCheckedOut'), icon: 'log-out-outline' },
+                ];
 
-                  {group.title === 'Overview' ? (
-                    <View className="rounded-2xl bg-teal-700 border border-teal-700 p-4 shadow-sm">
-                      <View className="flex-row items-center justify-between mb-4">
-                        <Text className="text-sm font-black text-white">Aujourd’hui</Text>
-                        <Ionicons name="calendar-outline" size={20} color="#ffffff" />
-                      </View>
+                const groups = [
+                  {
+                    title: 'Overview',
+                    cards: [
+                      {
+                        value: expectedToday,
+                        label: 'Aujourd’hui',
+                        sub: null,
+                        icon: 'calendar-outline',
+                        primary: true,
+                        attention: false,
+                      },
+                    ],
+                  },
+                  {
+                    title: 'Approvals',
+                    cards: [
+                      { value: waitingApproval, label: t('dashboard.kpiWaitingApproval'), sub: null, icon: 'time-outline', primary: false, attention: true },
+                      { value: approved, label: t('dashboard.kpiApproved'), sub: null, icon: 'checkmark-circle-outline', primary: false, attention: false },
+                    ],
+                  },
+                  {
+                    title: 'Volume',
+                    cards: [
+                      { value: totalVisits, label: t('dashboard.kpiTotal'), sub: null, icon: 'people-outline', primary: false, attention: false },
+                    ],
+                  },
+                ];
 
-                      <View className="gap-3">
-                        {group.cards[0].metrics.map((metric, metricIndex) => (
-                          <View key={`${group.title}-${metricIndex}`} className="flex-row items-center justify-between rounded-xl bg-white/10 px-3 py-2.5">
-                            <View className="flex-row items-center gap-2.5">
-                              <View className="h-8 w-8 items-center justify-center rounded-lg bg-white/15">
-                                <Ionicons name={metric.icon as never} size={16} color="#ffffff" />
+                return groups.map((group) => (
+                  <View key={group.title} className="gap-2">
+                    <Text className="px-1 text-[10px] font-bold uppercase tracking-[1.5px] text-slate-500">
+                      {group.title}
+                    </Text>
+
+                    {group.title === 'Overview' ? (
+                      <View className="rounded-2xl bg-teal-700 border border-teal-700 p-4 shadow-sm">
+                        <View className="flex-row items-center justify-between mb-4">
+                          <Text className="text-sm font-black text-white">Aujourd’hui</Text>
+                          <Ionicons name="calendar-outline" size={20} color="#ffffff" />
+                        </View>
+
+                        <View className="gap-3">
+                          {overviewMetrics.map((metric, metricIndex) => (
+                            <View key={`${group.title}-${metricIndex}`} className="flex-row items-center justify-between rounded-xl bg-white/10 px-3 py-2.5">
+                              <View className="flex-row items-center gap-2.5">
+                                <View className="h-8 w-8 items-center justify-center rounded-lg bg-white/15">
+                                  <Ionicons name={metric.icon as never} size={16} color="#ffffff" />
+                                </View>
+                                <Text className="text-xs font-bold uppercase tracking-wide text-teal-50">
+                                  {metric.label}
+                                </Text>
                               </View>
-                              <Text className="text-xs font-bold uppercase tracking-wide text-teal-50">
-                                {metric.label}
+                              <Text className="text-2xl font-black text-white">
+                                {metric.value}
                               </Text>
                             </View>
-                            <Text className="text-2xl font-black text-white">
-                              {metric.value}
-                            </Text>
-                          </View>
-                        ))}
+                          ))}
+                        </View>
                       </View>
-                    </View>
-                  ) : (
-                    <View className="flex-row gap-3">
-                      {group.cards.map((kpi, idx) => {
-                        const iconColor = kpi.primary ? '#ffffff' : kpi.attention ? '#d97706' : '#0d9488';
-                        const numberColor = kpi.primary ? 'text-white' : kpi.attention ? 'text-amber-700' : 'text-teal-700';
-                        const labelColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-800' : 'text-teal-600';
-                        const subColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-700' : 'text-slate-400';
-                        const isSingleCard = group.cards.length === 1;
+                    ) : (
+                      <View className="flex-row gap-3">
+                        {group.cards.map((kpi, idx) => {
+                          const iconColor = kpi.primary ? '#ffffff' : kpi.attention ? '#d97706' : '#0d9488';
+                          const numberColor = kpi.primary ? 'text-white' : kpi.attention ? 'text-amber-700' : 'text-teal-700';
+                          const labelColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-800' : 'text-teal-600';
+                          const subColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-700' : 'text-slate-400';
+                          const isSingleCard = group.cards.length === 1;
 
-                        return (
-                          <View
-                            key={`${group.title}-${idx}`}
-                            className={`${isSingleCard ? 'flex-1' : 'flex-1'} rounded-2xl p-3 shadow-sm border ${
-                              kpi.primary
-                                ? 'bg-teal-700 border-teal-700'
-                                : kpi.attention
-                                  ? 'bg-amber-50 border-amber-200'
-                                  : 'bg-white border-slate-100'
-                            }`}
-                          >
-                            <View className="flex-row justify-between items-center mb-2">
-                              <Text className={`text-[10px] font-bold uppercase tracking-wide ${labelColor}`} numberOfLines={2}>
-                                {kpi.label}
-                              </Text>
-                              <Ionicons name={kpi.icon as never} size={18} color={iconColor} />
-                            </View>
-                            <Text
-                              adjustsFontSizeToFit
-                              minimumFontScale={0.7}
-                              numberOfLines={1}
-                              className={`font-black ${isTablet ? 'text-3xl' : 'text-2xl'} ${numberColor}`}
+                          return (
+                            <View
+                              key={`${group.title}-${idx}`}
+                              className={`${isSingleCard ? 'flex-1' : 'flex-1'} rounded-2xl p-3 shadow-sm border ${
+                                kpi.primary
+                                  ? 'bg-teal-700 border-teal-700'
+                                  : kpi.attention
+                                    ? 'bg-amber-50 border-amber-200'
+                                    : 'bg-white border-slate-100'
+                              }`}
                             >
-                              {kpi.value}
-                            </Text>
-                            {kpi.sub ? (
-                              <Text className={`text-[10px] font-medium mt-1 ${subColor}`} numberOfLines={2}>
-                                {kpi.sub}
+                              <View className="flex-row justify-between items-center mb-2">
+                                <Text className={`text-[10px] font-bold uppercase tracking-wide ${labelColor}`} numberOfLines={2}>
+                                  {kpi.label}
+                                </Text>
+                                <Ionicons name={kpi.icon as never} size={18} color={iconColor} />
+                              </View>
+                              <Text
+                                adjustsFontSizeToFit
+                                minimumFontScale={0.7}
+                                numberOfLines={1}
+                                className={`font-black ${isTablet ? 'text-3xl' : 'text-2xl'} ${numberColor}`}
+                              >
+                                {kpi.value}
                               </Text>
-                            ) : null}
-                          </View>
-                        );
-                      })}
-                    </View>
-                  )}
-                </View>
-              ))}
+                              {kpi.sub ? (
+                                <Text className={`text-[10px] font-medium mt-1 ${subColor}`} numberOfLines={2}>
+                                  {kpi.sub}
+                                </Text>
+                              ) : null}
+                            </View>
+                          );
+                        })}
+                      </View>
+                    )}
+                  </View>
+                ));
+              })()}
             </View>
           )}
         </View>

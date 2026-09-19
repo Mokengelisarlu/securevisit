@@ -7,7 +7,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useGetPublicVisitDetail } from '@/src/hooks/usePublicData';
-import { useApproveVisitPublic, useCancelVisitPublic, usePostponeVisitPublic } from '@/src/hooks/useVisits';
+import {
+  useApproveVisitPublic,
+  useCancelVisitPublic,
+  useCheckInPublicParticipants,
+  useCheckOutPublicParticipants,
+  usePostponeVisitPublic,
+} from '@/src/hooks/useVisits';
 
 function formatTime(dateStr?: string | null): string {
   if (!dateStr) return '—';
@@ -44,6 +50,8 @@ export default function VisitDetailScreen() {
   const { data, isLoading, error, fetchVisit } = useGetPublicVisitDetail(deviceToken);
   const { approveVisit, isLoading: approving, error: approveError } = useApproveVisitPublic(deviceToken);
   const { cancelVisit, isLoading: canceling, error: cancelError } = useCancelVisitPublic(deviceToken);
+  const { checkIn, isLoading: checkingIn, error: checkInError } = useCheckInPublicParticipants(deviceToken);
+  const { checkOut, isLoading: checkingOut, error: checkOutError } = useCheckOutPublicParticipants(deviceToken);
   const { postponeVisit, isLoading: postponing, error: postponeError } = usePostponeVisitPublic(deviceToken);
   const router = useRouter();
   const [reason, setReason] = useState('');
@@ -109,8 +117,8 @@ export default function VisitDetailScreen() {
   }, [visitId, fetchVisit]);
 
   const actionError = useMemo(
-    () => approveError || cancelError || postponeError || null,
-    [approveError, cancelError, postponeError]
+    () => approveError || cancelError || postponeError || checkInError || checkOutError || null,
+    [approveError, cancelError, postponeError, checkInError, checkOutError]
   );
 
   const reloadDetail = async () => {
@@ -156,6 +164,30 @@ export default function VisitDetailScreen() {
       await reloadDetail();
     } catch (err: any) {
       setActionMessage(err?.message || 'Erreur lors du report');
+    }
+  };
+
+  const handleCheckIn = async () => {
+    if (!visitId) return;
+    try {
+      setActionMessage(null);
+      await checkIn(visitId);
+      setActionMessage('Visite enregistrée');
+      await reloadDetail();
+    } catch (err: any) {
+      setActionMessage(err?.message || 'Erreur lors de l\'enregistrement');
+    }
+  };
+
+  const handleCheckOut = async () => {
+    if (!visitId) return;
+    try {
+      setActionMessage(null);
+      await checkOut(visitId);
+      setActionMessage('Visite sortie');
+      await reloadDetail();
+    } catch (err: any) {
+      setActionMessage(err?.message || 'Erreur lors de la sortie');
     }
   };
 
@@ -300,13 +332,33 @@ export default function VisitDetailScreen() {
               ) : null}
 
               <View className="gap-3">
-                {(data.status === 'PENDING_APPROVAL' || data.status === 'APPROVED' || data.status === 'POSTPONED') && (
+                {data.status === 'PENDING_APPROVAL' && (
                   <Pressable
                     onPress={handleApprove}
                     disabled={approving}
                     className="bg-teal-600 rounded-xl px-4 py-3 items-center"
                   >
                     <Text className="text-white font-bold">{approving ? 'Validation...' : 'Approuver'}</Text>
+                  </Pressable>
+                )}
+
+                {data.status === 'APPROVED' && (
+                  <Pressable
+                    onPress={handleCheckIn}
+                    disabled={checkingIn}
+                    className="bg-teal-600 rounded-xl px-4 py-3 items-center"
+                  >
+                    <Text className="text-white font-bold">{checkingIn ? 'Enregistrement...' : 'Check-in'}</Text>
+                  </Pressable>
+                )}
+
+                {data.status === 'IN' && (
+                  <Pressable
+                    onPress={handleCheckOut}
+                    disabled={checkingOut}
+                    className="bg-slate-800 rounded-xl px-4 py-3 items-center"
+                  >
+                    <Text className="text-white font-bold">{checkingOut ? 'Sortie...' : 'Sortie'}</Text>
                   </Pressable>
                 )}
 

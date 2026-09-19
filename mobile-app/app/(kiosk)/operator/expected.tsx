@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenWrapper, Card } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { useGetExpectedVisits } from '@/src/hooks/useVisits';
+import { useCheckInPublicParticipants, useGetExpectedVisits } from '@/src/hooks/useVisits';
 import type { ExpectedVisit } from '@/src/types/api';
 
 function statusLabel(s: string): string {
@@ -19,6 +19,16 @@ export default function ExpectedScreen() {
   const { t } = useTranslation();
   const { deviceToken } = useAuth();
   const { data, isLoading, error, refetch } = useGetExpectedVisits(deviceToken, 10_000);
+  const { checkIn, isLoading: isCheckingIn } = useCheckInPublicParticipants(deviceToken);
+
+  async function handleCheckIn(visitId: string) {
+    try {
+      await checkIn(visitId);
+      await refetch();
+    } catch (err: any) {
+      console.error('Expected visit check-in failed', err);
+    }
+  }
 
   return (
     <ScreenWrapper padX={false}>
@@ -53,36 +63,50 @@ export default function ExpectedScreen() {
             const participants = v.participants ?? [];
             const waiting = participants.filter((p) => ['WAITING', 'EXPECTED'].includes(p.status)).length;
             return (
-              <Pressable
+              <View
                 key={v.id}
-                onPress={() => router.push(`/(kiosk)/operator/group/${v.id}` as never)}
-                className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 active:bg-teal-50"
+                className="bg-white rounded-2xl p-4 mb-3 border border-slate-200"
               >
-                <View className="flex-row items-center gap-3">
-                  <View className="w-12 h-12 rounded-full bg-teal-100 items-center justify-center">
-                    <Text className="text-teal-600 font-black">
-                      {v.visitor.firstName[0]}
-                      {v.visitor.lastName[0]}
-                    </Text>
-                  </View>
-                  <View className="flex-1">
-                    <Text className="text-base font-bold text-slate-900">
-                      {v.groupName || `${v.visitor.firstName} ${v.visitor.lastName}`}
-                    </Text>
-                    {v.organization ? (
-                      <Text className="text-sm text-slate-500">{v.organization}</Text>
-                    ) : null}
-                    {participants.length > 0 ? (
-                      <Text className="text-xs text-slate-400 mt-0.5">
-                        {t('operator.participants')}: {participants.length} · ({waiting} à enregistrer)
+                <Pressable
+                  onPress={() => router.push(`/(kiosk)/operator/group/${v.id}` as never)}
+                  className="active:bg-teal-50"
+                >
+                  <View className="flex-row items-center gap-3">
+                    <View className="w-12 h-12 rounded-full bg-teal-100 items-center justify-center">
+                      <Text className="text-teal-600 font-black">
+                        {v.visitor.firstName[0]}
+                        {v.visitor.lastName[0]}
                       </Text>
-                    ) : null}
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-base font-bold text-slate-900">
+                        {v.groupName || `${v.visitor.firstName} ${v.visitor.lastName}`}
+                      </Text>
+                      {v.organization ? (
+                        <Text className="text-sm text-slate-500">{v.organization}</Text>
+                      ) : null}
+                      {participants.length > 0 ? (
+                        <Text className="text-xs text-slate-400 mt-0.5">
+                          {t('operator.participants')}: {participants.length} · ({waiting} à enregistrer)
+                        </Text>
+                      ) : null}
+                    </View>
+                    <View className="bg-teal-100 rounded-full px-3 py-1">
+                      <Text className="text-teal-700 text-xs font-bold">{statusLabel(v.status)}</Text>
+                    </View>
                   </View>
-                  <View className="bg-teal-100 rounded-full px-3 py-1">
-                    <Text className="text-teal-700 text-xs font-bold">{statusLabel(v.status)}</Text>
-                  </View>
-                </View>
-              </Pressable>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => handleCheckIn(v.id)}
+                  disabled={isCheckingIn}
+                  className="mt-3 bg-teal-600 rounded-xl px-4 py-2.5 items-center"
+                >
+                  <Text className="text-white font-bold text-sm">
+                    {isCheckingIn ? 'Validation...' : 'Enregistrer'}
+                  </Text>
+                </Pressable>
+              </View>
             );
           })}
         </ScrollView>
