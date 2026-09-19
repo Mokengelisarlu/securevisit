@@ -311,6 +311,88 @@ export async function createPublicVisitRequest(
  * [PUBLIC] Waiting list (pending approval + approved-but-not-checked-in) with
  * escalation (normal | warning | critical). Requires a valid device token.
  */
+export async function approvePublicVisitRequest(tenantSlug: string, deviceToken: string, visitId: string) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+  const visit = await db.query.visits.findFirst({ where: eq(visits.id, visitId) });
+  if (!visit) throw new Error("Visit not found");
+  if (visit.status === "REJECTED" || visit.status === "CANCELLED") {
+    throw new Error("Cannot approve a rejected or cancelled visit");
+  }
+
+  const [updated] = await db
+    .update(visits)
+    .set({ status: "APPROVED" })
+    .where(eq(visits.id, visitId))
+    .returning();
+
+  await db.insert(visitStatusHistory).values({
+    visitId,
+    fromStatus: visit.status,
+    toStatus: "APPROVED",
+    actorId: `device:${deviceToken}`,
+    actorRole: "OPERATOR",
+    reason: "Approved via mobile host flow",
+  });
+
+  return updated;
+}
+
+export async function cancelPublicVisitRequest(tenantSlug: string, deviceToken: string, visitId: string, reason?: string | null) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+  const visit = await db.query.visits.findFirst({ where: eq(visits.id, visitId) });
+  if (!visit) throw new Error("Visit not found");
+  if (visit.status === "REJECTED" || visit.status === "CANCELLED") {
+    throw new Error("Visit is already in a terminal state");
+  }
+
+  const [updated] = await db
+    .update(visits)
+    .set({ status: "CANCELLED", cancelReason: reason ?? null })
+    .where(eq(visits.id, visitId))
+    .returning();
+
+  await db.insert(visitStatusHistory).values({
+    visitId,
+    fromStatus: visit.status,
+    toStatus: "CANCELLED",
+    actorId: `device:${deviceToken}`,
+    actorRole: "OPERATOR",
+    reason: reason ?? null,
+  });
+
+  return updated;
+}
+
+export async function postponePublicVisitRequest(tenantSlug: string, deviceToken: string, visitId: string, newProposedDate: Date, reason?: string | null) {
+  await verifyDeviceToken(tenantSlug, deviceToken);
+  const db = await getTenantDbBySlug(tenantSlug);
+  const visit = await db.query.visits.findFirst({ where: eq(visits.id, visitId) });
+  if (!visit) throw new Error("Visit not found");
+  if (visit.status === "REJECTED" || visit.status === "CANCELLED") {
+    throw new Error("Cannot postpone a rejected or cancelled visit");
+  }
+
+  const [updated] = await db
+    .update(visits)
+    .set({ status: "POSTPONED", newProposedDate, postponeReason: reason ?? null })
+    .where(eq(visits.id, visitId))
+    .returning();
+
+  await db.insert(visitStatusHistory).values({
+    visitId,
+    fromStatus: visit.status,
+    toStatus: "POSTPONED",
+    actorId: `device:${deviceToken}`,
+    actorRole: "OPERATOR",
+    reason: reason ?? null,
+    metadata: JSON.stringify({ newProposedDate: newProposedDate.toISOString() }),
+  });
+
+  return updated;
+}
+
 export async function getPublicWaitingVisits(tenantSlug: string, deviceToken: string) {
   await verifyDeviceToken(tenantSlug, deviceToken);
   const db = await getTenantDbBySlug(tenantSlug);

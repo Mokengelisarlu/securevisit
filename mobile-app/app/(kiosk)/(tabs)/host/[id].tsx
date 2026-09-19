@@ -103,7 +103,11 @@ export default function HostDetailsScreen() {
             {waiting.length > 0 ? (
               <View className="px-6">
                   {waiting.map((v: WaitingVisit) => (
-                  <View key={v.id} className="bg-white rounded-2xl p-4 mb-3 border border-amber-200 flex-row items-center gap-4">
+                  <Pressable
+                    key={v.id}
+                    onPress={() => router.push({ pathname: '/(kiosk)/visit-detail', params: { visitId: v.id } })}
+                    className="bg-white rounded-2xl p-4 mb-3 border border-amber-200 flex-row items-center gap-4"
+                  >
                     <View className="w-11 h-11 rounded-full bg-amber-100 items-center justify-center">
                       <Text className="text-amber-700 font-black">
                         {v.visitor.firstName[0]}
@@ -123,7 +127,7 @@ export default function HostDetailsScreen() {
                     <View className="bg-amber-100 rounded-full px-3 py-1">
                       <Text className="text-amber-700 text-xs font-bold">{t('operator.waiting')}</Text>
                     </View>
-                  </View>
+                  </Pressable>
                 ))}
               </View>
             ) : (
@@ -136,7 +140,11 @@ export default function HostDetailsScreen() {
             {expected.length > 0 ? (
               <View className="px-6">
                   {expected.map((v: ExpectedVisit) => (
-                  <View key={v.id} className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4">
+                  <Pressable
+                    key={v.id}
+                    onPress={() => router.push({ pathname: '/(kiosk)/visit-detail', params: { visitId: v.id } })}
+                    className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4"
+                  >
                     <View className="w-11 h-11 rounded-full bg-teal-100 items-center justify-center">
                       <Text className="text-teal-700 font-black">
                         {v.visitor.firstName[0]}
@@ -161,7 +169,7 @@ export default function HostDetailsScreen() {
                     <View className="bg-teal-100 rounded-full px-3 py-1">
                       <Text className="text-teal-700 text-xs font-bold">{t('operator.approved')}</Text>
                     </View>
-                  </View>
+                  </Pressable>
                 ))}
               </View>
             ) : (

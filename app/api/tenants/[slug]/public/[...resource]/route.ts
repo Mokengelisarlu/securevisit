@@ -27,6 +27,9 @@ import {
   checkInPublicParticipants,
   checkOutPublicParticipants,
   getPublicVisitDetail,
+  approvePublicVisitRequest,
+  cancelPublicVisitRequest,
+  postponePublicVisitRequest,
 } from "@/features/tenants/queries/visits-public";
 import { getBearerToken } from "@/lib/device-auth";
 
@@ -40,7 +43,9 @@ export async function GET(
 ) {
   try {
     const { slug, resource: rawResource } = await context.params;
-    const resource = Array.isArray(rawResource) ? rawResource.join("/") : rawResource;
+    const resource = (Array.isArray(rawResource) ? rawResource.join("/") : rawResource ?? "")
+      .replace(/^\/+/, "")
+      .replace(/\/+$/, "");
     const deviceToken = getBearerToken(request);
     const url = new URL(request.url);
 
@@ -129,7 +134,9 @@ export async function POST(
 ) {
   try {
     const { slug, resource: rawResource } = await context.params;
-    const resource = Array.isArray(rawResource) ? rawResource.join("/") : rawResource;
+    const resource = (Array.isArray(rawResource) ? rawResource.join("/") : rawResource ?? "")
+      .replace(/^\/+/, "")
+      .replace(/\/+$/, "");
     const deviceToken = getBearerToken(request);
     const body = await request.json();
 
@@ -141,6 +148,33 @@ export async function POST(
       case "visits": {
         const visit = await createPublicVisitRequest(slug, deviceToken, body);
         return jsonResponse(visit);
+      }
+      case "visits/approve":
+      case "approve": {
+        const visitId = body.visitId;
+        if (!visitId) {
+          return jsonResponse({ error: "Missing visitId" }, 400);
+        }
+        const result = await approvePublicVisitRequest(slug, deviceToken, visitId);
+        return jsonResponse(result);
+      }
+      case "visits/cancel":
+      case "cancel": {
+        const visitId = body.visitId;
+        if (!visitId) {
+          return jsonResponse({ error: "Missing visitId" }, 400);
+        }
+        const result = await cancelPublicVisitRequest(slug, deviceToken, visitId, body.reason ?? null);
+        return jsonResponse(result);
+      }
+      case "visits/postpone":
+      case "postpone": {
+        const visitId = body.visitId;
+        if (!visitId || !body.newProposedDate) {
+          return jsonResponse({ error: "Missing visitId or newProposedDate" }, 400);
+        }
+        const result = await postponePublicVisitRequest(slug, deviceToken, visitId, new Date(body.newProposedDate), body.reason ?? null);
+        return jsonResponse(result);
       }
       case "visitors": {
         if (!body.firstName || !body.lastName) {

@@ -106,7 +106,7 @@ export interface VisitDetail {
   checkInAt: string | null;
   checkOutAt: string | null;
   durationMinutes: number | null;
-  status: 'IN' | 'OUT' | 'CANCELLED' | 'SCHEDULED';
+  status: VisitStatus;
   visitorPhotoUrl: string | null;
   vehiclePhotoUrl: string | null;
   visitor: Visitor;
@@ -130,7 +130,7 @@ export interface VisitHistoryEntry {
   checkInAt: string | null;
   checkOutAt: string | null;
   durationMinutes: number | null;
-  status: 'IN' | 'OUT' | 'CANCELLED' | 'SCHEDULED';
+  status: VisitStatus;
   visitor: Visitor;
   host: Host | null;
   department: Department | null;

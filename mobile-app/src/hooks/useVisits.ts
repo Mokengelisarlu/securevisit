@@ -288,6 +288,93 @@ export function useGetPublicVisitDetailPublic(deviceToken: string | null) {
   return { data, isLoading, error, fetchVisit };
 }
 
+export function useApproveVisitPublic(deviceToken: string | null) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const approveVisit = useCallback(
+    async (visitId: string) => {
+      if (!deviceToken) throw new Error('Device not paired');
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visits/approve`,
+          { method: 'POST', body: { visitId }, deviceToken, baseUrl: apiBaseUrl }
+        );
+        return response as { id?: string; status?: string; visitNumber?: string | null };
+      } catch (err: any) {
+        setError(err.message);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { approveVisit, isLoading, error };
+}
+
+export function useCancelVisitPublic(deviceToken: string | null) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const cancelVisit = useCallback(
+    async (visitId: string, reason?: string | null) => {
+      if (!deviceToken) throw new Error('Device not paired');
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visits/cancel`,
+          { method: 'POST', body: { visitId, reason }, deviceToken, baseUrl: apiBaseUrl }
+        );
+        return response as { id?: string; status?: string; visitNumber?: string | null };
+      } catch (err: any) {
+        setError(err.message);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { cancelVisit, isLoading, error };
+}
+
+export function usePostponeVisitPublic(deviceToken: string | null) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { tenantSlug, apiBaseUrl } = useApi();
+
+  const postponeVisit = useCallback(
+    async (visitId: string, newProposedDate: string, reason?: string | null) => {
+      if (!deviceToken) throw new Error('Device not paired');
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiCall(
+          `/api/tenants/${tenantSlug}/public/visits/postpone`,
+          { method: 'POST', body: { visitId, newProposedDate, reason }, deviceToken, baseUrl: apiBaseUrl }
+        );
+        return response as { id?: string; status?: string; visitNumber?: string | null };
+      } catch (err: any) {
+        setError(err.message);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [deviceToken, tenantSlug, apiBaseUrl]
+  );
+
+  return { postponeVisit, isLoading, error };
+}
+
 export function useCheckInPublicParticipants(deviceToken: string | null) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

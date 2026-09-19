@@ -1,11 +1,13 @@
-import { View, Text, ScrollView, ActivityIndicator, Pressable } from 'react-native';
-import { useEffect } from 'react';
+import { View, Text, ScrollView, ActivityIndicator, Pressable, TextInput } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { ScreenWrapper } from '@/src/components/ui';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useGetPublicVisitDetail } from '@/src/hooks/usePublicData';
+import { useApproveVisitPublic, useCancelVisitPublic, usePostponeVisitPublic } from '@/src/hooks/useVisits';
 
 function formatTime(dateStr?: string | null): string {
   if (!dateStr) return '—';
@@ -16,16 +18,21 @@ function formatTime(dateStr?: string | null): string {
 
 function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation();
-  const styles: Record<string, string> = {
-    IN: 'bg-teal-100 text-teal-700',
-    OUT: 'bg-slate-100 text-slate-700',
-    SCHEDULED: 'bg-blue-100 text-blue-700',
-    CANCELLED: 'bg-red-100 text-red-700',
+  const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
+    IN: { bg: 'bg-teal-100', text: 'text-teal-700', label: 'À l\'intérieur' },
+    OUT: { bg: 'bg-slate-100', text: 'text-slate-700', label: 'Sorti' },
+    SCHEDULED: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Planifié' },
+    CANCELLED: { bg: 'bg-red-100', text: 'text-red-700', label: 'Annulé' },
+    PENDING_APPROVAL: { bg: 'bg-amber-100', text: 'text-amber-700', label: 'En attente' },
+    APPROVED: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'Approuvé' },
+    POSTPONED: { bg: 'bg-violet-100', text: 'text-violet-700', label: 'Reporté' },
+    REJECTED: { bg: 'bg-red-100', text: 'text-red-700', label: 'Refusé' },
   };
-  const cls = styles[status] ?? 'bg-slate-100 text-slate-700';
+  const config = statusConfig[status] ?? { bg: 'bg-slate-100', text: 'text-slate-700', label: status ?? 'Inconnu' };
+
   return (
-    <View className={`rounded-full px-3 py-1 ${cls.split(' ')[0]}`}>
-      <Text className={`text-xs font-bold ${cls.split(' ')[1]}`}>{status}</Text>
+    <View className={`rounded-full px-3 py-1 ${config.bg}`}>
+      <Text className={`text-xs font-bold ${config.text}`}>{config.label}</Text>
     </View>
   );
 }
@@ -35,13 +42,122 @@ export default function VisitDetailScreen() {
   const { visitId } = useLocalSearchParams<{ visitId: string }>();
   const { deviceToken } = useAuth();
   const { data, isLoading, error, fetchVisit } = useGetPublicVisitDetail(deviceToken);
+  const { approveVisit, isLoading: approving, error: approveError } = useApproveVisitPublic(deviceToken);
+  const { cancelVisit, isLoading: canceling, error: cancelError } = useCancelVisitPublic(deviceToken);
+  const { postponeVisit, isLoading: postponing, error: postponeError } = usePostponeVisitPublic(deviceToken);
   const router = useRouter();
+  const [reason, setReason] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [newProposedDate, setNewProposedDate] = useState(() => {
+    const nextHour = new Date(Date.now() + 60 * 60 * 1000);
+    const year = nextHour.getFullYear();
+    const month = String(nextHour.getMonth() + 1).padStart(2, '0');
+    const day = String(nextHour.getDate()).padStart(2, '0');
+    const hours = String(nextHour.getHours()).padStart(2, '0');
+    const minutes = String(nextHour.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  });
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  const datePickerValue = useMemo(() => {
+    const parsed = new Date(newProposedDate);
+    return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+  }, [newProposedDate]);
+
+  const handleDatePickerChange = (_event: unknown, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (!selectedDate) return;
+
+    const currentValue = new Date(newProposedDate);
+    const dateToKeep = new Date(selectedDate);
+    const hours = Number.isNaN(currentValue.getTime()) ? 9 : currentValue.getHours();
+    const minutes = Number.isNaN(currentValue.getTime()) ? 0 : currentValue.getMinutes();
+
+    dateToKeep.setHours(hours, minutes, 0, 0);
+
+    const year = dateToKeep.getFullYear();
+    const month = String(dateToKeep.getMonth() + 1).padStart(2, '0');
+    const day = String(dateToKeep.getDate()).padStart(2, '0');
+    const finalHours = String(dateToKeep.getHours()).padStart(2, '0');
+    const finalMinutes = String(dateToKeep.getMinutes()).padStart(2, '0');
+
+    setNewProposedDate(`${year}-${month}-${day}T${finalHours}:${finalMinutes}`);
+  };
+
+  const handleTimePickerChange = (_event: unknown, selectedTime?: Date) => {
+    setShowTimePicker(false);
+    if (!selectedTime) return;
+
+    const currentValue = new Date(newProposedDate);
+    const nextValue = new Date(currentValue);
+    nextValue.setHours(selectedTime.getHours(), selectedTime.getMinutes(), 0, 0);
+
+    const year = nextValue.getFullYear();
+    const month = String(nextValue.getMonth() + 1).padStart(2, '0');
+    const day = String(nextValue.getDate()).padStart(2, '0');
+    const hours = String(nextValue.getHours()).padStart(2, '0');
+    const minutes = String(nextValue.getMinutes()).padStart(2, '0');
+
+    setNewProposedDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+  };
 
   useEffect(() => {
     if (visitId) {
       fetchVisit(visitId);
     }
   }, [visitId, fetchVisit]);
+
+  const actionError = useMemo(
+    () => approveError || cancelError || postponeError || null,
+    [approveError, cancelError, postponeError]
+  );
+
+  const reloadDetail = async () => {
+    if (visitId) {
+      await fetchVisit(visitId);
+    }
+  };
+
+  const handleApprove = async () => {
+    if (!visitId) return;
+    try {
+      setActionMessage(null);
+      await approveVisit(visitId);
+      setActionMessage('Visite approuvée');
+      await reloadDetail();
+    } catch (err: any) {
+      setActionMessage(err?.message || 'Erreur lors de l\'approbation');
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!visitId) return;
+    try {
+      setActionMessage(null);
+      await cancelVisit(visitId, reason || 'Annulée par l\'hôte');
+      setActionMessage('Visite annulée');
+      await reloadDetail();
+    } catch (err: any) {
+      setActionMessage(err?.message || 'Erreur lors de l\'annulation');
+    }
+  };
+
+  const handlePostpone = async () => {
+    if (!visitId) return;
+    if (!newProposedDate) {
+      setActionMessage('Choisis une nouvelle date');
+      return;
+    }
+    try {
+      setActionMessage(null);
+      await postponeVisit(visitId, newProposedDate, reason || 'Reportée par l\'hôte');
+      setActionMessage('Visite reportée');
+      await reloadDetail();
+    } catch (err: any) {
+      setActionMessage(err?.message || 'Erreur lors du report');
+    }
+  };
 
   return (
     <ScreenWrapper padX={false}>
@@ -169,6 +285,103 @@ export default function VisitDetailScreen() {
                 </Text>
               </View>
             ) : null}
+
+            <View className="bg-white rounded-2xl p-4 mb-3 border border-slate-200">
+              <Text className="text-sm font-black text-teal-900 uppercase tracking-wide mb-3">
+                Actions hôte
+              </Text>
+
+              {actionError ? (
+                <Text className="text-red-600 text-sm mb-3">{actionError}</Text>
+              ) : null}
+
+              {actionMessage ? (
+                <Text className="text-teal-700 text-sm mb-3">{actionMessage}</Text>
+              ) : null}
+
+              <View className="gap-3">
+                {(data.status === 'PENDING_APPROVAL' || data.status === 'APPROVED' || data.status === 'POSTPONED') && (
+                  <Pressable
+                    onPress={handleApprove}
+                    disabled={approving}
+                    className="bg-teal-600 rounded-xl px-4 py-3 items-center"
+                  >
+                    <Text className="text-white font-bold">{approving ? 'Validation...' : 'Approuver'}</Text>
+                  </Pressable>
+                )}
+
+                {(data.status === 'PENDING_APPROVAL' || data.status === 'APPROVED' || data.status === 'POSTPONED') && (
+                  <Pressable
+                    onPress={handleCancel}
+                    disabled={canceling}
+                    className="bg-red-100 rounded-xl px-4 py-3 items-center border border-red-200"
+                  >
+                    <Text className="text-red-700 font-bold">{canceling ? 'Annulation...' : 'Annuler'}</Text>
+                  </Pressable>
+                )}
+
+                {(data.status === 'PENDING_APPROVAL' || data.status === 'APPROVED' || data.status === 'POSTPONED') && (
+                  <>
+                    <Text className="text-xs font-bold text-slate-500 uppercase tracking-wide">Reporter la visite</Text>
+
+                    <View className="gap-2">
+                      <Pressable
+                        onPress={() => setShowDatePicker(true)}
+                        className="border border-slate-200 rounded-xl px-3 py-3 flex-row items-center justify-between"
+                      >
+                        <Text className="text-sm text-slate-800">
+                          {newProposedDate ? new Date(newProposedDate).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' }) : 'Choisir une date'}
+                        </Text>
+                        <Ionicons name="calendar-outline" size={18} color="#475569" />
+                      </Pressable>
+
+                      <Pressable
+                        onPress={() => setShowTimePicker(true)}
+                        className="border border-slate-200 rounded-xl px-3 py-3 flex-row items-center justify-between"
+                      >
+                        <Text className="text-sm text-slate-800">
+                          {newProposedDate ? new Date(newProposedDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Choisir l’heure'}
+                        </Text>
+                        <Ionicons name="time-outline" size={18} color="#475569" />
+                      </Pressable>
+                    </View>
+
+                    {showDatePicker ? (
+                      <DateTimePicker
+                        value={datePickerValue}
+                        mode="date"
+                        display="default"
+                        minimumDate={new Date()}
+                        onChange={handleDatePickerChange}
+                      />
+                    ) : null}
+
+                    {showTimePicker ? (
+                      <DateTimePicker
+                        value={datePickerValue}
+                        mode="time"
+                        display="default"
+                        onChange={handleTimePickerChange}
+                      />
+                    ) : null}
+
+                    <TextInput
+                      value={reason}
+                      onChangeText={setReason}
+                      placeholder="Raison du report (optionnel)"
+                      className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800"
+                    />
+                    <Pressable
+                      onPress={handlePostpone}
+                      disabled={postponing}
+                      className="bg-violet-100 rounded-xl px-4 py-3 items-center border border-violet-200"
+                    >
+                      <Text className="text-violet-700 font-bold">{postponing ? 'Report...' : 'Reporter'}</Text>
+                    </Pressable>
+                  </>
+                )}
+              </View>
+            </View>
           </>
         ) : null}
       </ScrollView>

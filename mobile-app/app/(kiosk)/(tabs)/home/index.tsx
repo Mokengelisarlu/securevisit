@@ -34,16 +34,15 @@ function formatTime(dateStr?: string | null): string {
 
 function formatHeaderDateTime(date: Date, lang: string): string {
   const datePart = new Intl.DateTimeFormat(lang, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
+    day: '2-digit',
+    month: 'short',
     year: 'numeric',
   }).format(date);
   const timePart = new Intl.DateTimeFormat(lang, {
     hour: '2-digit',
     minute: '2-digit',
   }).format(date);
-  return `${datePart} - ${timePart}`;
+  return `${datePart} · ${timePart}`;
 }
 
 export default function DashboardScreen() {
@@ -232,24 +231,31 @@ export default function DashboardScreen() {
         contentContainerStyle={{ paddingBottom: 40 }}
       >
         {/* Tenant header */}
-        <View className="pt-8 pb-4 px-6 flex-row items-center justify-between gap-3">
-          <View className="flex-row items-center gap-3 flex-1">
+        <View className="pt-8 pb-4 px-6 flex-row items-center justify-between gap-2.5">
+          <View className="flex-row items-center gap-3 flex-1 min-w-0">
             {logoSrc ? (
               <Image
                 source={{ uri: logoSrc }}
-                className="w-12 h-12 rounded-xl"
+                className="w-11 h-11 rounded-xl"
                 resizeMode="contain"
               />
             ) : (
               <Image
                 source={require('../../../../assets/images/icon-512x512.png')}
-                className="w-12 h-12"
+                className="w-11 h-11"
                 resizeMode="contain"
               />
             )}
-            <Text className="text-2xl font-black text-teal-900" numberOfLines={1}>{tenantName}</Text>
+            <Text
+              className="flex-1 text-base sm:text-lg font-black text-teal-900 leading-tight"
+              numberOfLines={2}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}
+            >
+              {tenantName}
+            </Text>
           </View>
-          <Text className="text-xs font-bold text-teal-700 text-right">
+          <Text className="text-[10px] font-bold text-teal-700 text-right max-w-[110px] leading-tight">
             {formatHeaderDateTime(now, i18n.language)}
           </Text>
         </View>
@@ -312,56 +318,116 @@ export default function DashboardScreen() {
               <ActivityIndicator color="#0F766E" size="large" />
             </View>
           ) : (
-            <View className="flex-row flex-wrap gap-3">
+            <View className="gap-3">
               {[
-                { value: expectedToday, label: t('dashboard.kpiExpected'), sub: t('dashboard.kpiExpectedSub'), icon: 'calendar-outline', primary: true, attention: false },
-                { value: waitingApproval, label: t('dashboard.kpiWaitingApproval'), sub: null, icon: 'time-outline', primary: false, attention: true },
-                { value: approved, label: t('dashboard.kpiApproved'), sub: null, icon: 'checkmark-circle-outline', primary: false, attention: false },
-                { value: currentlyInside, label: t('dashboard.kpiCurrentlyInside'), sub: t('dashboard.kpiInsideSub'), icon: 'log-in-outline', primary: true, attention: false },
-                { value: totalVisits, label: t('dashboard.kpiTotal'), sub: null, icon: 'people-outline', primary: false, attention: false },
-                { value: checkedOut, label: t('dashboard.kpiCheckedOut'), sub: null, icon: 'log-out-outline', primary: false, attention: false },
-              ].map((kpi, idx) => {
-                const iconColor = kpi.primary ? '#ffffff' : kpi.attention ? '#d97706' : '#0d9488';
-                const numberColor = kpi.primary ? 'text-white' : kpi.attention ? 'text-amber-700' : 'text-teal-700';
-                const labelColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-800' : 'text-teal-600';
-                const subColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-700' : 'text-slate-400';
-                return (
-                  <View
-                    key={idx}
-                    className={`w-[31%] rounded-2xl p-4 shadow-sm border ${
-                      kpi.primary
-                        ? 'bg-teal-700 border-teal-700'
-                        : kpi.attention
-                        ? 'bg-amber-50 border-amber-200'
-                        : 'bg-white border-slate-100'
-                    }`}
-                  >
-                    <View className="flex-row justify-end items-center">
-                      <Ionicons name={kpi.icon as never} size={24} color={iconColor} />
+                {
+                  title: 'Overview',
+                  cards: [
+                    {
+                      value: expectedToday,
+                      label: 'Aujourd’hui',
+                      sub: null,
+                      icon: 'calendar-outline',
+                      primary: true,
+                      attention: false,
+                      metrics: [
+                        { value: expectedToday, label: t('dashboard.kpiExpected'), icon: 'calendar-outline' },
+                        { value: currentlyInside, label: t('dashboard.kpiCurrentlyInside'), icon: 'log-in-outline' },
+                        { value: checkedOut, label: t('dashboard.kpiCheckedOut'), icon: 'log-out-outline' },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  title: 'Approvals',
+                  cards: [
+                    { value: waitingApproval, label: t('dashboard.kpiWaitingApproval'), sub: null, icon: 'time-outline', primary: false, attention: true },
+                    { value: approved, label: t('dashboard.kpiApproved'), sub: null, icon: 'checkmark-circle-outline', primary: false, attention: false },
+                  ],
+                },
+                {
+                  title: 'Volume',
+                  cards: [
+                    { value: totalVisits, label: t('dashboard.kpiTotal'), sub: null, icon: 'people-outline', primary: false, attention: false },
+                  ],
+                },
+              ].map((group) => (
+                <View key={group.title} className="gap-2">
+                  <Text className="px-1 text-[10px] font-bold uppercase tracking-[1.5px] text-slate-500">
+                    {group.title}
+                  </Text>
+
+                  {group.title === 'Overview' ? (
+                    <View className="rounded-2xl bg-teal-700 border border-teal-700 p-4 shadow-sm">
+                      <View className="flex-row items-center justify-between mb-4">
+                        <Text className="text-sm font-black text-white">Aujourd’hui</Text>
+                        <Ionicons name="calendar-outline" size={20} color="#ffffff" />
+                      </View>
+
+                      <View className="gap-3">
+                        {group.cards[0].metrics.map((metric, metricIndex) => (
+                          <View key={`${group.title}-${metricIndex}`} className="flex-row items-center justify-between rounded-xl bg-white/10 px-3 py-2.5">
+                            <View className="flex-row items-center gap-2.5">
+                              <View className="h-8 w-8 items-center justify-center rounded-lg bg-white/15">
+                                <Ionicons name={metric.icon as never} size={16} color="#ffffff" />
+                              </View>
+                              <Text className="text-xs font-bold uppercase tracking-wide text-teal-50">
+                                {metric.label}
+                              </Text>
+                            </View>
+                            <Text className="text-2xl font-black text-white">
+                              {metric.value}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
                     </View>
-                    <View className="flex-1 justify-center">
-                      <Text
-                        adjustsFontSizeToFit
-                        minimumFontScale={0.5}
-                        numberOfLines={1}
-                        className={`font-black ${isTablet ? 'text-6xl' : 'text-5xl'} ${numberColor}`}
-                      >
-                        {kpi.value}
-                      </Text>
+                  ) : (
+                    <View className="flex-row gap-3">
+                      {group.cards.map((kpi, idx) => {
+                        const iconColor = kpi.primary ? '#ffffff' : kpi.attention ? '#d97706' : '#0d9488';
+                        const numberColor = kpi.primary ? 'text-white' : kpi.attention ? 'text-amber-700' : 'text-teal-700';
+                        const labelColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-800' : 'text-teal-600';
+                        const subColor = kpi.primary ? 'text-teal-100' : kpi.attention ? 'text-amber-700' : 'text-slate-400';
+                        const isSingleCard = group.cards.length === 1;
+
+                        return (
+                          <View
+                            key={`${group.title}-${idx}`}
+                            className={`${isSingleCard ? 'flex-1' : 'flex-1'} rounded-2xl p-3 shadow-sm border ${
+                              kpi.primary
+                                ? 'bg-teal-700 border-teal-700'
+                                : kpi.attention
+                                  ? 'bg-amber-50 border-amber-200'
+                                  : 'bg-white border-slate-100'
+                            }`}
+                          >
+                            <View className="flex-row justify-between items-center mb-2">
+                              <Text className={`text-[10px] font-bold uppercase tracking-wide ${labelColor}`} numberOfLines={2}>
+                                {kpi.label}
+                              </Text>
+                              <Ionicons name={kpi.icon as never} size={18} color={iconColor} />
+                            </View>
+                            <Text
+                              adjustsFontSizeToFit
+                              minimumFontScale={0.7}
+                              numberOfLines={1}
+                              className={`font-black ${isTablet ? 'text-3xl' : 'text-2xl'} ${numberColor}`}
+                            >
+                              {kpi.value}
+                            </Text>
+                            {kpi.sub ? (
+                              <Text className={`text-[10px] font-medium mt-1 ${subColor}`} numberOfLines={2}>
+                                {kpi.sub}
+                              </Text>
+                            ) : null}
+                          </View>
+                        );
+                      })}
                     </View>
-                    <View className="items-end">
-                      <Text className={`text-xs font-bold uppercase tracking-wide text-right ${labelColor}`} numberOfLines={2}>
-                        {kpi.label}
-                      </Text>
-                      {kpi.sub ? (
-                        <Text className={`text-[10px] font-semibold text-right mt-0.5 ${subColor}`} numberOfLines={2}>
-                          {kpi.sub}
-                        </Text>
-                      ) : null}
-                    </View>
-                  </View>
-                );
-              })}
+                  )}
+                </View>
+              ))}
             </View>
           )}
         </View>
@@ -382,9 +448,10 @@ export default function DashboardScreen() {
         {waitingPreview.length > 0 ? (
           <View className="px-6">
             {waitingPreview.map((v: WaitingVisit) => (
-              <View
+              <Pressable
                 key={v.id}
-                className="bg-white rounded-2xl p-4 mb-3 border border-amber-200 flex-row items-center gap-4"
+                onPress={() => router.push({ pathname: '/(kiosk)/visit-detail', params: { visitId: v.id } } as never)}
+                className="bg-white rounded-2xl p-4 mb-3 border border-amber-200 flex-row items-center gap-4 active:bg-amber-50"
               >
                 {v.visitorPhotoUrl || v.visitor.photoUrl ? (
                   <Image
@@ -416,7 +483,7 @@ export default function DashboardScreen() {
                 <View className="bg-amber-100 rounded-full px-3 py-1">
                   <Text className="text-amber-700 text-xs font-bold">{t('operator.waiting')}</Text>
                 </View>
-              </View>
+              </Pressable>
             ))}
           </View>
         ) : (
@@ -441,9 +508,10 @@ export default function DashboardScreen() {
         {expectedPreview.length > 0 ? (
           <View className="px-6">
             {expectedPreview.map((v: ExpectedVisit) => (
-              <View
+              <Pressable
                 key={v.id}
-                className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4"
+                onPress={() => router.push({ pathname: '/(kiosk)/visit-detail', params: { visitId: v.id } } as never)}
+                className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4 active:bg-teal-50"
               >
                 {v.visitorPhotoUrl || v.visitor.photoUrl ? (
                   <Image
@@ -477,7 +545,7 @@ export default function DashboardScreen() {
                 <View className="bg-teal-100 rounded-full px-3 py-1">
                   <Text className="text-teal-700 text-xs font-bold">{t('operator.approved')}</Text>
                 </View>
-              </View>
+              </Pressable>
             ))}
           </View>
         ) : (
@@ -508,7 +576,7 @@ export default function DashboardScreen() {
             {onSitePreview.map((v: OnSiteVisitor) => (
                 <Pressable
                   key={v.id}
-                  onPress={() => setSelectedVisitor(v)}
+                  onPress={() => router.push({ pathname: '/(kiosk)/visit-detail', params: { visitId: v.id } } as never)}
                   className="bg-white rounded-2xl p-4 mb-3 border border-slate-200 flex-row items-center gap-4 active:bg-teal-50 active:border-teal-400"
                 >
                   {v.visitor.photoUrl ? (
